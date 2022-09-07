@@ -1,24 +1,22 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
-const port = 7000
+const port = 3306
 const fs = require('fs');
-const db = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE, (err)=>{
-if (err) return console.error(err.messafe);
-
-console.log("connection successful");
-})
-
+const session = require('express-session');
+const db = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
 
 const sql = `INSERT INTO users (uID, Name )
                 VALUES(?,?)`
 const view = `SELECT * FROM users`
 
 
-
-
 app.set('view engine', 'ejs');
-
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 app.use(express.urlencoded({extended: true}));
 
 app.get('/', (req, res) =>{
@@ -26,37 +24,56 @@ app.get('/', (req, res) =>{
 })
 
 
-app.post('/giveMoney',(req, res) =>{
-
-
-
-if(req.body.id){
-const userID = req.body.id;
-
-
-let userGuy = `SELECT uID id,
-                  Name name
-           FROM users
-           WHERE uID  = ?`;
-let accountID = userID;
-
-db.get(userGuy, [accountID], (err, row) => {
-  return row
-  ? console.log(row.id, row.name)
-  : console.log(`No user found with the id ${userID}`);
+app.post('/login',(req, res) =>{
+  let username = req.body.name;
+	let password = req.body.id;
+  if (username && password) {
+		// Execute SQL query that'll select the account from the database based on the specified username and password
+		db.get(`SELECT * FROM users WHERE Name = ? AND uID = ?`, [username, password], function(error, results) {
+			// If there is an issue with the query, output the error
+			console.log(results);
+			if (error) throw error;
+			// If the account exists
+			if (results) {
+				// Authenticate the user
+				req.session.loggedin = true;
+				req.session.username = username;
+				// Redirect to home page
+				res.redirect('/home');
+			} else {
+				res.send('Incorrect Username and/or Password!');
+			}			
+			res.end();
+		});
+	} else {
+		res.send('Please enter Username and Password!');
+		res.end();
+	}
 })
 
+
+app.get('/home', function(req, res) {
+	// If the user is loggedin
+	if (req.session.loggedin) {
+		// Output username
+		res.send('Welcome back, ' + req.session.username + '!');
+	} else {
+		// Not logged in
+		res.send('Please login to view this page!');
+	}
+	res.end();
+});
+
+
+app.listen(port, (err) =>{
+  if (err) {
+    console.error(err);
   } else {
-    res.send('You kinda suck, send better params, and fill in all the info');
+    console.log(`Running on port ${port}`);
   }
-})
-
-
-
-
-
-app.listen(port);
+  
+});
 
 //db.close((err) => {
-  //if(err) return console.error(err.message);
+//if(err) return console.error(err.message);
 //})
