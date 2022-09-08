@@ -53,14 +53,14 @@ app.post('/login',(req, res) =>{
 
 
 app.get('/home', function(req, res) {
-	// If the user is loggedin
-	if (req.session.loggedin) {
-		// Output username
-		res.send('Welcome back, ' + req.session.username + '!');
-	} else {
-		// Not logged in
-		res.send('Please login to view this page!');
-	}
+	     // If the user is loggedin
+if (req.session.loggedin) {
+	// Output username
+	res.render('homepage', {username: req.session.username})
+} else {
+	// Not logged in
+	res.send('Please login to view this page!');
+}
 	res.end();
 });
 
