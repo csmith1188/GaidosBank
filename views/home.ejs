@@ -1,24 +1,134 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Bank System</title>
-    <style media="screen">
-      div.moneystuff {
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-<h1 style="text-align: center">Pog*Mart Digital Banking Service</h1>
-<h2 style="text-align: center">Login Here</h2>
-<div class="moneystuff">
-  <form class="" action="/login" method="post">
-    <input type="number" name="id" value="" placeholder="ID">
-    <input type="text" name="name" value="" placeholder="Name">
-    <input type="submit" name="" value="submit">
-  </form>
+	<head>
+		<meta charset="utf-8">
+		<title>Bank System</title>
+		<style media="screen">
+        div.moneystuff {
+			position: relative; top: 100px;
+            outline-style: solid;
+            outline-color: white;
+            outline-width: 5px;
+            border-radius: 50px;
+            padding: 100px;
+            width: 300px;
+            height: 300px;
+        }
+        body {
+            background: #383838;
+        }
+		.moneystuff {
+            height: 350px;
+			width: 400px;
+			margin: 0 auto;
+			font-family: Tahoma, Geneva, sans-serif;
+		}
+		.moneystuff h1 {
+			text-align: center;
+			color: #000000;
+			font-size: 24px;
+            height: 20px;
+			padding: 20px 0 20px 0;
+		}
+		.moneystuff h2 {
+			text-align: center;
+			color: #000000;
+			font-size: 24px;
+            height: 20px;
+			padding: 20px 0 20px 0;
+		}
+		.moneystuff input[type="number"] {
+			color: white;
+			text-decoration-color: #dddddd;
+            outline-style: solid;
+            outline-color: white;
+            outline-width: 1px;
+            background-color: #292929;
+			width: 100%;
+			padding: 15px;
+			border: 1px solid #dddddd;
+			margin-bottom: 15px;
+			box-sizing:border-box;
+		}
+		.moneystuff input[type="text"] {
+			color: white;
+			text-decoration-color: #dddddd;
+            outline-style: solid;
+            outline-color: white;
+            outline-width: 1px;
+            background-color: #292929;
+			width: 100%;
+			padding: 15px;
+			border: 1px solid #dddddd;
+			margin-bottom: 15px;
+			box-sizing:border-box;
+		}
+		.moneystuff input[type="submit"] {
+			width: 100%;
+			padding: 15px;
+			background-color: black;
+			border: 0;
+			box-sizing: border-box;
+			cursor: pointer;
+			font-weight: bold;
+			color: #ffffff;
+		}
+		.dark-mode {
+            background-color: gray;
+            color: white;
+        }
+		.white-mode {
+			filter: invert(100%);
+            background-color: white;
+            color: white;
+        }
+		.lightdarkmode button[onclick="myFunction()"] {
+			outline-style: solid;
+            outline-color: white;
+            outline-width: 5px;
+            border-radius: 50px;
+			position: relative; top:-500px;
+			width: 10%;
+			padding: 15px;
+			background-color: black;
+			border: 0;
+			box-sizing: border-box;
+			cursor: pointer;
+			font-weight: bold;
+			color: #ffffff;
+		}
 
-</div>
-  </body>
+		h1 {
+			filter: invert(100%);
+		}
+
+		h2 {
+			filter: invert(100%);
+		}
+		</style>
+		<script>
+			function myFunction() {
+			var element = document.body;
+			element.classList.toggle("dark-mode");
+		}
+		    function myFunction() {
+			var element = document.body;
+			element.classList.toggle("white-mode");
+		}
+	    </script>
+	</head>
+	<body>
+		<div class="moneystuff">
+			<h1>Pog*Mart Digital Banking Service</h1>
+            <h2>Login Here</h2>
+			<form action="login" method="POST">
+				<input type="number" name="id" value="" placeholder="ID">
+                <input type="text" name="name" value="" placeholder="Name">
+                <input type="submit" name="" value="Submit">
+			</form>
+		</div>
+		<div class="lightdarkmode">
+			<button onclick="myFunction()">Toggle light/dark mode</button>
+		</div>
+	</body>
 </html>
