@@ -53,6 +53,7 @@ app.post('/login',(req, res) =>{
 
 
 app.get('/home', function(req, res) {
+<<<<<<< HEAD
 	// If the user is loggedin
 	if (req.session.loggedin) {
 		// Output username
@@ -61,6 +62,16 @@ app.get('/home', function(req, res) {
 		// Not logged in
 		res.send('Please login to view this page!');
 	}
+=======
+	     // If the user is loggedin
+if (req.session.loggedin) {
+	// Output username
+	res.render('homepage', {username: req.session.username})
+} else {
+	// Not logged in
+	res.send('Please login to view this page!');
+}
+>>>>>>> c2985fa1776ced3f967ef31ed3f28981290d280d
 	res.end();
 });
 
