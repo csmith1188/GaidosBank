@@ -1,0 +1,73 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<title>Home</title>
+	</head>
+	<body>
+		<%-include('navbar.ejs', {page:page, user:user})%>
+		<div
+			class="justify-content-center text-center"
+			style="width: 80%; margin-left: 10%; margin-bottom: 0px"
+		>
+			<p class="fs-3 fw-bold">
+				Welcome back, <%=user.username%>!<br />You have
+				$<%=JSON.stringify(user.balance)%> in your Balance
+			</p>
+			<br />
+			<p
+				style="
+					background-color: rgb(255, 215, 0);
+					padding: 0.5%;
+					border-style: solid;
+					border-color: rgb(0, 0, 0);
+					border-width: 2%;
+					border-radius: 50px;
+					width: 20%;
+					margin-left: 40%;
+				"
+				class="fs-4 fw-bold"
+			>
+				Leader Board
+			</p>
+			<table class="table table-striped table-hover">
+				<thead class="fs-5 fw-bold">
+					<tr>
+						<th scope="col">Rank</th>
+						<th scope="col">Username</th>
+						<th scope="col">Balance</th>
+					</tr>
+				</thead>
+				<tbody class="fw-semibold">
+					<%for (user in leaderBoard) {%> <%if (user==0) {%>
+					<tr style="background-color: rgb(255, 215, 0)">
+						<td>#<%=Number(user)+1%></td>
+						<td><%=JSON.stringify(leaderBoard[user].username)%></td>
+						<td><%=JSON.stringify(leaderBoard[user].balance)%></td>
+					</tr>
+					<%} else if (user==1) {%>
+					<tr style="background-color: rgb(192, 192, 192)">
+						<td>#<%=Number(user)+1%></td>
+						<td><%=JSON.stringify(leaderBoard[user].username)%></td>
+						<td><%=JSON.stringify(leaderBoard[user].balance)%></td>
+					</tr>
+					<%} else if (user==2) {%>
+					<tr style="background-color: rgb(205, 127, 50)">
+						<td>#<%=Number(user)+1%></td>
+						<td><%=JSON.stringify(leaderBoard[user].username)%></td>
+						<td><%=JSON.stringify(leaderBoard[user].balance)%></td>
+					</tr>
+					<%} else {%>
+					<tr>
+						<td>#<%=Number(user)+1%></td>
+						<td><%=JSON.stringify(leaderBoard[user].username)%></td>
+						<td><%=JSON.stringify(leaderBoard[user].balance)%></td>
+					</tr>
+					<%}%> <%}%>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

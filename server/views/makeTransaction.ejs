@@ -1,0 +1,43 @@
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/styles.css" />
+		<title>Make Transaction</title>
+	</head>
+
+	<body>
+		<%-include('navbar.ejs', {page:page})%>
+		<div
+			class="justify-content-center text-center"
+			style="width: 25%; margin-left: 37.5%; margin-bottom: 0px"
+		>
+			<p class="fs-3 fw-bold">Make Transaction</p>
+			<form action="/makeTransactions" method="post">
+				<div class="input-group mb-3">
+					<span class="input-group-text">Account (username or ID)</span>
+					<input
+						type="text"
+						class="form-control"
+						placeholder="Account"
+						name="account"
+					/>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">Amount</span>
+					<input
+						type="number"
+						class="form-control"
+						placeholder="Amount"
+						name="amount"
+					/>
+				</div>
+				<button type="submit" class="btn btn-primary">
+					Make Transaction
+				</button>
+			</form>
+		</div>
+	</body>
+</html>

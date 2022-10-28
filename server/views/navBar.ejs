@@ -1,0 +1,78 @@
+<%if (page!='/login' && page!='/signup') {%>
+<nav
+	class="navbar navbar-expand-md <%if (user) { if (user.darkMode == 1) {%>navbar-dark bg-dark<%} else {%>navbar-light bg-light<%}}%> sticky-top"
+>
+	<div class="container-fluid">
+		<div
+			class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"
+		>
+			<ul class="navbar-nav me-auto">
+				<li class="nav-item active">
+					<a
+						class="nav-link <%if (page=='/makeTransaction') {%>active<%}%>"
+						href="/makeTransaction"
+						>Make Transaction</a
+					>
+				</li>
+				<li class="nav-item">
+					<a
+						class="nav-link <%if (page=='/viewTransactions') {%>active<%}%>"
+						href="/viewTransactions"
+						>View Transactions</a
+					>
+				</li>
+				<%if (user) { if (user.permissions==0) {%>
+				<li class="nav-item">
+					<a
+						class="nav-link <%if (page=='/debug') {%>active<%}%>"
+						href="/debug"
+						>Debug</a
+					>
+				</li>
+				<%}}%>
+			</ul>
+		</div>
+		<div class="mx-auto order-0">
+			<a
+				class="navbar-brand mx-auto fw-bold fs-2"
+				href="/"
+				style="color: rgb(19, 161, 14)"
+				>&#128176; Bank of Gaidos</a
+			>
+		</div>
+		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item">
+					<a
+						class="nav-link <%if (page=='/userSettings') {%>active<%}%>"
+						href="/userSettings"
+						>User Settings</a
+					>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/logout">
+						<button class="btn btn-danger">Logout</button>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<%} else if (page=='/login' || page=='/signup') {%>
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+	<div class="container-fluid">
+		<div
+			class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"
+		>
+			<div class="mx-auto order-0">
+				<a
+					class="navbar-brand mx-auto fw-bold fs-2"
+					href="/"
+					style="color: rgb(19, 161, 14)"
+					>&#128176; Bank of Gaidos</a
+				>
+			</div>
+		</div>
+	</div>
+</nav>
+<%}%>
