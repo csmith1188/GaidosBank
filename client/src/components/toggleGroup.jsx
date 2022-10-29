@@ -1,5 +1,5 @@
 import { styled } from '@stitches/react'
-import * as ToggleGroup from '@radix-ui/react-toggle-group';
+import * as ToggleGroup from '@radix-ui/react-toggle-group'
 
 const Root = styled(ToggleGroup.Root, {
 	variants: {
@@ -17,7 +17,7 @@ const Root = styled(ToggleGroup.Root, {
 	},
 	display: 'inline-flex',
 	borderRadius: '1rem',
-});
+})
 
 const Item = styled(ToggleGroup.Item, {
 	variants: {
@@ -45,6 +45,6 @@ const Item = styled(ToggleGroup.Item, {
 	justifyContent: 'center',
 	'&:first-child': { marginLeft: 0, borderTopLeftRadius: '0.5rem', borderBottomLeftRadius: '0.5rem' },
 	'&:last-child': { borderTopRightRadius: '0.5rem', borderBottomRightRadius: '0.5rem' },
-});
+})
 
 export { Root, Item }

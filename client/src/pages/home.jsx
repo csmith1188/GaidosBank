@@ -1,5 +1,5 @@
 import React from 'react'
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 
 function Home() {
 	const [currentUser, setCurrentUser] = useState([{}])
@@ -15,7 +15,7 @@ function Home() {
 	const [leaderboard, setleaderboard] = useState([{}])
 
 	useEffect(() => {
-		fetch("/getUsers?filter=permissions='user'&sort=balance DESC&limit=10")
+		fetch('/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
 			.then(response => response.json())
 			.then(data => {
 				setleaderboard(data)
@@ -28,7 +28,7 @@ function Home() {
 			text: 'rgb(255, 255, 255)'
 		}
 	} else {
-		theme = {text: 'rgb(0, 0, 0)'}
+		theme = { text: 'rgb(0, 0, 0)' }
 	}
 
 	let table = document.getElementsByTagName('table')[0]
@@ -99,11 +99,11 @@ function Home() {
 			</p>
 			<table
 				Style='border-spacing:0;'
-				// style={{
-				// 	borderWidth: '0.1rem',
-				// 	borderStyle: 'solid',
-				// 	borderColor: theme.text
-				// }}
+			// style={{
+			// 	borderWidth: '0.1rem',
+			// 	borderStyle: 'solid',
+			// 	borderColor: theme.text
+			// }}
 			>
 				<thead
 					style={{

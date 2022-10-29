@@ -1,4 +1,5 @@
 // Import modules
+const { query } = require('express')
 const express = require('express')
 const sqlite3 = require('sqlite3').verbose()
 const app = express()
@@ -481,78 +482,88 @@ app.get('/getCurrentUser', (request, response) => {
 })
 
 app.get('/getUser', (request, response) => {
-	if (request.query.user) {
-		database.get(
-			'SELECT * FROM users WHERE username = ?',
-			request.query.user,
-			(error, results) => {
-				if (error) throw error
-				response.json(results)
-			}
-		)
-	} else if (request.query.id) {
-		database.get(
-			'SELECT * FROM users WHERE id = ?',
-			request.query.id,
-			(error, results) => {
-				if (error) throw error
-				response.json(results)
-			}
-		)
+	let query = 'SELECT * FROM users WHERE '
+	if (request.query.username) username = request.query.username
+	else username = null
+	if (request.query.id) id = request.query.id
+	else id = null
+	if (username && id) query = null
+	else {
+		if (username && isNaN(username))
+			query += 'username="' + username + '"'
+		else if (id && !isNaN(id))
+			query += 'id=' + id + ''
+		else query = null
 	}
+	if (query) {
+		database.get(
+			query,
+			(error, results) => {
+				if (error) throw error
+				if (results) response.json(results)
+				else response.sendStatus(404)
+			}
+		)
+	} else response.sendStatus(400)
 })
 
 app.get('/getUsers', (request, response) => {
 	let query = 'SELECT * FROM users'
-	if (request.query.filter) {
-		let filter = request.query.filter
-		filter = filter.split(',')
-		let usedFilters = {}
-		for (parameter of filter) {
-			if (usedFilters[parameter.startsWith('permissions')])
-				usedFilters['permissions'] += 1
-			else usedFilters['permissions'] = 1
-			if (usedFilters[parameter.startsWith('balance')])
-				usedFilters['balance'] += 1
-			else usedFilters['balance'] = 1
+	for (let query of Object.keys(request.query)) {
+		if (query != 'filter' && query != 'sort' && query != 'limit') response.sendStatus(400)
+	}
+	if (request.query.filter) filterBy = request.query.filter
+	else filterBy = null
+	if (request.query.sort) sortBy = request.query.sort
+	else sortBy = null
+	if (request.query.limit) limit = request.query.limit
+	else limit = null
+	if (filterBy && query) {
+		if (filterBy.startsWith('{') && filterBy.endsWith('}')) filterBy = filterBy.slice(1, -1).split(',')
+		if (filterBy) query += ' WHERE'
+		for (filter of filterBy) {
+			if (filter.startsWith('balance'))
+				query += ' ' + filter
+			else if (filter.startsWith('permissions')) {
+				query += ' permissions="' + filter.slice(12) + '"'
+			} else response.sendStatus(400)
+			if (filterBy.indexOf(filter) < filterBy.length - 1)
+				query += ' AND'
 		}
-		for (property in usedFilters) {
-			property = usedFilters[property]
-			if (property > 1) response.status(400)
-		}
+	}
+	if (sortBy && query) {
+		if (sortBy.startsWith('{') && sortBy.endsWith('}')) sortBy = sortBy.slice(1, -1).split(',')
 
-		if (filter.length > 0) query += ' WHERE'
-		for (property of filter) {
-			query += ' ' + property
-			if (filter.indexOf(property) < filter.length - 1) query += ' AND'
+		if (sortBy) query += ' ORDER BY'
+		for (sort of sortBy) {
+			splitSort = sort.split(':')
+			if (splitSort[0] == 'id' || splitSort[0] == 'username' || splitSort[0] == 'balance')
+				query += ' ' + splitSort[0]
+			else response.sendStatus(400)
+			if (splitSort[1] == 'ASC' || splitSort[1] == 'DESC') query += ' ' + splitSort[1]
+			else if (splitSort[1]) response.sendStatus(400)
+			else {
+				query += ' DESC'
+			}
+			if (sortBy.indexOf(sort) < sortBy.length - 1) {
+				query += ','
+			}
 		}
 	}
-	if (request.query.sort) {
-		let sort = request.query.sort
-		sort = sort.split(',')
-		let usedSort = {}
-		for (parameter of sort) {
-			if (usedSort[parameter.startsWith('permissions')])
-				usedFilters['permissions'] += 1
-			else usedSort['permissions'] = 1
-			if (usedSort[parameter.startsWith('balance')]) usedSort['balance'] += 1
-			else usedSort['balance'] = 1
-		}
-		for (property in usedSort) {
-			property = usedSort[property]
-			if (property > 1) response.status(400)
-		}
-		if (sort.length > 0) query += ' ORDER BY'
-		for (property of sort) {
-			query += ' ' + property
-			if (sort.indexOf(property) < sort.length - 1) query += ' AND'
-		}
+	if (limit) {
+		if (!isNaN(limit)) query += ' LIMIT ' + limit
+		else response.sendStatus(400)
 	}
-	if (request.query.limit) query += ' LIMIT ' + request.query.limit
-	database.all(query, (error, results) => {
-		if (error) throw error
-		response.json(results)
-	})
+	if (query) {
+		database.all(
+			query,
+			(error, results) => {
+				if (error) throw error
+				if (results) response.json(results)
+				else response.sendStatus(404)
+			}
+		)
+	} else response.sendStatus(400)
 })
 
 // Run Website
