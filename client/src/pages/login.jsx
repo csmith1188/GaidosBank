@@ -1,7 +1,24 @@
 import React from 'react'
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
+
 
 function Login() {
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
+
+	const handleSubmit = (event) => {
+		event.preventDefault()
+		console.log(username, password);
+		if (username && password) {
+			fetch('/login?username=' + username + '&password=' + password)
+				.then(response => response.json())
+				.then(data => {
+					console.log('/login?' + username + '&' + password, data);
+				})
+				.catch(error => { throw error })
+		}
+	}
+
 	const [currentUser, setCurrentUser] = useState([{}])
 
 	useEffect(() => {
@@ -10,52 +27,16 @@ function Login() {
 			.then(data => {
 				setCurrentUser(data)
 			})
-	}, [])
-
-	const [leaderboard, setleaderboard] = useState([{}])
-
-	useEffect(() => {
-		fetch("/getUsers?filter=permissions='user'&sort=balance DESC&limit=10")
-			.then(response => response.json())
-			.then(data => {
-				setleaderboard(data)
-			})
+			.catch(error => { throw error })
 	}, [])
 
 	let theme
-	if (currentUser.theme == 1) {
+	if (currentUser.theme === 1) {
 		theme = {
 			text: 'rgb(255, 255, 255)'
 		}
 	} else {
-		theme = {text: 'rgb(0, 0, 0)'}
-	}
-
-	let table = document.getElementsByTagName('table')[0]
-	if (table) {
-		table.style.border = '0.15rem solid ' + theme.text
-		table.style.borderRadius = '1rem'
-		table.style.zoom = '300%'
-		table.style.marginLeft = 'auto'
-		table.style.marginRight = 'auto'
-		let thead = table.getElementsByTagName('thead')[0]
-		let rows = thead.getElementsByTagName('tr')
-		for (let rowNum = 0; rowNum < rows.length; rowNum++) {
-			let row = rows[rowNum].getElementsByTagName('th')
-			for (let thNum = 0; thNum < row.length; thNum++) {
-				let th = row[thNum]
-				th.style.paddingLeft = '0.3rem'
-				th.style.paddingRight = '0.3rem'
-			}
-		}
-		let tbody = table.getElementsByTagName('tbody')[0]
-		rows = tbody.getElementsByTagName('tr')
-		for (let rowNum = 0; rowNum < rows.length; rowNum++) {
-			let row = rows[rowNum]
-			if (rowNum == 0) row.style.backgroundColor = 'rgb(255, 215, 0)'
-			if (rowNum == 1) row.style.backgroundColor = 'rgb(192, 192, 192)'
-			if (rowNum == 2) row.style.backgroundColor = 'rgb(205, 127, 50)'
-		}
+		theme = { text: 'rgb(0, 0, 0)' }
 	}
 
 	return (
@@ -68,7 +49,20 @@ function Login() {
 				textAlign: 'center',
 				color: theme.text
 			}}
-		></div>
+		>
+			<form onSubmit={handleSubmit} style={{ marginTop: '2rem', zoom: '250%' }}>
+				<label htmlFor=''></label>
+				<input
+					type='text'
+					id='username'
+					value={username}
+					onChange={(event) => setUsername(event.target.value)}
+				/>
+				<br />
+				<input type='text' id='password' value={password} onChange={(event) => setPassword(event.target.value)} /><br />
+				<input type='submit' />
+			</form>
+		</div>
 	)
 }
 

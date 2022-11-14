@@ -1,4 +1,4 @@
-import {styled} from '@stitches/react'
+import { styled } from '@stitches/react'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 
 const Root = styled(NavigationMenu.Root, {
@@ -17,24 +17,20 @@ const Root = styled(NavigationMenu.Root, {
 	defaultVariants: {
 		color: 'light'
 	},
-	height: '3.5rem',
-	justifyContent: 'space-between',
 	position: 'sticky',
 	top: '0',
 	display: 'flex',
 	borderBottomStyle: 'solid',
-	borderBottomWidth: '0.6rem'
 })
 
 const List = styled(NavigationMenu.List, {
 	display: 'flex',
 	listStyle: 'none',
-	paddingLeft: '2rem',
-	paddingRight: '2rem'
+	padding: 0,
+	margin: 0,
 })
 
 const Item = styled(NavigationMenu.Item, {
-	marginRight: '2.5rem'
 })
 
 const Link = styled(NavigationMenu.Link, {
@@ -57,9 +53,34 @@ const Link = styled(NavigationMenu.Link, {
 	defaultVariants: {
 		color: 'light'
 	},
-	fontSize: '1.5rem',
-	fontWeight: '900',
+	fontWeight: 'bold',
 	textDecoration: 'none'
 })
 
-export {Root, Item, List, Link}
+const Button = styled('button', {
+	variants: {
+		color: {
+			light: {
+				color: 'rgb(0,0,0)',
+				'&:hover': {
+					color: 'rgb(0,0,225)'
+				}
+			},
+			dark: {
+				color: 'rgb(255,255,255)',
+				'&:hover': {
+					color: 'rgb(100,100,220)'
+				}
+			}
+		}
+	},
+	defaultVariants: {
+		color: 'light'
+	},
+	fontWeight: 'bold',
+	textDecoration: 'none',
+	border: 'none',
+	background: 'none'
+})
+
+export { Root, Item, List, Link, Button }

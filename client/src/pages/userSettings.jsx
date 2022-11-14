@@ -16,7 +16,7 @@ function UserSettings() {
 
 	if (currentUser && currentUser.theme) {
 		let theme
-		if (currentUser.theme == 1) theme = { color: 'dark' }
+		if (currentUser.theme === 1) theme = { color: 'dark' }
 		else theme = { color: 'light' }
 
 		return (

@@ -12,18 +12,18 @@ function Home() {
 			})
 	}, [])
 
-	const [leaderboard, setleaderboard] = useState([{}])
+	const [leaderBoard, setLeaderBoard] = useState([{}])
 
 	useEffect(() => {
 		fetch('/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
 			.then(response => response.json())
 			.then(data => {
-				setleaderboard(data)
+				setLeaderBoard(data)
 			})
 	}, [])
 
 	let theme
-	if (currentUser.theme == 1) {
+	if (currentUser.theme === 1) {
 		theme = {
 			text: 'rgb(255, 255, 255)'
 		}
@@ -52,9 +52,9 @@ function Home() {
 		rows = tbody.getElementsByTagName('tr')
 		for (let rowNum = 0; rowNum < rows.length; rowNum++) {
 			let row = rows[rowNum]
-			if (rowNum == 0) row.style.backgroundColor = 'rgb(255, 215, 0)'
-			if (rowNum == 1) row.style.backgroundColor = 'rgb(192, 192, 192)'
-			if (rowNum == 2) row.style.backgroundColor = 'rgb(205, 127, 50)'
+			if (rowNum === 0) row.style.backgroundColor = 'rgb(255, 215, 0)'
+			if (rowNum === 1) row.style.backgroundColor = 'rgb(192, 192, 192)'
+			if (rowNum === 2) row.style.backgroundColor = 'rgb(205, 127, 50)'
 		}
 	}
 
@@ -123,10 +123,10 @@ function Home() {
 						fontWeight: 'bold'
 					}}
 				>
-					{leaderboard.map(user => {
+					{leaderBoard.map(user => {
 						return (
 							<tr>
-								<td>{leaderboard.indexOf(user) + 1}</td>
+								<td>{leaderBoard.indexOf(user) + 1}</td>
 								<td>{user.username}</td>
 								<td>{user.balance}</td>
 							</tr>
