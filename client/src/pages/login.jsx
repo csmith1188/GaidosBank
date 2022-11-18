@@ -1,12 +1,13 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useContext } from 'react';
+import { useEffect, useState } from 'react';
+import { CurrentUserContext } from '../context';
 
 
 function Login() {
-	const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
+	let currentUser = useContext(CurrentUserContext);
+	let username, password;
 
-	const handleSubmit = (event) => {
+	function handleSubmit(event) {
 		event.preventDefault()
 		console.log(username, password);
 		if (username && password) {
@@ -18,26 +19,9 @@ function Login() {
 				.catch(error => { throw error })
 		}
 	}
-
-	const [currentUser, setCurrentUser] = useState([{}])
-
-	useEffect(() => {
-		fetch('/getCurrentUser')
-			.then(response => response.json())
-			.then(data => {
-				setCurrentUser(data)
-			})
-			.catch(error => { throw error })
-	}, [])
-
-	let theme
-	if (currentUser.theme === 1) {
-		theme = {
-			text: 'rgb(255, 255, 255)'
-		}
-	} else {
-		theme = { text: 'rgb(0, 0, 0)' }
-	}
+	let color
+	if (currentUser.theme) color = 'rgb(255, 255, 255)'
+	else color = 'rgb(0, 0, 0)'
 
 	return (
 		<div
@@ -47,7 +31,7 @@ function Login() {
 				marginBottom: '0px',
 				justifyContent: 'center',
 				textAlign: 'center',
-				color: theme.text
+				color: { color }
 			}}
 		>
 			<form onSubmit={handleSubmit} style={{ marginTop: '2rem', zoom: '250%' }}>
@@ -56,10 +40,10 @@ function Login() {
 					type='text'
 					id='username'
 					value={username}
-					onChange={(event) => setUsername(event.target.value)}
+					onChange={(event) => username = event.target.value}
 				/>
 				<br />
-				<input type='text' id='password' value={password} onChange={(event) => setPassword(event.target.value)} /><br />
+				<input type='text' id='password' value={password} onChange={(event) => password = event.target.value} /><br />
 				<input type='submit' />
 			</form>
 		</div>

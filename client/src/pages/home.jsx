@@ -1,26 +1,18 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
+import { CurrentUserContext, leaderBoardContext } from '../context'
 
 function Home() {
-	const [currentUser, setCurrentUser] = useState([{}])
+	let currentUser = useContext(CurrentUserContext)
+	let leaderBoard = useContext(leaderBoardContext)
 
-	useEffect(() => {
-		fetch('/getCurrentUser')
-			.then(response => response.json())
-			.then(data => {
-				setCurrentUser(data)
-			})
-	}, [])
-
-	const [leaderBoard, setLeaderBoard] = useState([{}])
-
-	useEffect(() => {
-		fetch('/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
-			.then(response => response.json())
-			.then(data => {
-				setLeaderBoard(data)
-			})
-	}, [])
+	fetch('/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
+		.then(response => response.json())
+		.then(data => {
+			for (let user of data) {
+				leaderBoard.push(user)
+			}
+		})
+	console.log(leaderBoard);
 
 	let theme
 	if (currentUser.theme === 1) {
@@ -98,7 +90,7 @@ function Home() {
 				Leader Board
 			</p>
 			<table
-				Style='border-spacing:0;'
+				style={{ borderSpacing: 0 }}
 			// style={{
 			// 	borderWidth: '0.1rem',
 			// 	borderStyle: 'solid',
