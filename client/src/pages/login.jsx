@@ -1,34 +1,14 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
+import { CurrentUserContext } from '../context'
 
 
 function Login() {
-	const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
+	let currentUser = useContext(CurrentUserContext);
+	let username, password;
 
-	const handleSubmit = (event) => {
-		event.preventDefault()
-		console.log(username, password);
-		if (username && password) {
-			fetch('/login?username=' + username + '&password=' + password)
-				.then(response => response.json())
-				.then(data => {
-					console.log('/login?' + username + '&' + password, data);
-				})
-				.catch(error => { throw error })
-		}
+	function handleSubmit(event) {
+		console.log('submit', username, password);
 	}
-
-	const [currentUser, setCurrentUser] = useState([{}])
-
-	useEffect(() => {
-		fetch('/getCurrentUser')
-			.then(response => response.json())
-			.then(data => {
-				setCurrentUser(data)
-			})
-			.catch(error => { throw error })
-	}, [])
 
 	let theme
 	if (currentUser.theme === 1) {
@@ -56,10 +36,10 @@ function Login() {
 					type='text'
 					id='username'
 					value={username}
-					onChange={(event) => setUsername(event.target.value)}
+					onChange={(event) => username = event.target.value}
 				/>
 				<br />
-				<input type='text' id='password' value={password} onChange={(event) => setPassword(event.target.value)} /><br />
+				<input type='text' id='password' value={password} onChange={(event) => password = event.target.value} /><br />
 				<input type='submit' />
 			</form>
 		</div>
