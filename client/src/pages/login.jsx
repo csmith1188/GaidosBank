@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-import { useEffect, useState } from 'react';
-import { CurrentUserContext } from '../context';
+import React, { useContext } from 'react'
+import { CurrentUserContext } from '../context'
 
 
 function Login() {

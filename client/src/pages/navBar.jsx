@@ -10,7 +10,6 @@ export default function NavBar() {
 			.catch(error => { throw error })
 	}
 
-	console.log(currentUser);
 	function ifAdmin(tag) {
 		if (currentUser.permissions === 'admin') {
 			return tag

@@ -103,7 +103,6 @@ export default function App() {
 	function toggleTheme() {
 		if (currentUser.theme === 'dark') currentUser.theme = 'light'
 		else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-		console.log(currentUser);
 		changeTheme()
 	}
 
