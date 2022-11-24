@@ -8,12 +8,16 @@ function Login() {
 
 	function handleSubmit(event) {
 		event.preventDefault()
-		console.log(username, password);
 		if (username && password) {
+			console.log(username, password);
 			fetch('/login?username=' + username + '&password=' + password)
-				.then(response => response.json())
+				.then(response => {
+					console.log(response);
+					response.json()
+				})
 				.then(data => {
-					console.log('/login?' + username + '&' + password, data);
+					console.log(data);
+					console.log('/login?' + username + '&' + password);
 				})
 				.catch(error => { throw error })
 		}

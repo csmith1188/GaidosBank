@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
 import * as Nav from '../components/nav'
-import { CurrentUserContext } from '../context'
+import { CurrentUserContext, biggerSideContext } from '../context'
 
 export default function NavBar() {
 	let currentUser = useContext(CurrentUserContext);
+	let biggerSide = useContext(biggerSideContext)
 
 	const logout = () => {
 		fetch('/logout')
@@ -17,8 +18,8 @@ export default function NavBar() {
 	}
 
 	return (
-		<Nav.Root color={currentUser.theme} id='nav'>
-			<Nav.List className='links'>
+		<Nav.Root color={currentUser.theme} id='nav' orientation={biggerSide === 'width' ? 'horizontal' : 'vertical'}>
+			<Nav.List className='list' id='list1'>
 				<Nav.Item>
 					<Nav.Link color={currentUser.theme} active='true' href='/makeTransaction'>
 						Make Transaction
@@ -46,12 +47,11 @@ export default function NavBar() {
 						active='true'
 						href='/'
 					>
-						<span role='img'>&#128176;</span>
-						Bank of Gaidos
+						&#128176;Bank of Gaidos
 					</Nav.Link>
 				</Nav.Item>
 			</Nav.List>
-			<Nav.List className='links'>
+			<Nav.List className='list' id='list2'>
 				<Nav.Item>
 					<Nav.Link color={currentUser.theme} active='true' href='/userSettings'>
 						User Settings
