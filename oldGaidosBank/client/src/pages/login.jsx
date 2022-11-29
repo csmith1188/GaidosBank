@@ -1,9 +1,12 @@
-import React, { useContext } from 'react'
-import { CurrentUserContext } from '../context'
-
+import React, { } from 'react'
+import { useAtomValue } from 'jotai';
+import { currentUserAtom } from '../atoms'
 
 function Login() {
-	let currentUser = useContext(CurrentUserContext);
+	let currentUser = useAtomValue(currentUserAtom);
+	setInterval(() => {
+		console.log('login', currentUser);
+	}, 1000);
 	let username, password;
 
 	function handleSubmit(event) {
@@ -13,11 +16,11 @@ function Login() {
 			fetch('/login?username=' + username + '&password=' + password)
 				.then(response => {
 					console.log(response);
-					response.json()
-				})
-				.then(data => {
-					console.log(data);
-					console.log('/login?' + username + '&' + password);
+					if (response.status === 200 || response.status === 201) {
+						console.log('/login?' + username + '&' + password)
+						currentUser.isAuthenticated = true
+						window.location.pathname = '/'
+					}
 				})
 				.catch(error => { throw error })
 		}

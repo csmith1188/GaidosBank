@@ -4,9 +4,10 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "node server",
-		"devStart": "nodemon server"
+		"dev": "nodemon server",
+		"oldStart": "node oldServer",
+		"oldDev": "nodemon oldServer"
 	},
 	"author": "",
 	"license": "ISC",
@@ -17,6 +18,7 @@
 		"sqlite3": "^5.1.2"
 	},
 	"devDependencies": {
+		"ejs": "^3.1.8",
 		"nodemon": "^2.0.20"
 	}
 }

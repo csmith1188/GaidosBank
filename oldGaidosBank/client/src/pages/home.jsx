@@ -1,9 +1,16 @@
-import React, { useContext } from 'react'
-import { CurrentUserContext, leaderBoardContext } from '../context'
+import React from 'react'
+import { useAtomValue } from 'jotai';
+import { currentUserAtom, leaderBoardAtom } from '../atoms'
 
 function Home() {
-	let currentUser = useContext(CurrentUserContext)
-	let leaderBoard = useContext(leaderBoardContext)
+	let currentUser = useAtomValue(currentUserAtom)
+	let leaderBoard = useAtomValue(leaderBoardAtom)
+
+	console.log(currentUser);
+	if (!currentUser.isAuthenticated)
+		setTimeout(() => {
+			window.location.pathname = '/login'
+		}, 5000);
 
 	fetch('/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
 		.then(response => response.json())
@@ -15,7 +22,7 @@ function Home() {
 	console.log(leaderBoard);
 
 	let theme
-	if (currentUser.theme === 1) {
+	if (currentUser.theme === 'dark') {
 		theme = {
 			text: 'rgb(255, 255, 255)'
 		}

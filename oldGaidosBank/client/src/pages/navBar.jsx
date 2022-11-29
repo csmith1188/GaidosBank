@@ -1,24 +1,24 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import * as Nav from '../components/nav'
-import { CurrentUserContext, biggerSideContext } from '../context'
+import { useAtomValue } from 'jotai';
+import { currentUserAtom } from '../atoms'
 
 export default function NavBar() {
-	let currentUser = useContext(CurrentUserContext);
-	let biggerSide = useContext(biggerSideContext)
+	let currentUser = useAtomValue(currentUserAtom);
 
 	const logout = () => {
 		fetch('/logout')
 			.catch(error => { throw error })
 	}
 
-	function ifAdmin(tag) {
-		if (currentUser.permissions === 'admin') {
-			return tag
-		}
-	}
+	// function ifAdmin(tag) {
+	// 	if (currentUser.permissions === 'admin') {
+	// 		return tag
+	// 	}
+	// }
 
 	return (
-		<Nav.Root color={currentUser.theme} id='nav' orientation={biggerSide === 'width' ? 'horizontal' : 'vertical'}>
+		<Nav.Root color={currentUser.theme} id='nav'>
 			<Nav.List className='list' id='list1'>
 				<Nav.Item>
 					<Nav.Link color={currentUser.theme} active='true' href='/makeTransaction'>

@@ -225,7 +225,6 @@ app.get('/login', isNotAuthenticated, (request, response) => {
 	if (request.query.password) password = request.query.password
 	else password = null
 	if (username && password) {
-		console.log(username, password);
 		request.session.regenerate((error) => {
 			if (error) throw error
 			database.get(
@@ -242,8 +241,8 @@ app.get('/login', isNotAuthenticated, (request, response) => {
 								if (error) throw error
 								if (isMatch) {
 									request.session.username = username
-									response.send(results);
-									// response.sendStatus(200)
+									console.log(request.session);
+									response.sendStatus(200)
 								} else response.sendStatus(404)
 							}
 						)

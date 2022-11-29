@@ -1,11 +1,10 @@
 // Import modules
-const { query } = require('express')
 const express = require('express')
 const sqlite3 = require('sqlite3').verbose()
 const app = express()
-// const session = require('express-session')
+const session = require('express-session')
 const database = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
-// const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')
 
 // Permission levels are as follows:
 // 0 - teacher
@@ -14,19 +13,19 @@ const database = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
 // 3 - anyone
 // 4 - banned
 
-// app.use(express.json())
+app.use(express.json())
 // Express Setup
-// app.set('view engine', 'ejs')
-// app.use(express.static('static'))
+app.set('view engine', 'ejs')
+app.use(express.static('static'))
 // Create Sessions
-// app.use(
-// 	session({
-// 		secret: 'secret', // session encryption code DO NOT LEAVE DEFAULT
-// 		resave: true,
-// 		saveUninitialized: true
-// 	})
-// )
-// app.use(express.urlencoded({extended: true}))
+app.use(
+	session({
+		secret: 'secret', // session encryption code DO NOT LEAVE DEFAULT
+		resave: true,
+		saveUninitialized: true
+	})
+)
+app.use(express.urlencoded({ extended: true }))
 
 // Variables
 const port = 5000
@@ -54,7 +53,7 @@ function isAdmin(request, response, next) {
 		(error, results) => {
 			if (error) throw error // if error send error
 			if (results) {
-				if (results.permissions == 0) next() // if teacher next function
+				if (results.permissions == 'admin') next() // if teacher next function
 				else response.redirect('/') // if not teacher redirect to index
 			}
 		}
@@ -99,7 +98,7 @@ app.get('/', isAuthenticated, (request, response) => {
 							// if leaderBoard exist
 							for (i = 0; i < 2; i++) {
 								for (user in leaderBoard) {
-									if (leaderBoard[user].permissions != 2) {
+									if (leaderBoard[user].permissions != 'user') {
 										leaderBoard.splice(user, 1)
 									}
 								}

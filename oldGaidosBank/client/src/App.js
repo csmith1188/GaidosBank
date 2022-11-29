@@ -1,21 +1,27 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/home';
 import NavBar from './pages/navBar';
 import Login from './pages/login';
 import UserSettings from './pages/userSettings';
 import './styles.scss';
-import { CurrentUserContext, biggerSideContext } from './context'
+import { useAtomValue } from 'jotai';
+import { currentUserAtom } from './atoms'
 
 
 export default function App() {
-	let currentUser = useContext(CurrentUserContext)
-	let biggerSide = useContext(biggerSideContext)
+	let currentUser = useAtomValue(currentUserAtom)
+	setInterval(() => {
+		console.log('main', currentUser);
+	}, 1000);
 
 	fetch('/getCurrentUser')
 		.then(response => response.json())
 		.then(data => {
-			currentUser = data;
+			currentUser.balance = data.balance;
+			currentUser.theme = data.theme;
+			currentUser.username = data.username;
+			currentUser.permissions = data.permissions;
 		})
 
 	fetch('/isAuthenticated')
@@ -32,14 +38,13 @@ export default function App() {
 		}
 	}
 
-	window.addEventListener('load', changeTheme)
-
 	function toggleTheme() {
 		if (currentUser.theme === 'dark') currentUser.theme = 'light'
 		else if (currentUser.theme === 'light') currentUser.theme = 'dark'
 		changeTheme()
 	}
 
+	window.addEventListener('load', changeTheme)
 	return (
 		<>
 			<NavBar />
@@ -50,7 +55,7 @@ export default function App() {
 						element={currentUser.isAuthenticated ? <Home /> : <Navigate to='/login' />}
 					/>
 					<Route path='/makeTransaction' element={currentUser.isAuthenticated ? <Home /> : <Navigate to='/login' />} />
-					<Route path='/viewTransaction' element={currentUser.isAuthenticated ? <Home /> : <Navigate to='/login' />} />
+					<Route path='/viewTransactions' element={currentUser.isAuthenticated ? <Home /> : <Navigate to='/login' />} />
 					<Route path='/debug' element={currentUser.isAuthenticated ? <Home /> : <Navigate to='/login' />} />
 					<Route
 						path='/userSettings'
