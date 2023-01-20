@@ -37,7 +37,7 @@
             height: 20px;
 			padding: 20px 0 20px 0;
 		}
-		.moneystuff input[type="number"] {
+		.moneystuff input[type="password"] {
 			color: white;
 			text-decoration-color: #dddddd;
             outline-style: solid;
@@ -117,22 +117,16 @@
 	</head>
 	<body>
 		<div class="moneystuff">
-			<h1>Pog*Mart Digital Banking Service</h1>
+			<h1>Admin Login</h1>
             <h2>Login Here</h2>
-			<form action="login" method="POST">
-				<input type="number" name="id" value="" placeholder="ID">
+			<form action="adminLogin" method="POST">
                 <input type="text" name="name" value="" placeholder="Name">
+				<input type="password" name="password" value="" placeholder="Password">
                 <input type="submit" name="" value="Submit">
 			</form>
 		</div>
-
-
 		<div class="lightdarkmode">
 			<button onclick="myFunction()">Toggle light/dark mode</button>
 		</div>
-
-		<h2>
-			<a href="/admin">Admin Login</a>
-		</h2>
 	</body>
 </html>
