@@ -5,9 +5,14 @@ const port = 3306
 const fs = require('fs');
 const session = require('express-session');
 const db = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
+const encryptpwd = require('encrypt-with-password');
+
+
 
 
 const view = `SELECT * FROM transactions WHERE amount = ?`
+
+
 
 
 app.set('view engine', 'ejs');
@@ -16,10 +21,11 @@ app.use(session({
 	resave: true,
 	saveUninitialized: true
 }));
-app.use(express.urlencoded({extended: true}));
 
-app.get('/', (req, res) =>{
-  res.render('home');
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+	res.render('home');
 })
 
 app.get('/transaction', (req, res) =>{
@@ -37,15 +43,25 @@ app.get('/admin', (req, res) =>{
 	res.render('admin')
 })
 
-app.post('/adminLogin', (req, res) =>{
+app.post('/adminLogin', (req, res) =>){
 	let username = req.body.name;
-	let password = req.body.password;
+	let password = req.body.password;}
 
   if (username && password) {
 	console.log(username);
-	console.log(password);
+	console.log(password)};
 	// Execute SQL query that'll select the account from the database based on the specified username and password
-		db.get(`SELECT * FROM admin WHERE username = ? AND password = ?`, [username, password], function(error, results) {
+		db.get(`SELECT * FROM admin WHERE username = ? AND password = ?`, [username, password], function(error, results)) {
+app.get('/register', (req, res) => {
+	res.render('register')};
+)}
+
+app.post('/register', (req, res) => {
+	let studentid = req.body.studentID;
+	let studentname = req.body.studentName;
+	if (studentid && studentname) {
+		// Execute SQL query that'll push the new account from the nodejs to the database based on the specified studentname and studentid
+		db.get(sql, [studentid, studentname], function (error, results) {
 			// If there is an issue with the query, output the error
 			console.log(results);
 			if (error) throw error;
@@ -66,12 +82,15 @@ app.post('/adminLogin', (req, res) =>{
 		res.end();
 	}
 })
-app.post('/login',(req, res) =>{
-  let username = req.body.name;
+
+app.post('/login', (req, res) => {
+	let username = req.body.name;
 	let password = req.body.id;
-  if (username && password) {
+	const encrypted = encryptpwd.encrypt(username, password);
+	const decrypted = encryptpwd.decrypt(encrypted, password);
+	if (username && password) {
 		// Execute SQL query that'll select the account from the database based on the specified username and password
-		db.get(`SELECT * FROM users WHERE Name = ? AND uID = ?`, [username, password], function(error, results) {
+		db.get(`SELECT * FROM users WHERE Name = ? AND uID = ?`, [username, password], function (error, results) {
 			// If there is an issue with the query, output the error
 			console.log(results);
 			if (error) throw error;
@@ -80,11 +99,12 @@ app.post('/login',(req, res) =>{
 				// Authenticate the user
 				req.session.loggedin = true;
 				req.session.username = username;
+				console.log(encrypted);
 				// Redirect to home page
 				res.redirect('/home');
 			} else {
 				res.send('Incorrect Username and/or Password!');
-			}			
+			}
 			res.end();
 		});
 	} else {
@@ -94,13 +114,11 @@ app.post('/login',(req, res) =>{
 })
 
 
-app.get('/home', function(req, res) {
+app.get('/home', function (req, res) {
 	// If the user is loggedin
 	if (req.session.loggedin) {
 		// Output username
-		res.render('homepage', {
-			username: req.session.username
-		});
+		res.render('homepage', { username: req.session.username })
 	} else {
 		// Not logged in
 		res.send('Please login to view this page!');
@@ -108,16 +126,16 @@ app.get('/home', function(req, res) {
 	res.end();
 });
 
-
 app.listen(port, (err) =>{
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`Running on port ${port}`);
-  }
+	if (err) {
+	  console.error(err);
+	} else {
+	  console.log(`Running on port ${port}`);
+	}
+  });
   
-});
-
-//db.close((err) => {
-//if(err) return console.error(err.message);
-//})
+  
+  
+  //db.close((err) => {
+  //if(err) return console.error(err.message);
+  //})
