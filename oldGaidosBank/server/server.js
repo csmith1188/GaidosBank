@@ -5,7 +5,6 @@ const app = express()
 const session = require('express-session')
 const database = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
 const bcrypt = require('bcrypt')
-const { response } = require('express')
 
 // Permission levels are as follows:
 // 0 - teacher

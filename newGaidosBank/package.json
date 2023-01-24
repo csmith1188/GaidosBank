@@ -1,18 +1,31 @@
 {
-  "name": "new_gaidos_bank",
+  "name": "app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "devSchool": "next dev -H 192.168.10.26",
+    "devHome": "next dev -H 192.168.0.230",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "eslint": "8.28.0",
-    "eslint-config-next": "13.0.5",
-    "next": "13.0.5",
+    "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-navigation-menu": "^1.1.1",
+    "@radix-ui/react-switch": "^1.0.1",
+    "@radix-ui/react-toggle-group": "^1.0.1",
+    "@stitches/react": "^1.2.8",
+    "@tabler/icons": "^1.115.0",
+    "bcrypt": "^5.1.0",
+    "eslint": "8.29.0",
+    "eslint-config-next": "13.0.6",
+    "iron-session": "^6.3.1",
+    "jotai": "^1.11.0",
+    "next": "13.0.6",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "sass": "^1.56.1",
+    "sqlite3": "^5.1.2"
   }
 }
