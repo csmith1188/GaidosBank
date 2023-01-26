@@ -1,6 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
+
 const port = 3306
 const fs = require('fs');
 const session = require('express-session');
@@ -8,14 +9,14 @@ const db = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
 const encryptpwd = require('encrypt-with-password');
 
 app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./static'))
+app.set('view engine', 'ejs');
 app.use(session({
 	secret: 'secret',
 	resave: true,
 	saveUninitialized: true
 }));
-
-app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
 	res.render('Login');
@@ -49,7 +50,7 @@ app.post('/login', (req, res) => {
 		res.send('Please enter Username and Password!');
 		res.end();
 	}
-})
+
 
 app.listen(port, (err) =>{
 	if (err) {
