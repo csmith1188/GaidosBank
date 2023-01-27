@@ -2,15 +2,27 @@
 
 .modal-btn {
   padding: 10px 20px;
-  color: #01b491;
+  color: #a200e2;
   font-size: 16px;
   font-weight: bold;
-  outline: solid #01b491 2px;
+  outline: solid #a200e2 2px;
   cursor: pointer;
+  left: 50.2%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
 }
 
 #modal-toggle {
   display: none;
+}
+
+div {
+  background-color: rgb(0, 0, 0);
+}
+
+body {
+  background-color: black;
 }
 
 .modal-content,
@@ -58,7 +70,7 @@
 
 #modal-toggle:checked ~ .modal-content {
   opacity: 1;
-  background-color: #fff;
+  background-color: rgb(0, 0, 0);
   overflow-y: auto;
   overflow-x: hidden;
   pointer-events: auto;
@@ -92,7 +104,7 @@
 }
 .modal-close-btn svg line {
   stroke-width: 5px;
-  stroke: #01b491;
+  stroke: #a200e2;
 }
 .modal-close-btn:hover svg {
   transform: rotate(90deg);
@@ -132,20 +144,20 @@
 .tabs > .table {
   padding: 20px 0;
   text-align: center;
-  border-bottom: solid #01b491 5px;
-  color: #01b491;
+  border-bottom: solid #a200e2 5px;
+  color: #a200e2;
   cursor: pointer;
 }
 .tabs > .table span {
   font-weight: 600;
 }
 .tabs > .table:hover {
-  color: #01b491;
+  color: #a200e2;
   background: rgba(0, 121, 107, 0.2);
 }
 .tabs > .radio:checked + .table {
   color: #fff;
-  background: #01b491;
+  background: #a200e2;
   cursor: auto;
 }
 .tabs > .radio:checked + .table span {
@@ -203,7 +215,7 @@
   padding: 10px;
   margin: 15px 0;
   border: none;
-  border-bottom: solid 1px #01b491;
+  border-bottom: solid 1px #a200e2;
   font-size: 18px;
   letter-spacing: 1px;
   transition: 0.1s;
@@ -215,7 +227,7 @@
 .tabs > .tabs-content input[type="submit"] {
   padding: 15px 0;
   width: 100%;
-  background: #01b491;
+  background: #a200e2;
   color: #fff;
   border: none;
   font-size: 18px;
@@ -227,7 +239,7 @@
 .tabs > .tabs-content .forgot-password label {
   margin: 0 auto;
   width: 50%;
-  color: #01b491;
+  color: #a200e2;
   text-decoration: none;
   font-size: 12px;
   line-height: 1.5;
