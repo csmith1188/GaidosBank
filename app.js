@@ -1,7 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
-const port = 3306
+const port = 3101
 const fs = require('fs');
 const session = require('express-session');
 const db = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
@@ -26,7 +26,7 @@ app.get('/Bank', (req, res) => {
 })
 
 app.get('/login',function(req,res,next){
-    res.render('login');
+    res.render('Bank');
    });
 
 app.post('/login', (req, res) => {

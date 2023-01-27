@@ -11,6 +11,11 @@
   font-weight: 400;
   src: url(https://fonts.gstatic.com/s/pacifico/v17/FwZY7-Qmy14u9lezJ-6H6Mw.ttf) format('truetype');
 }
+
+body {
+  background-color: rgb(0, 0, 0);
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -33,6 +38,7 @@ h1 {
   font-weight: 400;
   font-size: 3em;
   text-align: center;
+  color: #a200e2;
 }
 .outer-menu {
   position: fixed;
@@ -87,7 +93,7 @@ h1 {
   width: 60px;
   height: 60px;
   padding: 0.5em 1em;
-  background: rgba(33, 150, 243, 0.75);
+  background: #a200e2;
   border-radius: 0 0.12em 0.12em 0;
   cursor: pointer;
   transition: box-shadow 0.4s ease;
@@ -142,8 +148,8 @@ h1 {
 .outer-menu .menu > div {
   width: 200vw;
   height: 200vw;
-  color: #FEFEFE;
-  background: rgba(41, 98, 255, 0.85);
+  color: #a200e2;
+  background: #3f007a;
   border-radius: 50%;
   transition: all 0.4s ease;
   flex: none;
