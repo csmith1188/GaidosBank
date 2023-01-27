@@ -1,4 +1,4 @@
-const { atom } = require('jotai')
+import { atom } from 'jotai'
 import { useAtomsDevtools } from 'jotai/devtools'
 
 export const currentUserAtom = atom(
@@ -10,6 +10,5 @@ export const leaderBoardAtom = atom([])
 leaderBoardAtom.debugLabel = 'leaderBoardAtom'
 
 export const DebugAtoms = () => {
-	useAtomsDevtools()
-	return null
+	useAtomsDevtools('atoms')
 }

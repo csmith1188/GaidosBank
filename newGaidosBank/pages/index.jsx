@@ -38,9 +38,9 @@ function Home() {
 			table.style.marginRight = 'auto'
 			let thead = table.getElementsByTagName('thead')[0]
 			let rows = thead.getElementsByTagName('tr')
-			for (let rowNum = 0 rowNum < rows.length rowNum++) {
+			for (let rowNum = 0;rowNum < rows.length;rowNum++) {
 				let row = rows[rowNum].getElementsByTagName('th')
-				for (let thNum = 0 thNum < row.length thNum++) {
+				for (let thNum = 0;thNum < row.length;thNum++) {
 					let th = row[thNum]
 					th.style.paddingLeft = '0.3rem'
 					th.style.paddingRight = '0.3rem'
@@ -48,7 +48,7 @@ function Home() {
 			}
 			let tbody = table.getElementsByTagName('tbody')[0]
 			rows = tbody.getElementsByTagName('tr')
-			for (let rowNum = 0 rowNum < rows.length rowNum++) {
+			for (let rowNum = 0;rowNum < rows.length;rowNum++) {
 				let row = rows[rowNum]
 				if (rowNum === 0) row.style.backgroundColor = 'rgb(255, 215, 0)'
 				if (rowNum === 1) row.style.backgroundColor = 'rgb(192, 192, 192)'
