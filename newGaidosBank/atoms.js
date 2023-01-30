@@ -2,7 +2,12 @@ import { atom } from 'jotai'
 import { useAtomsDevtools } from 'jotai/devtools'
 
 export const currentUserAtom = atom(
-	{ theme: 'dark', isAuthenticated: false, transactions: [], balance: 0 }
+	{
+		theme: 'dark',//local storage
+		isAuthenticated: false,//session storage
+		transactions: [],//local storage
+		balance: 0//local storage
+	}
 )
 currentUserAtom.debugLabel = 'currentUserAtom'
 

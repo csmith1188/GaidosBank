@@ -1,27 +1,46 @@
 import React from 'react'
 import NavBar from './navBar'
 import '../styles/styles.scss'
-import { useAtom } from 'jotai'
-import { currentUserAtom } from '../atoms'
-
-import { useAtomsDevtools } from 'jotai/devtools'
-const AtomsDevtools = (({ children }) => {
-  useAtomsDevtools("atoms");
-  return children;
-})
+// import { useAtom } from 'jotai'
+// import { currentUserAtom } from '../atoms'
 
 export default function App({ Component, pageProps }) {
-  let [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+  // let [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+  var currentUser = {}
+  setInterval(() => {
+    if (typeof window !== 'undefined') {
+      let localUser = {}
+      if (currentUser.balance !== 'undefined') {
+        localUser.balance = currentUser.balance
+      }
+      if (currentUser.username !== 'undefined')
+        localUser.username = currentUser.username
+      if (currentUser.id !== 'undefined')
+        localUser.id = currentUser.id
+      if (currentUser.permissions !== 'undefined')
+        localUser.permissions = currentUser.permissions
+      if (currentUser.theme !== 'undefined')
+        localUser.theme = currentUser.theme
+      localStorage.setItem('currentUser', JSON.stringify(localUser))
 
+      let sessionUser = {}
+      if (currentUser.isAuthenticated !== 'undefined')
+        sessionUser.isAuthenticated = currentUser.isAuthenticated
+      sessionStorage.setItem('currentUser', JSON.stringify(sessionUser))
+    }
+  }, 1000);
   fetch('/api/getCurrentUser')
     .then(response => response.json())
     .then(data => {
-      currentUser.balance = data.balance
-      currentUser.username = data.username
-      currentUser.id = data.id
-      currentUser.permissions = data.permissions
-      currentUser.theme = data.theme
-      setCurrentUser(currentUser)
+      currentUser = {
+        balance: data.balance,
+        username: data.username,
+        id: data.id,
+        permissions: data.permissions,
+        theme: data.theme
+      }
+      if (!currentUser.isAuthenticated)
+        currentUser.isAuthenticated = false
       changeTheme()
     })
 
@@ -32,7 +51,6 @@ export default function App({ Component, pageProps }) {
   //   })
 
   function changeTheme() {
-    console.log(currentUser.theme);
     if (currentUser.theme === 'dark') {
       document.body.style.backgroundColor = 'rgb(20, 20, 20)'
     } else {
@@ -41,11 +59,8 @@ export default function App({ Component, pageProps }) {
   }
 
   function toggleTheme() {
-    console.log(currentUser.theme);
     if (currentUser.theme === 'dark') currentUser.theme = 'light'
     else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-    setCurrentUser(currentUser)
-    console.log(currentUser.theme);
     changeTheme()
   }
 
@@ -54,11 +69,9 @@ export default function App({ Component, pageProps }) {
   }
   return (
     <>
-      <AtomsDevtools>
-        <NavBar></NavBar >
-        <Component {...pageProps} />
-        <button onClick={toggleTheme}>Toggle theme</button>
-      </AtomsDevtools>
+      <NavBar></NavBar >
+      <Component {...pageProps} />
+      <button onClick={toggleTheme}>Toggle theme</button>
     </>
   )
 }
