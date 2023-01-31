@@ -1,48 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import NavBar from './navBar'
 import '../styles/styles.scss'
-// import { useAtom } from 'jotai'
-// import { currentUserAtom } from '../atoms'
+import { useAtom } from 'jotai'
+import { currentUserAtom } from '../atoms'
+
+import { useAtomsDevtools } from 'jotai/devtools'
+const AtomsDevtools = (({ children }) => {
+  useAtomsDevtools("atoms");
+  return children;
+})
 
 export default function App({ Component, pageProps }) {
-  // let [currentUser, setCurrentUser] = useAtom(currentUserAtom)
-  var currentUser = {}
-  setInterval(() => {
-    if (typeof window !== 'undefined') {
-      let localUser = {}
-      if (currentUser.balance !== 'undefined') {
-        localUser.balance = currentUser.balance
-      }
-      if (currentUser.username !== 'undefined')
-        localUser.username = currentUser.username
-      if (currentUser.id !== 'undefined')
-        localUser.id = currentUser.id
-      if (currentUser.permissions !== 'undefined')
-        localUser.permissions = currentUser.permissions
-      if (currentUser.theme !== 'undefined')
-        localUser.theme = currentUser.theme
-      localStorage.setItem('currentUser', JSON.stringify(localUser))
+  let [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
-      let sessionUser = {}
-      if (currentUser.isAuthenticated !== 'undefined')
-        sessionUser.isAuthenticated = currentUser.isAuthenticated
-      sessionStorage.setItem('currentUser', JSON.stringify(sessionUser))
-    }
-  }, 1000);
-  fetch('/api/getCurrentUser')
-    .then(response => response.json())
-    .then(data => {
-      currentUser = {
-        balance: data.balance,
-        username: data.username,
-        id: data.id,
-        permissions: data.permissions,
-        theme: data.theme
-      }
-      if (!currentUser.isAuthenticated)
-        currentUser.isAuthenticated = false
-      changeTheme()
-    })
+  useEffect(() => {
+    fetch('/api/getCurrentUser')
+      .then(response => response.json())
+      .then(data => {
+        currentUser.balance = data.balance
+        currentUser.username = data.username
+        currentUser.id = data.id
+        currentUser.permissions = data.permissions
+        currentUser.theme = data.theme
+        changeTheme()
+      })
+  })
 
   // fetch('/isAuthenticated')
   //   .then(response => response.json())
@@ -61,6 +43,7 @@ export default function App({ Component, pageProps }) {
   function toggleTheme() {
     if (currentUser.theme === 'dark') currentUser.theme = 'light'
     else if (currentUser.theme === 'light') currentUser.theme = 'dark'
+    setCurrentUser(currentUser)
     changeTheme()
   }
 
@@ -69,9 +52,11 @@ export default function App({ Component, pageProps }) {
   }
   return (
     <>
-      <NavBar></NavBar >
-      <Component {...pageProps} />
-      <button onClick={toggleTheme}>Toggle theme</button>
+      <AtomsDevtools>
+        <NavBar></NavBar >
+        <Component {...pageProps} />
+        <button onClick={toggleTheme}>Toggle theme</button>
+      </AtomsDevtools>
     </>
   )
 }
