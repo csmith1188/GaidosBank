@@ -1,17 +1,18 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { currentUserAtom } from '../atoms'
 import * as ToggleGroup from '../components/toggleGroup'
 import { IconSun, IconMoonStars } from '@tabler/icons'
+import Router from 'next/router'
+import { useEffect } from 'react'
 
-function UserSettings() {
-	const [currentUser, setCurrentUser] = useState([{}])
+
+export default function UserSettings() {
+	const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
 	useEffect(() => {
-		fetch('/getCurrentUser')
-			.then(response => response.json())
-			.then(data => {
-				setCurrentUser(data)
-			})
+		if (!currentUser.isAuthenticated) {
+			Router.push('/login')
+		}
 	}, [])
 
 	if (currentUser && currentUser.theme) {
@@ -43,5 +44,3 @@ function UserSettings() {
 		)
 	}
 }
-
-export default UserSettings

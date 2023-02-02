@@ -1,10 +1,9 @@
-import React from 'react'
 import * as Nav from '../components/nav'
 import { useAtomValue } from 'jotai';
 import { currentUserAtom } from '../atoms'
 
 export default function NavBar() {
-	let currentUser = useAtomValue(currentUserAtom);
+	var currentUser = useAtomValue(currentUserAtom);
 
 	const logout = () => {
 		fetch('/logout')

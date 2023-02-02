@@ -1,32 +1,35 @@
-import React, { useEffect } from 'react'
 import NavBar from './navBar'
 import '../styles/styles.scss'
 import { useAtom } from 'jotai'
 import { currentUserAtom, DebugAtoms } from '../atoms'
 
 export default function App({ Component, pageProps }) {
-  let [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+  var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
-  useEffect(() => {
-    fetch('/api/getCurrentUser')
-      .then(response => response.json())
-      .then(data => {
-        currentUser.balance = data.balance
-        currentUser.username = data.username
-        currentUser.id = data.id
-        currentUser.permissions = data.permissions
-        currentUser.theme = data.theme
-        setCurrentUser({
-          balance: currentUser.balance,
-          username: currentUser.username,
-          id: currentUser.id,
-          permissions: currentUser.permissions,
-          theme: currentUser.theme,
-          isAuthenticated: currentUser.isAuthenticated
-        })
-        changeTheme()
-      })
-  }, [])//focus atom
+  function updateCurrentUser() {
+    setCurrentUser({
+      balance: currentUser.balance,
+      username: currentUser.username,
+      id: currentUser.id,
+      permissions: currentUser.permissions,
+      theme: currentUser.theme,
+      isAuthenticated: currentUser.isAuthenticated
+    })
+  }
+
+  // useEffect(() => {
+  //   fetch('/api/getCurrentUser')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       currentUser.balance = data.balance
+  //       currentUser.username = data.username
+  //       currentUser.id = data.id
+  //       currentUser.permissions = data.permissions
+  //       currentUser.theme = data.theme
+  //       updateCurrentUser()
+  //       changeTheme()
+  //     })
+  // }, [])//focus atom
 
   // fetch('/isAuthenticated')
   //   .then(response => response.json())
@@ -45,7 +48,7 @@ export default function App({ Component, pageProps }) {
   function toggleTheme() {
     if (currentUser.theme === 'dark') currentUser.theme = 'light'
     else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-    setCurrentUser(currentUser)
+    updateCurrentUser()
     changeTheme()
   }
 

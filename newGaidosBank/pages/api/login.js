@@ -25,20 +25,25 @@ export default withIronSessionApiRoute(
 								if (error) throw error
 								if (isMatch) {
 									request.session.username = username
-									console.log(request.session);
-									response.status(200).send({ error: 'none' })
-								} else response.status(404).send({ error: 'server' })
+									response.status(200).send({
+										balance: results.balance,
+										username: results.username,
+										id: results.id,
+										permissions: results.permissions,
+										theme: results.theme,
+										isAuthenticated: true
+									})
+								} else response.status(404).send({ isAuthenticated: false })
 							}
 						)
-					} else response.status(403).send({ error: 'server' })
+					} else response.status(403).send({ isAuthenticated: false })
 				}
 			)
-		} else response.status(400).send({ error: 'server' })
+		} else response.status(400).send({ isAuthenticated: false })
 	},
 	{
 		cookieName: "session",
 		password: "wNKp0tI)2\"b/L/K[IG'jqeK;wA$3*X*g",
-		// secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
 		cookieOptions: {
 			secure: process.env.NODE_ENV === "production",
 		}

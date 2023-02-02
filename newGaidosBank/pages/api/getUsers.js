@@ -18,7 +18,7 @@ export default withIronSessionApiRoute(
 		if (filterBy && query) {
 			if (filterBy.startsWith('{') && filterBy.endsWith('}')) filterBy = filterBy.slice(1, -1).split(',')
 			if (filterBy) query += ' WHERE'
-			for (filter of filterBy) {
+			for (let filter of filterBy) {
 				if (filter.startsWith('balance'))
 					query += ' ' + filter
 				else if (filter.startsWith('permissions')) {
@@ -32,8 +32,8 @@ export default withIronSessionApiRoute(
 			if (sortBy.startsWith('{') && sortBy.endsWith('}')) sortBy = sortBy.slice(1, -1).split(',')
 
 			if (sortBy) query += ' ORDER BY'
-			for (sort of sortBy) {
-				splitSort = sort.split(':')
+			for (let sort of sortBy) {
+				let splitSort = sort.split(':')
 				if (splitSort[0] == 'id' || splitSort[0] == 'username' || splitSort[0] == 'balance')
 					query += ' ' + splitSort[0]
 				else response.status(400).send({ error: 'server' })
@@ -65,7 +65,6 @@ export default withIronSessionApiRoute(
 	{
 		cookieName: "session",
 		password: "wNKp0tI)2\"b/L/K[IG'jqeK;wA$3*X*g",
-		// secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
 		cookieOptions: {
 			secure: process.env.NODE_ENV === "production",
 		}

@@ -1,23 +1,42 @@
-import React from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useAtom } from 'jotai'
 import { currentUserAtom, leaderBoardAtom } from '../atoms'
+import Router from 'next/router'
+import { useEffect } from 'react'
 
-function Home() {
-	let currentUser = useAtomValue(currentUserAtom)
-	let leaderBoard = useAtomValue(leaderBoardAtom)
+export default function Home() {
+	var currentUser = useAtomValue(currentUserAtom)
+	var [leaderBoard, setLeaderBoard] = useAtom(leaderBoardAtom)
 
-	console.log(currentUser)
-	if (!currentUser.isAuthenticated && typeof window !== 'undefined')
-		window.location.pathname = '/login'
+	useEffect(() => {
+		if (!currentUser.isAuthenticated) {
+			Router.push('/login')
+		}
+	}, [])
 
-	fetch('/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
-		.then(response => response.json())
-		.then(data => {
-			for (let user of data) {
-				leaderBoard.push(user)
-			}
-		})
-	console.log(leaderBoard)
+
+	useEffect(() => {
+		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
+			.then(response => response.json())
+			.then(data => {
+				leaderBoard = data
+				setLeaderBoard(leaderBoard.map((user) => {
+					return user
+				}))
+			})
+	}, [])
+
+	useEffect(() => {
+		setInterval(() => {
+			fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
+				.then(response => response.json())
+				.then(data => {
+					leaderBoard = data
+					setLeaderBoard(leaderBoard.map((user) => {
+						return user
+					}))
+				})
+		}, 5000)
+	}, [])
 
 	let theme
 	if (currentUser.theme === 'dark') {
@@ -136,5 +155,3 @@ function Home() {
 		</div>
 	)
 }
-
-export default Home

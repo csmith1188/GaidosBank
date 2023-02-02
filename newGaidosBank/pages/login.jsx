@@ -1,28 +1,43 @@
-import React, { } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
+import { useRouter } from 'next/router'
 
-function Login() {
-	let currentUser = useAtomValue(currentUserAtom)
-	if (currentUser.isAuthenticated && typeof window !== 'undefined')
-		window.location.pathname = '/login'
+export default function Login() {
+	var router = useRouter()
+	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+
+	function updateCurrentUser() {
+		setCurrentUser({
+			balance: currentUser.balance,
+			username: currentUser.username,
+			id: currentUser.id,
+			permissions: currentUser.permissions,
+			theme: currentUser.theme,
+			isAuthenticated: currentUser.isAuthenticated
+		})
+	}
 
 	let username, password
+
+	function changeTheme() {
+		if (currentUser.theme === 'dark') {
+			document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+		} else {
+			document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+		}
+	}
 
 	function handleSubmit(event) {
 		event.preventDefault()
 		if (username && password) {
-			console.log(username, password)
-			fetch('/login?username=' + username + '&password=' + password)
+			console.log(username, password);
+			fetch('/api/login?username=' + username + '&password=' + password)
 				.then(response => {
-					console.log(response)
-					if (response.status === 200 || response.status === 201) {
-						console.log('/login?' + username + '&' + password)
-						currentUser.isAuthenticated = true
-						window.location.pathname = '/'
-					}
+					response.json()
 				})
-				.catch(error => { throw error })
+				.then(data => {
+					console.log(data);
+				})
 		}
 	}
 	let color
@@ -55,5 +70,3 @@ function Login() {
 		</div>
 	)
 }
-
-export default Login
