@@ -3,10 +3,10 @@ import { useAtomsDevtools } from 'jotai/devtools'
 
 export const currentUserAtom = atom(
 	{
-		theme: 'dark',//local storage
-		isAuthenticated: false,//session storage
-		transactions: [],//local storage
-		balance: 0//local storage
+		theme: 'dark',
+		isAuthenticated: false,
+		transactions: [],
+		balance: 0
 	}
 )
 currentUserAtom.debugLabel = 'currentUserAtom'
@@ -14,6 +14,7 @@ currentUserAtom.debugLabel = 'currentUserAtom'
 export const leaderBoardAtom = atom([])
 leaderBoardAtom.debugLabel = 'leaderBoardAtom'
 
-export const DebugAtoms = () => {
-	useAtomsDevtools('atoms')
-}
+export const DebugAtoms = (({ children }) => {
+	useAtomsDevtools("atoms");
+	return children;
+})

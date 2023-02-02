@@ -2,13 +2,7 @@ import React, { useEffect } from 'react'
 import NavBar from './navBar'
 import '../styles/styles.scss'
 import { useAtom } from 'jotai'
-import { currentUserAtom } from '../atoms'
-
-import { useAtomsDevtools } from 'jotai/devtools'
-const AtomsDevtools = (({ children }) => {
-  useAtomsDevtools("atoms");
-  return children;
-})
+import { currentUserAtom, DebugAtoms } from '../atoms'
 
 export default function App({ Component, pageProps }) {
   let [currentUser, setCurrentUser] = useAtom(currentUserAtom)
@@ -22,9 +16,17 @@ export default function App({ Component, pageProps }) {
         currentUser.id = data.id
         currentUser.permissions = data.permissions
         currentUser.theme = data.theme
+        setCurrentUser({
+          balance: currentUser.balance,
+          username: currentUser.username,
+          id: currentUser.id,
+          permissions: currentUser.permissions,
+          theme: currentUser.theme,
+          isAuthenticated: currentUser.isAuthenticated
+        })
         changeTheme()
       })
-  })
+  }, [])//focus atom
 
   // fetch('/isAuthenticated')
   //   .then(response => response.json())
@@ -52,11 +54,11 @@ export default function App({ Component, pageProps }) {
   }
   return (
     <>
-      <AtomsDevtools>
+      <DebugAtoms>
         <NavBar></NavBar >
         <Component {...pageProps} />
         <button onClick={toggleTheme}>Toggle theme</button>
-      </AtomsDevtools>
+      </DebugAtoms>
     </>
   )
 }
