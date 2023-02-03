@@ -1,12 +1,34 @@
 import * as Nav from '../components/nav'
-import { useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { currentUserAtom } from '../atoms'
 
 export default function NavBar() {
-	var currentUser = useAtomValue(currentUserAtom);
+	var [currentUser, setCurrentUser] = useAtom(currentUserAtom);
+
+	function updateCurrentUser() {
+		setCurrentUser({
+			balance: currentUser.balance,
+			username: currentUser.username,
+			id: currentUser.id,
+			permissions: currentUser.permissions,
+			theme: currentUser.theme,
+			isAuthenticated: currentUser.isAuthenticated,
+			transactions: currentUser.transactions
+		})
+	}
 
 	const logout = () => {
-		fetch('/logout')
+		fetch('/api/logout')
+			.then(response => response.json())
+			.then(data => {
+				currentUser = {
+					theme: 'dark',
+					isAuthenticated: false,
+					transactions: [],
+					balance: 0
+				}
+				updateCurrentUser()
+			})
 			.catch(error => { throw error })
 	}
 

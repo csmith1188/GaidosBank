@@ -1,10 +1,13 @@
 import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 
 export default function Login() {
-	var router = useRouter()
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+
+	if (typeof window !== 'undefined' && currentUser.isAuthenticated) {
+		Router.push('/')
+	}
 
 	function updateCurrentUser() {
 		setCurrentUser({
@@ -13,7 +16,8 @@ export default function Login() {
 			id: currentUser.id,
 			permissions: currentUser.permissions,
 			theme: currentUser.theme,
-			isAuthenticated: currentUser.isAuthenticated
+			isAuthenticated: currentUser.isAuthenticated,
+			transactions: currentUser.transactions
 		})
 	}
 
@@ -30,19 +34,20 @@ export default function Login() {
 	function handleSubmit(event) {
 		event.preventDefault()
 		if (username && password) {
-			console.log(username, password);
 			fetch('/api/login?username=' + username + '&password=' + password)
-				.then(response => {
-					response.json()
-				})
+				.then(response => response.json())
 				.then(data => {
-					console.log(data);
+					currentUser = data
+					updateCurrentUser()
+					Router.push('/')
 				})
 		}
 	}
 	let color
+
 	if (currentUser.theme) color = 'rgb(255, 255, 255)'
 	else color = 'rgb(0, 0, 0)'
+
 
 	return (
 		<div

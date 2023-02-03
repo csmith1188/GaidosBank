@@ -4,6 +4,11 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
+		var user
+		if (request.query.user) user = request.query.user
+		else user = null
+		console.log(user, isNaN(user), Number.isInteger(parseInt(user)));
+
 		let query = 'SELECT * FROM transactions'
 		if (query) {
 			database.all(

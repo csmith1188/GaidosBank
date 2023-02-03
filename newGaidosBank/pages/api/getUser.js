@@ -8,9 +8,9 @@ export default withIronSessionApiRoute(
 		let query = 'SELECT * FROM users WHERE '
 		if (request.query.id) id = request.query.id
 		else id = null
-
 		if (request.query.username) username = request.query.username
 		else username = null
+		
 		if (username && id) response.status(400).send({ error: 'can\'t have both username and id' })
 		else {
 			if (id && !isNaN(id))

@@ -10,15 +10,12 @@ export default withIronSessionApiRoute(
 		else receiver = null;
 		if (request.query.amount) amount = request.query.amount
 		else amount = null;
-		console.log(1);
 		if (sender && receiver && amount) {
-			console.log(2);
 			database.get(
 				'SELECT * FROM users WHERE username = ?', sender, (error, sender) => {
 					console.log(3);
 					if (error) throw error;
 					if (sender) {
-						console.log(4);
 						response.status(200).send(sender, receiver, amount);
 					} else response.status(400).send({ error: 'server' })
 				})

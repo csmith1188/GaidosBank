@@ -13,29 +13,10 @@ export default function App({ Component, pageProps }) {
       id: currentUser.id,
       permissions: currentUser.permissions,
       theme: currentUser.theme,
-      isAuthenticated: currentUser.isAuthenticated
+      isAuthenticated: currentUser.isAuthenticated,
+      transactions: currentUser.transactions
     })
   }
-
-  // useEffect(() => {
-  //   fetch('/api/getCurrentUser')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       currentUser.balance = data.balance
-  //       currentUser.username = data.username
-  //       currentUser.id = data.id
-  //       currentUser.permissions = data.permissions
-  //       currentUser.theme = data.theme
-  //       updateCurrentUser()
-  //       changeTheme()
-  //     })
-  // }, [])//focus atom
-
-  // fetch('/isAuthenticated')
-  //   .then(response => response.json())
-  //   .then(data => {
-  //     currentUser.isAuthenticated = data
-  //   })
 
   function changeTheme() {
     if (currentUser.theme === 'dark') {
