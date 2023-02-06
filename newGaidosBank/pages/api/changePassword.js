@@ -15,38 +15,40 @@ export default withIronSessionApiRoute(
 		if (request.query.confirmNewPassword)
 			confirmPassword = request.query.confirmNewPassword
 		else confirmNewPassword = null
-		if (newPassword && confirmNewPassword && newPassword == confirmNewPassword) {
-			database.get(
-				'SELECT password FROM users WHERE username = ?',
-				[username],
-				(error, results) => {
-					if (error) throw error
-					if (results) {
-						bcrypt.compare(
-							currentPassword,
-							results.password,
-							(error, isMatch) => {
-								if (error) throw error
-								if (isMatch) {
-									bcrypt.hash(newPassword, 10, (error, hashedPassword) => {
-										if (error) throw error
-										database.get(
-											'UPDATE users SET password = ? WHERE username = ?',
-											[hashedPassword, username],
-											(error, results) => {
-												if (error) throw error
-												if (results) response.status(200).send({ error: 'none' })
-												else response.status(404).send({ error: 'server' })
-											}
-										)
-									})
-								} else response.status(404).send({ error: 'server' })
-							}
-						)
-					} else response.status(400).send({ error: 'server' })
-				}
-			)
-		} else response.status(400).send({ error: 'server' })
+		if (newPassword && confirmNewPassword) {
+			if (newPassword == confirmNewPassword) {
+				database.get(
+					'SELECT password FROM users WHERE username = ?',
+					[username],
+					(error, results) => {
+						if (error) throw error
+						if (results) {
+							bcrypt.compare(
+								currentPassword,
+								results.password,
+								(error, isMatch) => {
+									if (error) throw error
+									if (isMatch) {
+										bcrypt.hash(newPassword, 10, (error, hashedPassword) => {
+											if (error) throw error
+											database.get(
+												'UPDATE users SET password = ? WHERE username = ?',
+												[hashedPassword, username],
+												(error, results) => {
+													if (error) throw error
+													if (results) response.send({ error: 'none' })
+													else response.send({ error: 'couldn\'t change password' })
+												}
+											)
+										})
+									} else response.send({ error: 'password not found' })
+								}
+							)
+						} else response.send({ error: 'user not found' })
+					}
+				)
+			} else response.send({ error: 'newPassword and confirmNewPassword don\'t match' })
+		} else response.send({ error: 'missing newPassword and/or confirmNewPassword' })
 	},
 	{
 		cookieName: "session",

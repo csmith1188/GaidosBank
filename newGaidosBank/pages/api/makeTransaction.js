@@ -10,16 +10,35 @@ export default withIronSessionApiRoute(
 		else receiver = null;
 		if (request.query.amount) amount = request.query.amount
 		else amount = null;
-		if (sender && receiver && amount) {
-			database.get(
-				'SELECT * FROM users WHERE username = ?', sender, (error, sender) => {
-					console.log(3);
-					if (error) throw error;
-					if (sender) {
-						response.status(200).send(sender, receiver, amount);
-					} else response.status(400).send({ error: 'server' })
-				})
-		} else response.status(400).send({ error: 'server' })
+		sender = 'Gaidos'
+		if (sender) {
+			if (receiver && amount) {
+				database.get(
+					'SELECT * FROM users WHERE username = ?', sender, (error, sender) => {
+						if (error) throw error;
+						if (sender) {
+							database.get('SELECT * FROM users WHERE username = ?', receiver, (error, receiver) => {
+								if (error) throw error
+								if (receiver) {
+									amount = null
+									if (amount) {
+										database.run('UPDATE users SET balance=' + (sender.balance - amount) + ' WHERE username=' + sender.username, (error, results) => {
+											if (error) throw error
+										})
+										database.run('UPDATE users SET balance=' + (username.balance + amount) + ' WHERE username=' + receiver.username, (error, results) => {
+											if (error) throw error
+										})
+										database.run('INSERT INTO users (senderId,receiverId,amount) VALUES (?,?,?)', sender.id, receiver.id, amount, (error, results) => {
+											if (error) throw error
+										})
+										response.send({ error: 'none' })
+									}
+								}
+							})
+						} else response.send({ error: 'account logged into doesn\'t exist somehow' })
+					})
+			} else response.send({ error: 'account,amount and/or item' })
+		} else response.send({ error: 'not logged in' })
 	},
 	{
 		cookieName: "session",

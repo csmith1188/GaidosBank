@@ -25,7 +25,7 @@ export default withIronSessionApiRoute(
 								if (error) throw error
 								if (isMatch) {
 									request.session.username = username
-									response.status(200).send({
+									response.send({
 										balance: results.balance,
 										username: results.username,
 										id: results.id,
@@ -33,13 +33,13 @@ export default withIronSessionApiRoute(
 										theme: results.theme,
 										isAuthenticated: true
 									})
-								} else response.status(404).send({ isAuthenticated: false })
+								} else response.send({ isAuthenticated: false })
 							}
 						)
-					} else response.status(403).send({ isAuthenticated: false })
+					} else response.send({ isAuthenticated: false })
 				}
 			)
-		} else response.status(400).send({ isAuthenticated: false })
+		} else response.send({ isAuthenticated: false })
 	},
 	{
 		cookieName: "session",

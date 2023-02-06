@@ -13,8 +13,8 @@ export default function handler(request, response) {
 		currentUser,
 		(error, results) => {
 			if (error) throw error.message
-			if (results) response.status(200).send(results)
-			else response.status(200).send({ error: 'server' })
+			if (results) response.send(results)
+			else response.send({ error: 'no user' })
 		}
 	)
 }

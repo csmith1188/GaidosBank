@@ -23,7 +23,7 @@ export default withIronSessionApiRoute(
 					query += ' ' + filter
 				else if (filter.startsWith('permissions')) {
 					query += ' permissions="' + filter.slice(12) + '"'
-				} else response.status(400).send({ error: 'server' })
+				} else response.send({ error: 'filter' + filter + 'doesn\'t exist' })
 				if (filterBy.indexOf(filter) < filterBy.length - 1)
 					query += ' AND'
 			}
@@ -36,9 +36,9 @@ export default withIronSessionApiRoute(
 				let splitSort = sort.split(':')
 				if (splitSort[0] == 'id' || splitSort[0] == 'username' || splitSort[0] == 'balance')
 					query += ' ' + splitSort[0]
-				else response.status(400).send({ error: 'server' })
+				else response.send({ error: 'sort' + sort + 'doesn\'t exist' })
 				if (splitSort[1] == 'ASC' || splitSort[1] == 'DESC') query += ' ' + splitSort[1]
-				else if (splitSort[1]) response.status(400).send({ error: 'server' })
+				else if (splitSort[1]) response.send({ error: 'server' })
 				else {
 					query += ' DESC'
 				}
@@ -49,18 +49,18 @@ export default withIronSessionApiRoute(
 		}
 		if (limit) {
 			if (!isNaN(limit)) query += ' LIMIT ' + limit
-			else response.status(400).send({ error: 'server' })
+			else response.send({ error: 'limit has to be number' })
 		}
 		if (query) {
 			database.all(
 				query,
 				(error, results) => {
 					if (error) throw error
-					if (results) response.status(200).send(results)
-					else response.status(404).send({ error: 'server' })
+					if (results) response.send(results)
+					else response.send({ error: 'no results' })
 				}
 			)
-		} else response.status(400).send({ error: 'server' })
+		} else response.send({ error: 'no query somehow' })
 	},
 	{
 		cookieName: "session",

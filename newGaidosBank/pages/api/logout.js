@@ -3,7 +3,7 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		request.session.username = null
-		response.status(200).send({ error: 'none' })
+		response.send({ error: 'none' })
 	},
 	{
 		cookieName: "session",

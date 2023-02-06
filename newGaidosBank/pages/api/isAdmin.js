@@ -10,9 +10,9 @@ export default withIronSessionApiRoute(
 			(error, results) => {
 				if (error) throw error
 				if (results) {
-					if (results.permissions == 0) response.status(200).send(true)
-					else response.status(200).send(false)
-				} else response.status(200).send(false)
+					if (results.permissions == 0) response.send(true)
+					else response.send(false)
+				} else response.send(false)
 			}
 		)
 	},
