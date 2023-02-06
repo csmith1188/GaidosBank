@@ -23,19 +23,18 @@ app.use(session({
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
+	res.render('login');
+})
+
+
+app.get('/Bank', (req, res) => {
 	res.render('Bank');
 })
 
-
-app.get('/homepage', (req, res) => {
-	res.render('homepage');
-})
-
-app.post('/', urlencodedParser, (req, res) => {
-	let studentname = req.body.studentName;
-	if (studentname) {
+app.post('/register', urlencodedParser, (req, res) => {
+	if (req.body.studentName && req.body.studentPassword) {
 		// Execute SQL query that'll push the new account from the nodejs to the database based on the specified studentname and studentid
-		db.get(`INSERT INTO users ( name ) VALUES(?)`, [studentname], function (error, results) {
+		db.get(`INSERT INTO users ( name, password ) VALUES(?,?)`, [req.body.studentName, req.body.studentPassword], function (error, results) {
 			// If there is an issue with the query, output the error
 
 			if (error) { throw error; }
@@ -43,7 +42,7 @@ app.post('/', urlencodedParser, (req, res) => {
 			else {
 				// Authenticate the user
 				req.session.loggedin = true;
-				req.session.studentname = studentname;
+				req.session.studentname = req.body.studentName;
 				// Redirect to home page
 				res.redirect('/');
 			}
@@ -52,26 +51,12 @@ app.post('/', urlencodedParser, (req, res) => {
 	}
 });
 
-app.post('/Login', urlencodedParser, (req, res) => {
-	let username = req.body.studentName;
-	let password = req.body.studentPassword;
-
-app.get('/Bank', (req, res) => {
-	res.render('Bank');
-})
-
-app.get('/login',function(req,res,next){
-    res.render('Bank');
-   });
-
 app.post('/login', (req, res) => {
-	let username = req.body.name;
-	let password = req.body.id;
-	const encrypted = encryptpwd.encrypt(username, password);
-	const decrypted = encryptpwd.decrypt(encrypted, password);
-	if (username && password) {
+	//const encrypted = encryptpwd.encrypt(username);
+	//const decrypted = encryptpwd.decrypt(encrypted, password);
+	if (req.body.name && req.body.password) {
 		// Execute SQL query that'll select the account from the database based on the specified username and password
-		db.get(`SELECT * FROM users WHERE Name = ? AND uID = ?`, [username, password], function (error, results) {
+		db.get(`SELECT * FROM users WHERE name = ? AND password = ?`, [req.body.name, req.body.password], function (error, results) {
 			// If there is an issue with the query, output the error
 			console.log(results);
 			if (error) throw error;
@@ -79,10 +64,10 @@ app.post('/login', (req, res) => {
 			if (results) {
 				// Authenticate the user
 				req.session.loggedin = true;
-				req.session.username = username;
-				console.log(encrypted);
-				// Redirect to home page
-				res.redirect('/homepage');
+				req.session.username = req.body.name;
+				//console.log(encrypted);
+				//Redirect to home page
+				res.redirect('/Bank');
 			} else {
 				res.send('Incorrect Username and/or Password!');
 			}
@@ -92,12 +77,12 @@ app.post('/login', (req, res) => {
 		res.send('Please enter Username and Password!');
 		res.end();
 	}
-})
+});
 
-	app.listen(port, (err) => {
-		if (err) {
-			console.error(err);
-		} else {
-			console.log(`Running on port ${port}`);
-		}
+app.listen(port, (err) => {
+	if (err) {
+		console.error(err);
+	} else {
+		console.log(`Running on port ${port}`);
+	}
 });
