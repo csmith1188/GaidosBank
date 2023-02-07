@@ -7,6 +7,8 @@ const session = require('express-session');
 const db = new sqlite3.Database('./gaidosBank.db', sqlite3.OPEN_READWRITE)
 const encryptpwd = require('encrypt-with-password');
 
+
+
 app.set('view engine', 'ejs');
 app.use(express.static('./static'))
 app.use(session({
@@ -23,6 +25,10 @@ app.get('/', (req, res) => {
 
 app.get('/Bank', (req, res) => {
 	res.render('Bank');
+})
+
+app.get('/Student', (req, res) => {
+	res.render('Student');
 })
 
 app.get('/login',function(req,res,next){
