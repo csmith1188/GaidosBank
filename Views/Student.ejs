@@ -1,0 +1,101 @@
+//code convey
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>CSS Tabs with Sliding Underline Example</title>
+    <meta name="author" content="Codeconvey" />
+    <!-- Bootstrap 4 CSS -->
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css'>
+    <!-- Font Awesome CSS -->
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.0.13/css/all.css'>
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="css/Student.css">
+
+	
+</head>
+<body>
+
+<header class="ScriptHeader">
+    <div class="rt-container">
+    	<div class="col-rt-12">
+        	<div class="rt-heading">
+            	<h1>Gaidos Bank Student</h1>
+                 <p>navigation for students</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="rt-container">
+          <div class="col-rt-12">
+              <div class="Scriptcontent">
+              
+              <!-- START DEMO -->
+    		<div class="tile" id="tile-1">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs nav-justified" role="tablist">
+    <div class="slider"></div>
+     <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-home"></i> Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fas fa-id-card"></i> Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false"><i class="fas fa-map-signs"></i> Contact</a>
+      </li>
+    <li class="nav-item">
+        <a class="nav-link" id="setting-tab" data-toggle="tab" href="#setting" role="tab" aria-controls="setting" aria-selected="false"><i class="fas fa-cogs"></i> Settings</a>
+      </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">Home</div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">Profile</div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Contact</div>
+  <div class="tab-pane fade" id="setting" role="tabpanel" aria-labelledby="setting-tab">Settings</div>
+  </div>
+
+</div>
+<!-- partial -->
+<!-- jQuery JS -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<!-- Bootstrap JS -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js'></script><script>
+$(document).ready(function(){
+                      
+  $("#tile-1 .nav-tabs a").click(function() {
+      
+  var position = $(this).parent().position();
+      
+  var width = $(this).parent().width();
+      
+    $("#tile-1 .slider").css({"left":+ position.left,"width":width});
+      
+   });
+var actWidth = $("#tile-1 .nav-tabs").find(".active").parent("li").width();
+    
+var actPosition = $("#tile-1 .nav-tabs .active").position();
+    
+$("#tile-1 .slider").css({"left":+ actPosition.left,"width": actWidth});
+    
+});        
+</script>
+                  <!-- END DEMO -->
+           
+    		</div>
+		</div>
+    </div>
+</section>
+     
+
+   <!-- ANALYTICS -->
+
+	</body>
+</html>
