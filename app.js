@@ -33,6 +33,12 @@ app.get('/Bank', (req, res) => {
 })
 
 
+app.get('/admin', (req, res) => {
+	res.render('admin');
+})
+
+
+
 app.get('/Student', (req, res) => {
 	res.render('Student');
 })
@@ -40,6 +46,7 @@ app.get('/Student', (req, res) => {
 app.get('/login',function(req,res,next){
     res.render('Bank');
    });
+
 
 app.post('/register', urlencodedParser, (req, res) => {
 	if (req.body.studentName && req.body.studentPassword) {
