@@ -13,7 +13,7 @@
 }
 
 body {
-  background-color: rgb(0, 0, 0);
+  background-color: rgb(35, 35, 35);
 }
 
 .flex-center {
@@ -38,7 +38,7 @@ h1 {
   font-weight: 400;
   font-size: 3em;
   text-align: center;
-  color: #a200e2;
+  color: #a70101;
 }
 .outer-menu {
   position: fixed;
@@ -93,7 +93,7 @@ h1 {
   width: 60px;
   height: 60px;
   padding: 0.5em 1em;
-  background: #a200e2;
+  background: #a70101;
   border-radius: 0 0.12em 0.12em 0;
   cursor: pointer;
   transition: box-shadow 0.4s ease;
@@ -148,8 +148,8 @@ h1 {
 .outer-menu .menu > div {
   width: 200vw;
   height: 200vw;
-  color: #a200e2;
-  background: #3f007a;
+  color: #a70101;
+  background: rgba(94, 0, 0, 0.5);
   border-radius: 50%;
   transition: all 0.4s ease;
   flex: none;

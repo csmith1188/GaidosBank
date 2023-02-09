@@ -2,10 +2,10 @@
 
 .modal-btn {
   padding: 10px 20px;
-  color: #a200e2;
+  color: #a70101;
   font-size: 16px;
   font-weight: bold;
-  outline: solid #a200e2 2px;
+  outline: solid #a70101 2px;
   cursor: pointer;
   left: 50.2%;
   top: 50%;
@@ -18,11 +18,11 @@
 }
 
 div {
-  background-color: rgb(0, 0, 0);
+  background-color: rgb(35, 35, 35);
 }
 
 body {
-  background-color: black;
+  background-color: rgb(35, 35, 35);
 }
 
 .modal-content,
@@ -63,14 +63,14 @@ body {
 
 #modal-toggle:checked ~ .modal-backdrop {
   opacity: 1;
-  background-color: rgba(0, 70, 62, 0.5);
+  background-color: rgba(94, 0, 0, 0.5);
   z-index: 998;
   transform: scale(1);
 }
 
 #modal-toggle:checked ~ .modal-content {
   opacity: 1;
-  background-color: rgb(0, 0, 0);
+  background-color: rgb(35, 35, 35);
   overflow-y: auto;
   overflow-x: hidden;
   pointer-events: auto;
@@ -104,7 +104,7 @@ body {
 }
 .modal-close-btn svg line {
   stroke-width: 5px;
-  stroke: #a200e2;
+  stroke: #a70101;
 }
 .modal-close-btn:hover svg {
   transform: rotate(90deg);
@@ -144,20 +144,20 @@ body {
 .tabs > .table {
   padding: 20px 0;
   text-align: center;
-  border-bottom: solid #a200e2 5px;
-  color: #a200e2;
+  border-bottom: solid #a70101 5px;
+  color: #a70101;
   cursor: pointer;
 }
 .tabs > .table span {
   font-weight: 600;
 }
 .tabs > .table:hover {
-  color: #a200e2;
-  background: rgba(0, 121, 107, 0.2);
+  color: #a70101;
+  background: rgba(94, 0, 0, 0.5);
 }
 .tabs > .radio:checked + .table {
-  color: #fff;
-  background: #a200e2;
+  color: rgba(94, 0, 0, 0.5);
+  background: #a70101;
   cursor: auto;
 }
 .tabs > .radio:checked + .table span {
@@ -188,7 +188,7 @@ body {
 }
 .tabs > .tabs-content .login_socnet a:hover {
   transform: scale(1.1);
-  filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(1px 3px 2px rgba(35, 35, 35));
 }
 .tabs > .tabs-content .login_socnet .fa-vk {
   color: #7986CB;
@@ -215,7 +215,7 @@ body {
   padding: 10px;
   margin: 15px 0;
   border: none;
-  border-bottom: solid 1px #a200e2;
+  border-bottom: solid 1px #a70101;
   font-size: 18px;
   letter-spacing: 1px;
   transition: 0.1s;
@@ -227,7 +227,7 @@ body {
 .tabs > .tabs-content input[type="submit"] {
   padding: 15px 0;
   width: 100%;
-  background: #a200e2;
+  background: #a70101;
   color: #fff;
   border: none;
   font-size: 18px;
@@ -239,7 +239,7 @@ body {
 .tabs > .tabs-content .forgot-password label {
   margin: 0 auto;
   width: 50%;
-  color: #a200e2;
+  color: #a70101;
   text-decoration: none;
   font-size: 12px;
   line-height: 1.5;
