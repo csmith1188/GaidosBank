@@ -4,40 +4,37 @@
 		<meta charset="utf-8">
 		<title>Bank System</title>
 		<style media="screen">
-        div.moneystuff {
-			position: relative; top: 100px;
-            outline-style: solid;
-            outline-color: white;
-            outline-width: 5px;
-            border-radius: 50px;
-            padding: 100px;
-            width: 300px;
-            height: 300px;
-        }
+        
         body {
-            background: #383838;
+            background: #000000;
         }
-		.moneystuff {
+		.students {
             height: 350px;
 			width: 400px;
 			margin: 0 auto;
-			font-family: Tahoma, Geneva, sans-serif;
+			font-family: Tahoma, Geneva, sans-serif, Pacifico;
 		}
-		.moneystuff h1 {
+		.students h1 {
 			text-align: center;
-			color: #000000;
+			color: #a200e2;
+			font-family: 'Pacifico', cursive;
 			font-size: 24px;
             height: 20px;
 			padding: 20px 0 20px 0;
 		}
-		.moneystuff h2 {
+		.students h2 {
 			text-align: center;
-			color: #000000;
-			font-size: 24px;
+			color: #a200e2;
+			font-size: 20px;
             height: 20px;
 			padding: 20px 0 20px 0;
+			
 		}
-		.moneystuff input[type="password"] {
+		.students table, th, td {
+			color: #a200e2;
+			border: 1px #a200e2;
+		}
+		.students input[type="password"] {
 			color: white;
 			text-decoration-color: #dddddd;
             outline-style: solid;
@@ -50,7 +47,7 @@
 			margin-bottom: 15px;
 			box-sizing:border-box;
 		}
-		.moneystuff input[type="text"] {
+		.students input[type="text"] {
 			color: white;
 			text-decoration-color: #dddddd;
             outline-style: solid;
@@ -63,7 +60,7 @@
 			margin-bottom: 15px;
 			box-sizing:border-box;
 		}
-		.moneystuff input[type="submit"] {
+		.students input[type="submit"] {
 			width: 100%;
 			padding: 15px;
 			background-color: black;
@@ -73,60 +70,34 @@
 			font-weight: bold;
 			color: #ffffff;
 		}
-		.dark-mode {
-            background-color: gray;
-            color: white;
-        }
-		.white-mode {
-			filter: invert(100%);
-            background-color: white;
-            color: white;
-        }
-		.lightdarkmode button[onclick="myFunction()"] {
-			outline-style: solid;
-            outline-color: white;
-            outline-width: 5px;
-            border-radius: 50px;
-			position: relative; top:-500px;
-			width: 10%;
-			padding: 15px;
-			background-color: black;
-			border: 0;
-			box-sizing: border-box;
-			cursor: pointer;
-			font-weight: bold;
-			color: #ffffff;
-		}
-		h1 {
-			filter: invert(100%);
-		}
-		h2 {
-			filter: invert(100%);
-		}
+		
+		
+		
 		</style>
-		<script>
-			function myFunction() {
-			var element = document.body;
-			element.classList.toggle("dark-mode");
-		}
-		    function myFunction() {
-			var element = document.body;
-			element.classList.toggle("white-mode");
-		}
-	    </script>
+		
 	</head>
 	<body>
-		<div class="moneystuff">
-			<h1>Admin Login</h1>
-            <h2>Login Here</h2>
-			<form action="adminLogin" method="POST">
-                <input type="text" name="name" value="" placeholder="Name">
-				<input type="password" name="password" value="" placeholder="Password">
-                <input type="submit" name="" value="Submit">
-			</form>
-		</div>
-		<div class="lightdarkmode">
-			<button onclick="myFunction()">Toggle light/dark mode</button>
+		<div class="students">
+			<h1>Admin</h1>
+			<h2>Students</h2>
+			<table style="width:100%">
+				<tr>
+				  <th>Student</th>
+				  <th>ID</th>
+				  <th>Balance</th>
+				</tr>
+				<tr>
+				  <td>Amogus</td>
+				  <td>1234</td>
+				  <td>$ 200.69</td>
+				</tr>
+				<tr>
+				  <td>Markiplier</td>
+				  <td>9876</td>
+				  <td>$ 9,000.42</td>
+				</tr>
+			  </table>
+			
 		</div>
 	</body>
 </html>

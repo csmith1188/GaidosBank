@@ -31,6 +31,10 @@ app.get('/Bank', (req, res) => {
 	res.render('Bank');
 })
 
+app.get('/admin', (req, res) => {
+	res.render('admin');
+})
+
 app.post('/register', urlencodedParser, (req, res) => {
 	if (req.body.studentName && req.body.studentPassword) {
 		// Execute SQL query that'll push the new account from the nodejs to the database based on the specified studentname and studentid
