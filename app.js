@@ -12,6 +12,7 @@ const encryptpwd = require('encrypt-with-password');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+
 app.set('view engine', 'ejs');
 app.use(express.static('./static'))
 app.use(session({
@@ -31,9 +32,21 @@ app.get('/Bank', (req, res) => {
 	res.render('Bank');
 })
 
+
 app.get('/admin', (req, res) => {
 	res.render('admin');
 })
+
+
+
+app.get('/Student', (req, res) => {
+	res.render('Student');
+})
+
+app.get('/login',function(req,res,next){
+    res.render('Bank');
+   });
+
 
 app.post('/register', urlencodedParser, (req, res) => {
 	if (req.body.studentName && req.body.studentPassword) {
@@ -54,6 +67,7 @@ app.post('/register', urlencodedParser, (req, res) => {
 		})
 	}
 });
+
 
 app.post('/login', (req, res) => {
 	//const encrypted = encryptpwd.encrypt(username);
