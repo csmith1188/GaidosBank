@@ -4,25 +4,58 @@ const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let user
+		let user, transactions
 		let query = 'SELECT * FROM transactions'
 		if (request.query.user) user = request.query.user
 		else user = null
-		if (parseInt(user) == NaN)
-			username = user
-		else id = user
+
+
+
+		async function getUsernames() {
+			if (transactions) {
+				for (let transaction of transactions) {
+					database.get('SELECT username FROM users WHERE id=?', transaction.senderId, (error, sender) => {
+						if (error) throw error
+						if (sender) {
+							transaction.senderUsername = sender.username
+							// console.log(transaction)
+						}
+					})
+					database.get('SELECT username FROM users WHERE id=?', transaction.receiverId, (error, receiver) => {
+						if (error) throw error
+						if (receiver) {
+							transaction.receiverUsername = receiver.username
+							// console.log(transaction)
+						}
+					})
+				}
+			}
+			else response.send({ error: 'no results' })
+		}
 
 		if (user) {
-			query += ' Where '
+			query += ' WHERE '
 			if (Number.isInteger(parseFloat(user))) {
 				database.all(query + 'senderId=' + parseInt(user) + ' or receiverId=' + parseInt(user), (error, results) => {
 					if (error) throw error
-					if (results)
-						response.send(results)
-					else response.send({ error: 'no results' })
+					transactions = results
+					getUsernames().then(set)
+					response.send(transactions)
 				})
 			}
-			else response.send({ error: 'not int' })
+			else if (!isNaN(user)) response.send({ error: 'not int' })
+			else {
+				database.get('SELECT id FROM users WHERE username=?', user, (error, results) => {
+					if (error) throw error
+					user = results.id
+					database.all(query + 'senderId=' + parseInt(user) + ' or receiverId=' + parseInt(user), (error, results) => {
+						if (error) throw error
+						if (results)
+							response.send(results)
+						else response.send({ error: 'no results' })
+					})
+				})
+			}
 		}
 		else {
 			database.all(query, (error, results) => {
