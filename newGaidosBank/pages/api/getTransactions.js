@@ -9,51 +9,56 @@ export default withIronSessionApiRoute(
 		if (request.query.user) user = request.query.user
 		else user = null
 
-
-
-		async function getUsernames() {
+		function sendTransactions() {
 			if (transactions) {
-				for (let transaction of transactions) {
-					database.get('SELECT username FROM users WHERE id=?', transaction.senderId, (error, sender) => {
-						if (error) throw error
-						if (sender) {
-							transaction.senderUsername = sender.username
-							// console.log(transaction)
-						}
-					})
-					database.get('SELECT username FROM users WHERE id=?', transaction.receiverId, (error, receiver) => {
-						if (error) throw error
-						if (receiver) {
-							transaction.receiverUsername = receiver.username
-							// console.log(transaction)
-						}
-					})
-				}
+				database.serialize(() => {
+					for (let transaction of transactions) {
+						database.get('SELECT username FROM USERS WHERE id=?', transaction.senderId, (error, sender) => {
+							if (error) throw error
+							if (sender) {
+								console.log(sender);
+								transaction.senderUsername = sender.username
+							}
+						})
+						database.get('SELECT username FROM USERS WHERE id=?', transaction.receiverId, (error, receiver) => {
+							if (error) throw error
+							if (receiver) {
+								console.log(receiver);
+								transaction.receiverUsername = receiver.username
+							}
+						})
+					}
+				})
+				setTimeout(() => {
+					response.send(transactions)
+				}, 10);
 			}
-			else response.send({ error: 'no results' })
+			else response.send([])
 		}
 
 		if (user) {
-			query += ' WHERE '
 			if (Number.isInteger(parseFloat(user))) {
-				database.all(query + 'senderId=' + parseInt(user) + ' or receiverId=' + parseInt(user), (error, results) => {
+				console.log(1);
+				database.all(query + ' WHERE senderId=' + parseInt(user) + ' or receiverId=' + parseInt(user), (error, results) => {
 					if (error) throw error
 					transactions = results
-					getUsernames().then(set)
-					response.send(transactions)
+					sendTransactions()
 				})
 			}
 			else if (!isNaN(user)) response.send({ error: 'not int' })
 			else {
-				database.get('SELECT id FROM users WHERE username=?', user, (error, results) => {
+				console.log(2);
+				database.get('SELECT id FROM users WHERE username=?', user, (error, userId) => {
 					if (error) throw error
-					user = results.id
-					database.all(query + 'senderId=' + parseInt(user) + ' or receiverId=' + parseInt(user), (error, results) => {
-						if (error) throw error
-						if (results)
-							response.send(results)
-						else response.send({ error: 'no results' })
-					})
+					if (userId) {
+						user = userId.id
+						database.all(query + ' WHERE senderId=' + user + ' OR receiverId=' + user, (error, results) => {
+							if (error) throw error
+							transactions = results
+							console.log(transactions);
+							sendTransactions()
+						})
+					}
 				})
 			}
 		}
