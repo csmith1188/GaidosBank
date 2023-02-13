@@ -65,8 +65,10 @@ export default withIronSessionApiRoute(
 		else {
 			database.all(query, (error, results) => {
 				if (error) throw error
-				if (results)
-					response.send(results)
+				if (results) {
+					transactions = results
+					sendTransactions()
+				}
 				else response.send({ error: 'no results' })
 			})
 		}
