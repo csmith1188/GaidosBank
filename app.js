@@ -12,7 +12,6 @@ const encryptpwd = require('encrypt-with-password');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-
 app.set('view engine', 'ejs');
 app.use(express.static('./static'))
 app.use(session({
@@ -23,13 +22,14 @@ app.use(session({
 
 app.use(express.urlencoded({ extended: true }));
 
+
 app.get('/', (req, res) => {
 	res.render('login');
 })
 
 
-app.get('/Bank', (req, res) => {
-	res.render('Bank');
+app.get('/bank', (req, res) => {
+	res.render('bank');
 })
 
 
@@ -37,23 +37,41 @@ app.get('/Student', (req, res) => {
 	res.render('Student');
 })
 
-app.get('/login',function(req,res,next){
-    res.render('Bank');
-   });
+let amount;
+  db.get(`SELECT amount FROM transactions WHERE user = ?`, (err, row) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+
+db.serialize(function (name)  {
+	app.post('/', urlencodedParser, (req, res) => {
+	    if (amount <= req.body.money) {
+			db.get(`UPDATE transactions SET tx_id = "${req.body.money}" = ? WHERE user = "${name}"`) 
+			db.get(`UPDATE transactions SET amount = amount - tx_id WHERE "${name}" = ?`)
+			db.get(`UPDATE transactions SET amount = amount + ? WHERE "${req.body.user}" = ?`)
+			} else {
+			res.send("Insufficient Funds")
+			console.log(amount)
+			}
+		})
+})
 
 app.post('/register', urlencodedParser, (req, res) => {
-	if (req.body.studentName && req.body.studentPassword) {
-		// Execute SQL query that'll push the new account from the nodejs to the database based on the specified studentname and studentid
-		db.get(`INSERT INTO users ( name, password ) VALUES(?,?)`, [req.body.studentName, req.body.studentPassword], function (error, results) {
+	let studentName = req.body.studentName
+	let studentPassword = req.body.studentPassword
+	if (studentName && studentPassword) {
+		// Execute SQL query that'll push the new account from the form to the database based on the specified value of studentname and studentid
+		db.get(`INSERT INTO transactions ( user, tx_id, rx_id, amount ) VALUES(?,0,0,0)`, [studentName]) 
+		db.get(`INSERT INTO users ( name, password ) VALUES(?,?)`, [studentName, studentPassword], function (error, results) {
 			// If there is an issue with the query, output the error
-
 			if (error) { throw error; }
 			// If the account exists
 			else {
 				// Authenticate the user
 				req.session.loggedin = true;
 				req.session.studentname = req.body.studentName;
-				// Redirect to home page
+				// Redirect to login page
 				res.redirect('/');
 			}
 
@@ -61,13 +79,14 @@ app.post('/register', urlencodedParser, (req, res) => {
 	}
 });
 
-
 app.post('/login', (req, res) => {
+	let name = req.body.name
+	let password = req.body.password
 	//const encrypted = encryptpwd.encrypt(username);
 	//const decrypted = encryptpwd.decrypt(encrypted, password);
-	if (req.body.name && req.body.password) {
+	if (name && password) {
 		// Execute SQL query that'll select the account from the database based on the specified username and password
-		db.get(`SELECT * FROM users WHERE name = ? AND password = ?`, [req.body.name, req.body.password], function (error, results) {
+		db.get(`SELECT * FROM users WHERE name = ? AND password = ?`, [name, password], function (error, results) {
 			// If there is an issue with the query, output the error
 			console.log(results);
 			if (error) throw error;
