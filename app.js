@@ -48,6 +48,11 @@ app.get('/login',function(req,res,next){
    });
 
 
+app.get('/History' ,function(req, res) {
+	res.render('History');
+})
+
+
 app.post('/register', urlencodedParser, (req, res) => {
 	if (req.body.studentName && req.body.studentPassword) {
 		// Execute SQL query that'll push the new account from the nodejs to the database based on the specified studentname and studentid
