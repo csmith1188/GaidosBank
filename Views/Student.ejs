@@ -1,4 +1,3 @@
-//code convey
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,23 +17,10 @@
 </head>
 <body>
 
-<header class="ScriptHeader">
-    <div class="rt-container">
-    	<div class="col-rt-12">
-        	<div class="rt-heading">
-            	<h1>Gaidos Bank Student</h1>
-                 <p>navigation for students</p>
-            </div>
-        </div>
-    </div>
-</header>
-
 <section>
     <div class="rt-container">
           <div class="col-rt-12">
               <div class="Scriptcontent">
-              
-              <!-- START DEMO -->
     		<div class="tile" id="tile-1">
 
   <!-- Nav tabs -->
@@ -46,26 +32,28 @@
       <li class="nav-item">
         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fas fa-id-card"></i> Profile</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false"><i class="fas fa-map-signs"></i> Contact</a>
-      </li>
-    <li class="nav-item">
-        <a class="nav-link" id="setting-tab" data-toggle="tab" href="#setting" role="tab" aria-controls="setting" aria-selected="false"><i class="fas fa-cogs"></i> Settings</a>
-      </li>
   </ul>
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <form action="/transaction" method="post">
-        Amount you want to send
-        <input type="number" name="amount">
-        ID you want to send to
-        <input type="text" name="id">
-        <input type="submit" name="" value="Submit">
-    </form>
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">Profile</div>
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Contact</div>
-  <div class="tab-pane fade" id="setting" role="tabpanel" aria-labelledby="setting-tab">Settings</div>
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><form action="/transaction" method="post">
+      Amount you want to send
+      <input type="number" name="amount">
+      ID you want to send to
+      <input type="text" name="id">
+      <input type="submit" name="" value="Submit">
+  </form></div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    <li> <a class="nav-link btn signup" href="/bank">Bank</a></li>
+    <li><a class="nav-link btn signup" href="/login">Login</a></li>
+    <li><a class="nav-link btn signup" href="/admin">Admin</a></li>
+  </div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+  </div>
+  <div class="tab-pane fade" id="setting" role="tabpanel" aria-labelledby="setting-tab">
+
+  </div>
   </div>
 
 </div>
