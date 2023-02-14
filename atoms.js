@@ -1,7 +1,7 @@
-import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { useAtomsDevtools } from 'jotai/devtools'
 
-export const currentUserAtom = atom(
+export const currentUserAtom = atomWithStorage('currentUser',
 	{
 		theme: 'dark',
 		isAuthenticated: false,
@@ -11,7 +11,7 @@ export const currentUserAtom = atom(
 )
 currentUserAtom.debugLabel = 'currentUserAtom'
 
-export const leaderBoardAtom = atom([])
+export const leaderBoardAtom = atomWithStorage('leaderBoard', [])
 leaderBoardAtom.debugLabel = 'leaderBoardAtom'
 
 export const DebugAtoms = (({ children }) => {

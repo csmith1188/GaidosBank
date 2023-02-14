@@ -16,14 +16,12 @@ export default withIronSessionApiRoute(
 						database.get('SELECT username FROM USERS WHERE id=?', transaction.senderId, (error, sender) => {
 							if (error) throw error
 							if (sender) {
-								console.log(sender);
 								transaction.senderUsername = sender.username
 							}
 						})
 						database.get('SELECT username FROM USERS WHERE id=?', transaction.receiverId, (error, receiver) => {
 							if (error) throw error
 							if (receiver) {
-								console.log(receiver);
 								transaction.receiverUsername = receiver.username
 							}
 						})
@@ -38,7 +36,6 @@ export default withIronSessionApiRoute(
 
 		if (user) {
 			if (Number.isInteger(parseFloat(user))) {
-				console.log(1);
 				database.all(query + ' WHERE senderId=' + parseInt(user) + ' or receiverId=' + parseInt(user), (error, results) => {
 					if (error) throw error
 					transactions = results
@@ -47,7 +44,6 @@ export default withIronSessionApiRoute(
 			}
 			else if (!isNaN(user)) response.send({ error: 'not int' })
 			else {
-				console.log(2);
 				database.get('SELECT id FROM users WHERE username=?', user, (error, userId) => {
 					if (error) throw error
 					if (userId) {
@@ -55,7 +51,6 @@ export default withIronSessionApiRoute(
 						database.all(query + ' WHERE senderId=' + user + ' OR receiverId=' + user, (error, results) => {
 							if (error) throw error
 							transactions = results
-							console.log(transactions);
 							sendTransactions()
 						})
 					}

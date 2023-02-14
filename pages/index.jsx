@@ -7,9 +7,11 @@ export default function Home() {
 	var currentUser = useAtomValue(currentUserAtom)
 	var [leaderBoard, setLeaderBoard] = useAtom(leaderBoardAtom)
 
-	if (typeof window !== 'undefined' && !currentUser.isAuthenticated) {
-		Router.push('/login')
-	}
+	useEffect(() => {
+		if (!currentUser.isAuthenticated) {
+			Router.push('/login')
+		}
+	}, [currentUser])
 
 	useEffect(() => {
 		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
