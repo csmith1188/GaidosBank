@@ -1,28 +1,13 @@
 import React, { useMemo } from 'react'
 import { useTable } from 'react-table'
-import { styled } from '@stitches/react'
-
-const Root = styled(table, {
-	variants: {
-		color: {
-			light: {
-				backgroundColor: 'rgb(160, 160, 160)',
-				borderBottomColor: 'rgb(50, 50, 50)'
-			},
-			dark: {
-				backgroundColor: 'rgb(30, 30, 30)',
-				borderBottomColor: 'rgb(40, 40, 40)'
-			}
-		}
-	},
-	defaultVariants: {
-		color: 'light'
-	}
-})
+import * as styledTable from './styledTable'
+import { useAtomValue } from 'jotai'
+import { currentUserAtom } from '../atoms'
 
 export const Table = (props) => {
 	const columns = useMemo(() => props.columns, [props.columns])
 	const data = useMemo(() => props.data, [props.data])
+	var currentUser = useAtomValue(currentUserAtom);
 
 	const {
 		getTableProps,
@@ -38,38 +23,31 @@ export const Table = (props) => {
 
 	return (
 		<>
-			<table {...getTableProps()}>
-				<thead>
+			<styledTable.root {...getTableProps()} id={props.id} color={currentUser.theme}>
+				<styledTable.thead color={currentUser.theme}>
 					{headerGroups.map(headerGroup => (
-						<tr {...headerGroup.getHeaderGroupProps()}>
+						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} color={currentUser.theme}>
 							{headerGroup.headers.map(column => (
-								<th {...column.getHeaderProps()}>{column.render('Header')}</th>
+								<styledTable.th key={column.id} {...column.getHeaderProps()} color={currentUser.theme}>{column.render('Header')}</styledTable.th>
 							))}
-						</tr>
+						</styledTable.tr>
 					))}
-				</thead>
-				<tbody {...getTableBodyProps()}>
+				</styledTable.thead>
+				<styledTable.tbody {...getTableBodyProps()} color={currentUser.theme}>
 					{rows.map(row => {
 						prepareRow(row)
 						return (
-							<tr {...row.getRowProps()}>
+							<styledTable.tr key={row.index}{...row.getRowProps()} color={currentUser.theme}>
 								{row.cells.map(cell => {
-									return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+									return (
+										<styledTable.td key={cell.column.id}{...cell.getCellProps()} color={currentUser.theme}>{cell.render('Cell')}</styledTable.td>
+									)
 								})}
-							</tr>
+							</styledTable.tr>
 						)
 					})}
-				</tbody>
-				<tfoot>
-					{footerGroups.map(footerGroup => (
-						<tr {...footerGroup.getFooterGroupProps()}>
-							{footerGroup.headers.map(column => (
-								<td {...column.getFooterProps()}>{column.render('Footer')}</td>
-							))}
-						</tr>
-					))}
-				</tfoot>
-			</table>
+				</styledTable.tbody>
+			</styledTable.root>
 		</>
 	)
 }

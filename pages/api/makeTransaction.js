@@ -29,13 +29,12 @@ export default withIronSessionApiRoute(
 										let date = new Date()
 										date = {
 											year: date.getFullYear(),
-											month: date.getMonth(),
+											month: date.getMonth() + 1,
 											day: date.getDate(),
 											hours: date.getHours(),
 											minutes: date.getMinutes(),
 											seconds: date.getSeconds()
 										}
-										console.log();
 										database.run('INSERT INTO transactions (senderId, receiverId, amount, timestamp) VALUES (?, ?, ?, ?)', [sender.id, receiver.id, amount, JSON.stringify(date)], (error, results) => {
 											if (error) throw error
 										})

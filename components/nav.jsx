@@ -1,7 +1,7 @@
 import { styled } from '@stitches/react'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 
-const Root = styled(NavigationMenu.Root, {
+export const root = styled(NavigationMenu.Root, {
 	variants: {
 		color: {
 			light: {
@@ -23,17 +23,17 @@ const Root = styled(NavigationMenu.Root, {
 	borderBottomStyle: 'solid',
 })
 
-const List = styled(NavigationMenu.List, {
+export const list = styled(NavigationMenu.List, {
 	display: 'flex',
 	listStyle: 'none',
 	padding: 0,
 	margin: 0,
 })
 
-const Item = styled(NavigationMenu.Item, {
+export const item = styled(NavigationMenu.Item, {
 })
 
-const Link = styled(NavigationMenu.Link, {
+export const link = styled(NavigationMenu.Link, {
 	variants: {
 		color: {
 			light: {
@@ -57,7 +57,7 @@ const Link = styled(NavigationMenu.Link, {
 	textDecoration: 'none'
 })
 
-const Button = styled('button', {
+export const button = styled('button', {
 	variants: {
 		color: {
 			light: {
@@ -82,5 +82,3 @@ const Button = styled('button', {
 	border: 'none',
 	background: 'none'
 })
-
-export { Root, Item, List, Link, Button }

@@ -1,4 +1,4 @@
-import * as Nav from '../components/nav'
+import * as nav from '../components/nav'
 import { useAtom } from 'jotai';
 import { currentUserAtom } from '../atoms'
 
@@ -39,56 +39,56 @@ export default function NavBar() {
 	// }
 
 	return (
-		<Nav.Root color={currentUser.theme} id='nav'>
-			<Nav.List className='list' id='list1'>
-				<Nav.Item>
-					<Nav.Link color={currentUser.theme} active='true' href='/makeTransaction'>
+		<nav.root color={currentUser.theme} id='nav'>
+			<nav.list className='list' id='list1'>
+				<nav.item>
+					<nav.link color={currentUser.theme} active='true' href='/makeTransaction'>
 						Make Transaction
-					</Nav.Link>
-				</Nav.Item>
-				<Nav.Item>
-					<Nav.Link color={currentUser.theme} active='true' href='/viewTransactions'>
+					</nav.link>
+				</nav.item>
+				<nav.item>
+					<nav.link color={currentUser.theme} active='true' href='/viewTransactions'>
 						View Transactions
-					</Nav.Link>
-				</Nav.Item>
+					</nav.link>
+				</nav.item>
 				{currentUser.permissions === 'admin' ?
-					<Nav.Item>
-						<Nav.Link color={currentUser.theme} active='true' href='/Admin'>
+					<nav.item>
+						<nav.link color={currentUser.theme} active='true' href='/Admin'>
 							Admin
-						</Nav.Link>
-					</Nav.Item> : null
+						</nav.link>
+					</nav.item> : null
 				}
-			</Nav.List>
-			<Nav.List id='title'>
-				<Nav.Item
+			</nav.list>
+			<nav.list id='title'>
+				<nav.item
 				>
-					<Nav.Link
+					<nav.link
 						style={{ color: 'rgb(19, 161, 14)', }}
 						color={currentUser.theme}
 						active='true'
 						href='/'
 					>
 						&#128176;Bank of Gaidos
-					</Nav.Link>
-				</Nav.Item>
-			</Nav.List>
-			<Nav.List className='list' id='list2'>
-				<Nav.Item>
-					<Nav.Link color={currentUser.theme} active='true' href='/userSettings'>
+					</nav.link>
+				</nav.item>
+			</nav.list>
+			<nav.list className='list' id='list2'>
+				<nav.item>
+					<nav.link color={currentUser.theme} active='true' href='/userSettings'>
 						User Settings
-					</Nav.Link>
-				</Nav.Item>
-				<Nav.Item>
-					<Nav.Button
+					</nav.link>
+				</nav.item>
+				<nav.item>
+					<nav.button
 						color={currentUser.theme}
 						onClick={logout}
 						id='logout'
 						className='navButton'
 					>
 						logout
-					</Nav.Button>
-				</Nav.Item>
-			</Nav.List>
-		</Nav.Root >
+					</nav.button>
+				</nav.item>
+			</nav.list>
+		</nav.root >
 	)
 }
