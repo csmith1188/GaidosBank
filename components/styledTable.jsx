@@ -15,10 +15,10 @@ export const root = styled('table', {
 	width: '90%',
 	marginLeft: '5%',
 	textAlign: 'center',
-	backgroundColor: 'rgb(25,25,25)',
-	// borderColor: 'rgb(150,150,150)',
-	borderColor: 'rgb(255,0,0)',
-	borderStyle: 'solid'
+	overflow: 'hidden',
+	backgroundColor: 'rgb(0, 0, 0)',
+	borderColor: 'rgb(75, 75, 75)',
+	borderStyle: 'solid',
 })
 
 export const thead = styled('thead', {
@@ -90,7 +90,8 @@ export const th = styled('th', {
 	},
 	defaultVariants: {
 		color: 'light'
-	}
+	},
+	backgroundColor: 'rgb(0, 0, 0)'
 })
 
 export const td = styled('td', {

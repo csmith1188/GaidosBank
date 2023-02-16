@@ -29,7 +29,7 @@ export default function ViewTransations() {
 					if (transaction.timestamp.hours > 12)
 						transaction.timestamp.hours = transaction.timestamp.hours - 12 + ' PM'
 					else transaction.timestamp.hours = transaction.timestamp.hours + ' AM'
-					transaction.timestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds
+					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds
 				}
 				setTransactions(data)
 				document.getElementById('test').innerText = JSON.stringify(data)
@@ -37,12 +37,48 @@ export default function ViewTransations() {
 	}, [])
 
 	let columns = [
-		{ Header: 'Sender ID', accessor: 'senderId' },
-		{ Header: 'Sender Username', accessor: 'senderUsername' },
-		{ Header: 'Receiver ID', accessor: 'receiverId' },
-		{ Header: 'Receiver Username', accessor: 'receiverUsername' },
-		{ Header: 'Amount', accessor: 'amount' },
-		{ Header: 'Timestamp', accessor: 'timestamp' }
+		{
+			Header: 'Sender ID',
+			accessor: 'senderId',
+			sortType: 'basic',
+			sortInverted: true
+		},
+		{
+			Header: 'Sender Username',
+			accessor: 'senderUsername',
+			sortType: 'alphanumeric',
+			sortInverted: true
+		},
+		{
+			Header: 'Receiver ID',
+			accessor: 'receiverId',
+			sortType: 'basic',
+			sortInverted: true
+		},
+		{
+			Header: 'Receiver Username',
+			accessor: 'receiverUsername',
+			sortType: 'alphanumeric',
+			sortInverted: true
+		},
+		{
+			Header: 'Amount',
+			accessor: 'amount',
+			sortType: 'basic',
+			sortInverted: true
+		},
+		{
+			Header: 'Timestamp',
+			accessor: 'readableTimestamp',
+			sortInverted: true,
+			sortType: useMemo((rowA, rowB, id) => {
+				console.log(rowA)
+				let random = Math.random()
+				if (random < 0.5) return 1
+				if (random > 0.5) return -1
+				return 0
+			}, [])
+		}
 	]
 
 	return (

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useTable } from 'react-table'
+import { useTable, useFilters, useSortBy } from 'react-table'
 import * as styledTable from './styledTable'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
@@ -19,7 +19,9 @@ export const Table = (props) => {
 	} = useTable({
 		columns,
 		data
-	})
+	},
+		useSortBy
+	)
 
 	return (
 		<>
@@ -28,7 +30,16 @@ export const Table = (props) => {
 					{headerGroups.map(headerGroup => (
 						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} color={currentUser.theme}>
 							{headerGroup.headers.map(column => (
-								<styledTable.th key={column.id} {...column.getHeaderProps()} color={currentUser.theme}>{column.render('Header')}</styledTable.th>
+								<styledTable.th key={column.id} {...column.getHeaderProps(column.getSortByToggleProps())} color={currentUser.theme}>
+									{column.render('Header')}
+									<span>
+										{column.isSorted
+											? column.isSortedDesc
+												? ' 🔽'
+												: ' 🔼'
+											: ''}
+									</span>
+								</styledTable.th>
 							))}
 						</styledTable.tr>
 					))}
@@ -37,10 +48,12 @@ export const Table = (props) => {
 					{rows.map(row => {
 						prepareRow(row)
 						return (
-							<styledTable.tr key={row.index}{...row.getRowProps()} color={currentUser.theme}>
+							<styledTable.tr key={row.index} {...row.getRowProps()} color={currentUser.theme}>
 								{row.cells.map(cell => {
 									return (
-										<styledTable.td key={cell.column.id}{...cell.getCellProps()} color={currentUser.theme}>{cell.render('Cell')}</styledTable.td>
+										<styledTable.td key={cell.column.id} {...cell.getCellProps()} color={currentUser.theme}>
+											{cell.render('Cell')}
+										</styledTable.td>
 									)
 								})}
 							</styledTable.tr>
