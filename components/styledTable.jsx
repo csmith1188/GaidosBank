@@ -7,18 +7,26 @@ export const root = styled('table', {
 			},
 			dark: {
 			}
+		},
+		border: {
+			true: {
+				width: '90%',
+				marginLeft: '5%',
+				borderColor: 'rgb(75, 75, 75)',
+				borderStyle: 'solid'
+			},
+			false: {
+				width: '100%',
+			}
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		color: 'light',
+		border: 'false'
 	},
-	width: '90%',
-	marginLeft: '5%',
 	textAlign: 'center',
 	overflow: 'hidden',
 	backgroundColor: 'rgb(0, 0, 0)',
-	borderColor: 'rgb(75, 75, 75)',
-	borderStyle: 'solid',
 })
 
 export const thead = styled('thead', {

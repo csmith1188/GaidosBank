@@ -18,14 +18,17 @@ export const Table = (props) => {
 		prepareRow
 	} = useTable({
 		columns,
-		data
+		data,
+		initialState: {
+			sortBy: props.sortBy
+		}
 	},
 		useSortBy
 	)
 
 	return (
 		<>
-			<styledTable.root {...getTableProps()} id={props.id} color={currentUser.theme}>
+			<styledTable.root {...getTableProps()} color={currentUser.theme} border={props.border}>
 				<styledTable.thead color={currentUser.theme}>
 					{headerGroups.map(headerGroup => (
 						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} color={currentUser.theme}>

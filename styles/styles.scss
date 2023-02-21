@@ -26,6 +26,63 @@ body {
 		sans-serif;
 }
 
+#viewTransactionsTable {
+	width: 90%;
+	margin-left: 5%;
+	background-color: rgb(0, 0, 0);
+	border-color: rgb(75, 75, 75);
+	border-style: solid;
+	overflow: hidden;
+	margin-top: 3vh;
+	border-width: MIN(0.75vh, 10vw);
+	border-radius: MIN(5vh, 10vw);
+	padding: MIN(1.5vh, 10vw);
+	padding-top: MIN(1.5vh, 10vw);
+
+	input {
+		padding: MIN(0.5vh, 10vw);
+		border-width: MIN(0.4vh);
+		border-radius: MIN(5vh, 10vw);
+	}
+
+	button {
+		// background: none;
+		border: none;
+	}
+
+	table {
+		border-spacing: MAX(1vh, 0vw);
+
+		thead {
+			th {
+				font-size: MIN(3vh, 10vw);
+				padding: 2px;
+				border-color: rgb(75, 75, 75);
+				border-style: solid;
+				border-width: MIN(0.5vh, 10vw);
+				border-radius: MIN(5vh, 10vw);
+			}
+		}
+
+		tbody {
+			tr {
+				&:nth-child(even) {
+					background-color: rgb(30, 30, 30);
+				}
+
+				&:nth-child(odd) {
+					background-color: rgb(50, 50, 50);
+				}
+			}
+
+			td {
+				font-size: MIN(2.5vh, 10vw);
+				padding: 2px;
+			}
+		}
+	}
+}
+
 @media (orientation:landscape) {
 	#nav {
 		height: $navHeight;
@@ -68,40 +125,6 @@ body {
 			}
 		}
 	}
-}
-
-#viewTransactionsTable {
-	margin-top: 3vh;
-	border-width: MIN(0.75vh, 10vw);
-	border-radius: MIN(5vh, 10vw);
-	$padding: MIN(1.2vh, 10vw);
-	padding: 0 $padding $padding;
-	border-spacing: MAX(1vh, 0vw);
-
-	thead {
-		th {
-			font-size: MIN(3vh, 10vw);
-			padding: 2px;
-		}
-	}
-
-	tbody {
-		tr {
-			&:nth-child(even) {
-				background-color: rgb(30, 30, 30);
-			}
-
-			&:nth-child(odd) {
-				background-color: rgb(50, 50, 50);
-			}
-		}
-
-		td {
-			font-size: MIN(2.5vh, 10vw);
-			padding: 2px;
-		}
-	}
-
 }
 
 @media (orientation:portrait) {
