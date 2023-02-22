@@ -27,9 +27,7 @@ export default withIronSessionApiRoute(
 						})
 					}
 				})
-				setTimeout(() => {
-					response.send(transactions)
-				}, 10);
+				response.send(transactions)
 			}
 			else response.send([])
 		}

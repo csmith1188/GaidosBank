@@ -54,6 +54,9 @@ body {
 		border-spacing: MAX(1vh, 0vw);
 
 		thead {
+			top: 0;
+			position: sticky;
+
 			th {
 				font-size: MIN(3vh, 10vw);
 				padding: 2px;

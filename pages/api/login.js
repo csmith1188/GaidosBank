@@ -25,14 +25,19 @@ export default withIronSessionApiRoute(
 								if (error) throw error
 								if (isMatch) {
 									request.session.username = username
-									response.send({
-										balance: results.balance,
-										username: results.username,
-										id: results.id,
-										permissions: results.permissions,
-										theme: results.theme,
-										isAuthenticated: true
-									})
+									request.session.save()
+									setTimeout(() => {
+										response.send({
+											balance: results.balance,
+											username: results.username,
+											id: results.id,
+											permissions: results.permissions,
+											theme: results.theme,
+											isAuthenticated: true,
+											session: request.session
+										})
+										console.log(request.session);
+									}, 10)
 								} else response.send({ isAuthenticated: false })
 							}
 						)

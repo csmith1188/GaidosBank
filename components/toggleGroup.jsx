@@ -3,7 +3,7 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group'
 
 export const root = styled(ToggleGroup.Root, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				backgroundColor: 'rgb(0,0,0)',
 			},
@@ -13,7 +13,7 @@ export const root = styled(ToggleGroup.Root, {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 	display: 'inline-flex',
 	borderRadius: '1rem',
@@ -21,7 +21,7 @@ export const root = styled(ToggleGroup.Root, {
 
 export const item = styled(ToggleGroup.Item, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				backgroundColor: 'rgb(0,0,0)',
 				'&:hover': { backgroundColor: 'rgb(0,0,0)' },
@@ -35,7 +35,7 @@ export const item = styled(ToggleGroup.Item, {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 	all: 'unset',
 	height: '2.5rem',

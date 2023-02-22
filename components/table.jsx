@@ -1,8 +1,10 @@
-import React, { useMemo } from 'react'
-import { useTable, useFilters, useSortBy } from 'react-table'
+import { useMemo } from 'react'
+import { useTable, useSortBy, useGlobalFilter } from 'react-table'
 import * as styledTable from './styledTable'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
+import { GlobalFilter } from './GlobalFilter'
+import { ColumnFilter } from './ColumnFilter'
 
 export const Table = (props) => {
 	const columns = useMemo(() => props.columns, [props.columns])
@@ -15,7 +17,9 @@ export const Table = (props) => {
 		headerGroups,
 		footerGroups,
 		rows,
-		prepareRow
+		prepareRow,
+		state,
+		setGlobalFilter
 	} = useTable({
 		columns,
 		data,
@@ -23,17 +27,23 @@ export const Table = (props) => {
 			sortBy: props.sortBy
 		}
 	},
-		useSortBy
+		useGlobalFilter,
+		useSortBy,
 	)
+
+	const { globalFilter } = state
 
 	return (
 		<>
-			<styledTable.root {...getTableProps()} color={currentUser.theme} border={props.border}>
-				<styledTable.thead color={currentUser.theme}>
+			{props.canFilter ?
+				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+				: null}
+			<styledTable.root {...getTableProps()} theme={currentUser.theme} border={props.border}>
+				<styledTable.thead theme={currentUser.theme}>
 					{headerGroups.map(headerGroup => (
-						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} color={currentUser.theme}>
+						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme}>
 							{headerGroup.headers.map(column => (
-								<styledTable.th key={column.id} {...column.getHeaderProps(column.getSortByToggleProps())} color={currentUser.theme}>
+								<styledTable.th key={column.id} {...column.getHeaderProps(column.getSortByToggleProps())} theme={currentUser.theme}>
 									{column.render('Header')}
 									<span>
 										{column.isSorted
@@ -47,14 +57,14 @@ export const Table = (props) => {
 						</styledTable.tr>
 					))}
 				</styledTable.thead>
-				<styledTable.tbody {...getTableBodyProps()} color={currentUser.theme}>
+				<styledTable.tbody {...getTableBodyProps()} theme={currentUser.theme}>
 					{rows.map(row => {
 						prepareRow(row)
 						return (
-							<styledTable.tr key={row.index} {...row.getRowProps()} color={currentUser.theme}>
+							<styledTable.tr key={row.index} {...row.getRowProps()} theme={currentUser.theme}>
 								{row.cells.map(cell => {
 									return (
-										<styledTable.td key={cell.column.id} {...cell.getCellProps()} color={currentUser.theme}>
+										<styledTable.td key={cell.column.id} {...cell.getCellProps()} theme={currentUser.theme}>
 											{cell.render('Cell')}
 										</styledTable.td>
 									)

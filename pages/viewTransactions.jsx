@@ -29,9 +29,9 @@ export default function ViewTransactions() {
 					]
 					transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
 					if (transaction.timestamp.hours > 12)
-						transaction.timestamp.hours = transaction.timestamp.hours - 12 + ' PM'
-					else transaction.timestamp.hours = transaction.timestamp.hours + ' AM'
-					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds
+						transaction.timestamp.hours = transaction.timestamp.hours - 12
+					else transaction.timestamp.hours = transaction.timestamp.hours
+					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
 				}
 				setTransactions(data)
 			})
@@ -114,19 +114,19 @@ export default function ViewTransactions() {
 					<button>{open ? <Cross1Icon /> : <HamburgerMenuIcon />}</button>
 				</collapsible.trigger>
 				<collapsible.content>
-					<form.label for='senderID' color={currentUser.theme}>Sender ID</form.label>
-					<form.input type='number' name='senderID' color={currentUser.theme} />
-					<form.label for='senderUsername' color={currentUser.theme}>Sender Username</form.label>
-					<form.input type='text' name='senderUsername' color={currentUser.theme} />
-					<form.label for='receiverID' color={currentUser.theme}>Receiver ID</form.label>
-					<form.input type='number' name='receiverID' color={currentUser.theme} />
-					<form.label for='receiverUsername' color={currentUser.theme}>Receiver Username</form.label>
-					<form.input type='text' name='receiverUsername' color={currentUser.theme} />
-					<form.label for='amount' color={currentUser.theme}>Amount</form.label>
-					<form.input type='text' name='amount' color={currentUser.theme} />
+					<form.label for='senderID' theme={currentUser.theme}>Sender ID</form.label>
+					<form.input type='number' name='senderID' theme={currentUser.theme} />
+					<form.label for='senderUsername' theme={currentUser.theme}>Sender Username</form.label>
+					<form.input type='text' name='senderUsername' theme={currentUser.theme} />
+					<form.label for='receiverID' theme={currentUser.theme}>Receiver ID</form.label>
+					<form.input type='number' name='receiverID' theme={currentUser.theme} />
+					<form.label for='receiverUsername' theme={currentUser.theme}>Receiver Username</form.label>
+					<form.input type='text' name='receiverUsername' theme={currentUser.theme} />
+					<form.label for='amount' theme={currentUser.theme}>Amount</form.label>
+					<form.input type='text' name='amount' theme={currentUser.theme} />
 				</collapsible.content>
 			</collapsible.root >
-			<Table columns={columns} data={transactions} sortBy={[{ id: 'readableTimestamp', desc: false }]} />
+			<Table columns={columns} data={transactions} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
 		</div >
 	)
 }

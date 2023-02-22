@@ -2,7 +2,7 @@ import { styled } from '@stitches/react'
 
 export const root = styled('table', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -21,7 +21,7 @@ export const root = styled('table', {
 		}
 	},
 	defaultVariants: {
-		color: 'light',
+		theme: 'light',
 		border: 'false'
 	},
 	textAlign: 'center',
@@ -31,7 +31,7 @@ export const root = styled('table', {
 
 export const thead = styled('thead', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -39,13 +39,13 @@ export const thead = styled('thead', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	}
 })
 
 export const tbody = styled('tbody', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -53,13 +53,13 @@ export const tbody = styled('tbody', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	}
 })
 
 export const tfoot = styled('tfoot', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -67,13 +67,13 @@ export const tfoot = styled('tfoot', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	}
 })
 
 export const tr = styled('tr', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -81,13 +81,13 @@ export const tr = styled('tr', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	}
 })
 
 export const th = styled('th', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				color: 'rgb(0, 0, 0)'
 			},
@@ -97,14 +97,14 @@ export const th = styled('th', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 	backgroundColor: 'rgb(0, 0, 0)'
 })
 
 export const td = styled('td', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				color: 'rgb(0, 0, 0)'
 			},
@@ -114,6 +114,6 @@ export const td = styled('td', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	}
 })

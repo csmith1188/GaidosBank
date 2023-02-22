@@ -3,7 +3,7 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 
 export const root = styled(NavigationMenu.Root, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				backgroundColor: 'rgb(160, 160, 160)',
 				borderBottomColor: 'rgb(50, 50, 50)'
@@ -35,7 +35,7 @@ export const item = styled(NavigationMenu.Item, {
 
 export const link = styled(NavigationMenu.Link, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				color: 'rgb(0,0,0)',
 				'&:hover': {
@@ -59,7 +59,7 @@ export const link = styled(NavigationMenu.Link, {
 
 export const button = styled('button', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				color: 'rgb(0,0,0)',
 				'&:hover': {

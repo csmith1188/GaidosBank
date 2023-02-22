@@ -2,23 +2,22 @@ import { styled } from '@stitches/react'
 
 export const root = styled('form', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				backgroundColor: 'rgb(160, 160, 160)',
 			},
 			dark: {
-				backgroundColor: 'rgb(30, 30, 30)',
 			}
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	}
 })
 
 export const input = styled('input', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				background: 'none',
 				color: 'rgb(0, 0, 0)',
@@ -32,14 +31,14 @@ export const input = styled('input', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 	borderStyle: 'solid',
 })
 
 export const label = styled('label', {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				background: 'none',
 				color: 'rgb(0, 0, 0)',
@@ -51,7 +50,7 @@ export const label = styled('label', {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 	fontWeight: 'bold'
 })

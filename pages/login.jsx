@@ -39,14 +39,17 @@ export default function Login() {
 				.then(data => {
 					currentUser = data
 					updateCurrentUser()
-					Router.push('/')
+					console.log(data);
+					setTimeout(() => {
+						Router.push('/')
+					}, 10000);
 				})
 		}
 	}
-	let color
+	let theme
 
-	if (currentUser.theme) color = 'rgb(255, 255, 255)'
-	else color = 'rgb(0, 0, 0)'
+	if (currentUser.theme) theme = 'rgb(255, 255, 255)'
+	else theme = 'rgb(0, 0, 0)'
 
 
 	return (
@@ -57,7 +60,7 @@ export default function Login() {
 				marginBottom: '0px',
 				justifyContent: 'center',
 				textAlign: 'center',
-				color: { color }
+				theme: { theme }
 			}}
 		>
 			<form onSubmit={handleSubmit} style={{ marginTop: '2rem', zoom: '250%' }}>

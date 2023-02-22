@@ -39,21 +39,21 @@ export default function NavBar() {
 	// }
 
 	return (
-		<nav.root color={currentUser.theme} id='nav'>
+		<nav.root theme={currentUser.theme} id='nav'>
 			<nav.list className='list' id='list1'>
 				<nav.item>
-					<nav.link color={currentUser.theme} active='true' href='/makeTransaction'>
+					<nav.link theme={currentUser.theme} active='true' href='/makeTransaction'>
 						Make Transaction
 					</nav.link>
 				</nav.item>
 				<nav.item>
-					<nav.link color={currentUser.theme} active='true' href='/viewTransactions'>
+					<nav.link theme={currentUser.theme} active='true' href='/viewTransactions'>
 						View Transactions
 					</nav.link>
 				</nav.item>
 				{currentUser.permissions === 'admin' ?
 					<nav.item>
-						<nav.link color={currentUser.theme} active='true' href='/Admin'>
+						<nav.link theme={currentUser.theme} active='true' href='/Admin'>
 							Admin
 						</nav.link>
 					</nav.item> : null
@@ -64,7 +64,7 @@ export default function NavBar() {
 				>
 					<nav.link
 						style={{ color: 'rgb(19, 161, 14)', }}
-						color={currentUser.theme}
+						theme={currentUser.theme}
 						active='true'
 						href='/'
 					>
@@ -74,13 +74,13 @@ export default function NavBar() {
 			</nav.list>
 			<nav.list className='list' id='list2'>
 				<nav.item>
-					<nav.link color={currentUser.theme} active='true' href='/userSettings'>
+					<nav.link theme={currentUser.theme} active='true' href='/userSettings'>
 						User Settings
 					</nav.link>
 				</nav.item>
 				<nav.item>
 					<nav.button
-						color={currentUser.theme}
+						theme={currentUser.theme}
 						onClick={logout}
 						id='logout'
 						className='navButton'

@@ -3,7 +3,7 @@ import * as Collapsible from '@radix-ui/react-collapsible';
 
 export const root = styled(Collapsible.Root, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -11,13 +11,13 @@ export const root = styled(Collapsible.Root, {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	}
 })
 
 export const trigger = styled(Collapsible.Trigger, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -25,13 +25,13 @@ export const trigger = styled(Collapsible.Trigger, {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 })
 
 export const content = styled(Collapsible.Content, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 			},
 			dark: {
@@ -39,6 +39,6 @@ export const content = styled(Collapsible.Content, {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 })

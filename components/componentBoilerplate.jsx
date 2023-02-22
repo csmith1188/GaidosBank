@@ -2,7 +2,7 @@ import { styled } from '@stitches/react'
 
 export const element = styled(element, {
 	variants: {
-		color: {
+		theme: {
 			light: {
 				//css for light theme
 			},
@@ -12,7 +12,7 @@ export const element = styled(element, {
 		}
 	},
 	defaultVariants: {
-		color: 'light'
+		theme: 'light'
 	},
 	//css
 })
