@@ -63,7 +63,7 @@ body {
 
 #modal-toggle:checked ~ .modal-backdrop {
   opacity: 1;
-  background-color: rgba(94, 0, 0, 0.5);
+  background-color: rgba(155, 0, 0, 0.664);
   z-index: 998;
   transform: scale(1);
 }
@@ -156,7 +156,7 @@ body {
   background: rgba(94, 0, 0, 0.5);
 }
 .tabs > .radio:checked + .table {
-  color: rgba(94, 0, 0, 0.5);
+  color: rgb(200, 200, 200);
   background: #a70101;
   cursor: auto;
 }
