@@ -10,9 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.8",
+    "encrypt": "^0.0.1",
+    "encrypt-with-password": "^1.0.0",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "mysql": "^2.18.1",
-    "sqlite3": "^5.0.11"
+    "password": "^0.1.1",
+    "sqlite3": "^5.0.11",
+    "with": "^7.0.2"
   }
 }

@@ -24,12 +24,12 @@ app.use(session({
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-	res.render('login');
+	res.render('mainpage');
 })
 
 
-app.get('/Bank', (req, res) => {
-	res.render('Bank');
+app.get('/mainpage', (req, res) => {
+	res.render('mainpage');
 })
 
 
