@@ -9,27 +9,37 @@ export default withIronSessionApiRoute(
 		if (request.query.user) user = request.query.user
 		else user = null
 
-		function sendTransactions() {
+		async function sendTransactions() {
 			if (transactions) {
-				database.serialize(() => {
-					for (let transaction of transactions) {
-						database.get('SELECT username FROM USERS WHERE id=?', transaction.senderId, (error, sender) => {
-							if (error) throw error
-							if (sender) {
-								transaction.senderUsername = sender.username
-							}
+				try {
+					await Promise.all(transactions.map(async (transaction) => {
+						const sender = await new Promise((resolve, reject) => {
+							database.get('SELECT username FROM USERS WHERE id=?', transaction.senderId, (error, sender) => {
+								if (error) reject(error)
+								else resolve(sender)
+							})
 						})
-						database.get('SELECT username FROM USERS WHERE id=?', transaction.receiverId, (error, receiver) => {
-							if (error) throw error
-							if (receiver) {
-								transaction.receiverUsername = receiver.username
-							}
+						if (sender) {
+							transaction.senderUsername = sender.username
+						}
+						const receiver = await new Promise((resolve, reject) => {
+							database.get('SELECT username FROM USERS WHERE id=?', transaction.receiverId, (error, receiver) => {
+								if (error) reject(error)
+								else resolve(receiver)
+							})
 						})
-					}
-				})
-				response.send(transactions)
+						if (receiver) {
+							transaction.receiverUsername = receiver.username
+						}
+					}))
+					response.send(transactions)
+				} catch (error) {
+					console.error(error)
+					response.status(500).send({ error: 'Internal server error' })
+				}
+			} else {
+				response.send([])
 			}
-			else response.send([])
 		}
 
 		if (user) {

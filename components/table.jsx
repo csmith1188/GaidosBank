@@ -11,6 +11,15 @@ export const Table = (props) => {
 	const data = useMemo(() => props.data, [props.data])
 	var currentUser = useAtomValue(currentUserAtom);
 
+	let tableProps = {
+		columns,
+		data
+	}
+
+	if (props.sortBy) tableProps.initialState = {
+		sortBy: props.sortBy
+	}
+
 	const {
 		getTableProps,
 		getTableBodyProps,
@@ -20,13 +29,8 @@ export const Table = (props) => {
 		prepareRow,
 		state,
 		setGlobalFilter
-	} = useTable({
-		columns,
-		data,
-		initialState: {
-			sortBy: props.sortBy
-		}
-	},
+	} = useTable(
+		tableProps,
 		useGlobalFilter,
 		useSortBy,
 	)
@@ -38,7 +42,7 @@ export const Table = (props) => {
 			{props.canFilter ?
 				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 				: null}
-			<styledTable.root {...getTableProps()} theme={currentUser.theme} border={props.border}>
+			<styledTable.root {...getTableProps()} theme={currentUser.theme} border={props.border} id={props.id}>
 				<styledTable.thead theme={currentUser.theme}>
 					{headerGroups.map(headerGroup => (
 						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme}>

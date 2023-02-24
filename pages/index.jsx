@@ -1,11 +1,12 @@
-import { useAtomValue, useAtom } from 'jotai'
-import { currentUserAtom, leaderBoardAtom } from '../atoms'
+import { useAtomValue } from 'jotai'
+import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState, useMemo } from 'react'
+import { Table } from '../components/table'
 
 export default function Home() {
 	var currentUser = useAtomValue(currentUserAtom)
-	var [leaderBoard, setLeaderBoard] = useAtom(leaderBoardAtom)
+	var [leaderBoard, setLeaderBoard] = useState([])
 
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
@@ -14,27 +15,18 @@ export default function Home() {
 	}, [currentUser])
 
 	useEffect(() => {
-		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
-			.then(response => response.json())
-			.then(data => {
-				leaderBoard = data
-				setLeaderBoard(leaderBoard.map((user) => {
-					return user
-				}))
-			})
-	}, [])
-
-	useEffect(() => {
-		setInterval(() => {
-			fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
-				.then(response => response.json())
-				.then(data => {
-					leaderBoard = data
-					setLeaderBoard(leaderBoard.map((user) => {
-						return user
-					}))
-				})
-		}, 5000)
+		setTimeout(() => {
+			setInterval(() => {
+				fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
+					.then(response => response.json())
+					.then(data => {
+						for (let user of data) {
+							user.rank = data.indexOf(user) + 1
+						}
+						setLeaderBoard(data)
+					})
+			}, 1000)
+		}, 10000)
 	}, [])
 
 	let theme
@@ -46,37 +38,24 @@ export default function Home() {
 		theme = { text: 'rgb(0, 0, 0)' }
 	}
 
-	if (typeof window !== 'undefined') {
-		let table = document.getElementsByTagName('table')[0]
-		if (table) {
-			table.style.border = '0.15rem solid ' + theme.text
-			table.style.borderRadius = '1rem'
-			table.style.zoom = '300%'
-			table.style.marginLeft = 'auto'
-			table.style.marginRight = 'auto'
-			let thead = table.getElementsByTagName('thead')[0]
-			let rows = thead.getElementsByTagName('tr')
-			for (let rowNum = 0;rowNum < rows.length;rowNum++) {
-				let row = rows[rowNum].getElementsByTagName('th')
-				for (let thNum = 0;thNum < row.length;thNum++) {
-					let th = row[thNum]
-					th.style.paddingLeft = '0.3rem'
-					th.style.paddingRight = '0.3rem'
-				}
-			}
-			let tbody = table.getElementsByTagName('tbody')[0]
-			rows = tbody.getElementsByTagName('tr')
-			for (let rowNum = 0;rowNum < rows.length;rowNum++) {
-				let row = rows[rowNum]
-				if (rowNum === 0) row.style.backgroundColor = 'rgb(255, 215, 0)'
-				if (rowNum === 1) row.style.backgroundColor = 'rgb(192, 192, 192)'
-				if (rowNum === 2) row.style.backgroundColor = 'rgb(205, 127, 50)'
-			}
+	const columns = [
+		{
+			Header: 'Rank',
+			accessor: 'rank',
+		},
+		{
+			Header: 'Username',
+			accessor: 'username',
+		},
+		{
+			Header: 'Balance',
+			accessor: 'balance',
 		}
-	}
+	]
 
 	return (
 		<div
+			key={leaderBoard.length}
 			style={{
 				width: '80%',
 				marginLeft: '10%',
@@ -105,52 +84,16 @@ export default function Home() {
 					borderColor: theme.text,
 					borderWidth: '5%',
 					borderRadius: '50px',
-					width: '20%',
+					width: '25%',
 					marginLeft: 'auto',
 					marginRight: 'auto',
-					fontSize: '1.75rem',
+					fontSize: '2rem',
 					fontWeight: 'bold'
 				}}
 			>
 				Leader Board
 			</p>
-			<table
-				style={{ borderSpacing: 0 }}
-			// style={{
-			// 	borderWidth: '0.1rem',
-			// 	borderStyle: 'solid',
-			// 	borderColor: theme.text
-			// }}
-			>
-				<thead
-					style={{
-						fontSize: '1.25rem',
-						fontWeight: 'bold'
-					}}
-				>
-					<tr>
-						<th scope='col'>Rank</th>
-						<th scope='col'>Username</th>
-						<th scope='col'>Balance</th>
-					</tr>
-				</thead>
-				<tbody
-					style={{
-						fontSize: '0.7rem',
-						fontWeight: 'bold'
-					}}
-				>
-					{leaderBoard.map(user => {
-						return (
-							<tr>
-								<td>{leaderBoard.indexOf(user) + 1}</td>
-								<td>{user.username}</td>
-								<td>{user.balance}</td>
-							</tr>
-						)
-					})}
-				</tbody>
-			</table>
-		</div>
+			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' noSSR />
+		</div >
 	)
 }
