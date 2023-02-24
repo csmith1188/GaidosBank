@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
 
 export default function Home() {
@@ -14,19 +14,22 @@ export default function Home() {
 		}
 	}, [currentUser])
 
+	function getLeaderBoard() {
+		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
+			.then(response => response.json())
+			.then(data => {
+				for (let user of data) {
+					user.rank = data.indexOf(user) + 1
+				}
+				setLeaderBoard(data)
+			})
+	}
+
 	useEffect(() => {
-		setTimeout(() => {
-			setInterval(() => {
-				fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
-					.then(response => response.json())
-					.then(data => {
-						for (let user of data) {
-							user.rank = data.indexOf(user) + 1
-						}
-						setLeaderBoard(data)
-					})
-			}, 1000)
-		}, 10000)
+		getLeaderBoard()
+		setInterval(() => {
+			getLeaderBoard()
+		}, 1000)
 	}, [])
 
 	let theme
@@ -55,7 +58,7 @@ export default function Home() {
 
 	return (
 		<div
-			key={leaderBoard.length}
+			id='home'
 			style={{
 				width: '80%',
 				marginLeft: '10%',
@@ -65,16 +68,9 @@ export default function Home() {
 				color: theme.text
 			}}
 		>
-			<p
-				style={{
-					marginLeft: 'auto',
-					marginRight: 'auto',
-					fontSize: '25px',
-					fontWeight: 'bold'
-				}}
-			>
+			<p>
 				Welcome back, {currentUser.username}!<br />
-				You have ${currentUser.balance} in your Balance
+				You have $ {currentUser.balance} in your Balance
 			</p>
 			<p
 				style={{

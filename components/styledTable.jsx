@@ -22,7 +22,7 @@ export const root = styled('table', {
 	},
 	defaultVariants: {
 		theme: 'light',
-		border: 'false'
+		border: 'true'
 	},
 	textAlign: 'center',
 	overflow: 'hidden',

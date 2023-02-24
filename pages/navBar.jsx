@@ -51,12 +51,12 @@ export default function NavBar() {
 						View Transactions
 					</nav.link>
 				</nav.item>
-				{currentUser.permissions === 'admin' ?
-					<nav.item>
+				{currentUser.permissions === 'admin' &&
+					(<nav.item>
 						<nav.link theme={currentUser.theme} active='true' href='/Admin'>
 							Admin
 						</nav.link>
-					</nav.item> : null
+					</nav.item>)
 				}
 			</nav.list>
 			<nav.list id='title'>

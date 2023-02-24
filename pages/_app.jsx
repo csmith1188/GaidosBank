@@ -2,6 +2,7 @@ import NavBar from './navBar'
 import '../styles/styles.scss'
 import { useAtom } from 'jotai'
 import { currentUserAtom, DebugAtoms } from '../atoms'
+import { useEffect } from 'react'
 
 export default function App({ Component, pageProps }) {
   var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
@@ -33,9 +34,10 @@ export default function App({ Component, pageProps }) {
     changeTheme()
   }
 
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
     window.addEventListener('load', changeTheme())
-  }
+  })
+
   return (
     <>
       <DebugAtoms>
