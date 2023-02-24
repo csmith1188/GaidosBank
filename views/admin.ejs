@@ -1,78 +1,16 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-	<head>
-		<meta charset="utf-8">
-		<title>Bank System</title>
-		<style media="screen">
-        
-        body {
-            background: #000000;
-        }
-		.students {
-            height: 350px;
-			width: 400px;
-			margin: 0 auto;
-			font-family: Tahoma, Geneva, sans-serif, Pacifico;
-		}
-		.students h1 {
-			text-align: center;
-			color: #a70101;
-			font-family: 'Pacifico', cursive;
-			font-size: 24px;
-            height: 20px;
-			padding: 20px 0 20px 0;
-		}
-		.students h2 {
-			text-align: center;
-			color: #a70101;
-			font-size: 20px;
-            height: 20px;
-			padding: 20px 0 20px 0;
-			
-		}
-		.students table, th, td {
-			color: #a70101;
-			border:1px solid #a70101;
-		}
-		.students input[type="password"] {
-			color: white;
-			text-decoration-color: #dddddd;
-            outline-style: solid;
-            outline-color: white;
-            outline-width: 1px;
-            background-color: #292929;
-			width: 100%;
-			padding: 15px;
-			border: 1px solid #dddddd;
-			margin-bottom: 15px;
-			box-sizing:border-box;
-		}
-		.students input[type="text"] {
-			color: white;
-			text-decoration-color: #dddddd;
-            outline-style: solid;
-            outline-color: white;
-            outline-width: 1px;
-            background-color: #292929;
-			width: 100%;
-			padding: 15px;
-			border: 1px solid #dddddd;
-			margin-bottom: 15px;
-			box-sizing:border-box;
-		}
-		.students input[type="submit"] {
-			width: 100%;
-			padding: 15px;
-			background-color: black;
-			border: 0;
-			box-sizing: border-box;
-			cursor: pointer;
-			font-weight: bold;
-			color: #ffffff;
-		}
-		
-		
-		
+
+<%- include('header') %>
+		<div class="moneystuff">
+			<h1>Admin Login</h1>
+            <h2>Login Here</h2>
+			<form action="adminLogin" method="POST">
+                <input type="text" name="name" value="" placeholder="Name">
+				<input type="password" name="password" value="" placeholder="Password">
+                <input type="submit" name="" value="Submit">
+			</form>
+		</div>
+		<div class="lightdarkmode">
+			<button onclick="myFunction()">Toggle light/dark mode</button>
 		</style>
 		
 	</head>
@@ -97,7 +35,6 @@
 				  <td>$ 9,000.42</td>
 				</tr>
 			  </table>
-			
 		</div>
 	</body>
 </html>

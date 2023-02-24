@@ -24,20 +24,19 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/', (req, res) => {
-	res.render('login');
+	res.render('mainpage');
 })
 
 
-app.get('/bank', (req, res) => {
-	res.render('bank');
-})
+
+app.get('/mainpage', (req, res) => {
+	res.render('mainpage');
+
 
 
 app.get('/admin', (req, res) => {
 	res.render('admin');
 })
-
-
 
 app.get('/Student', (req, res) => {
 	res.render('Student');
