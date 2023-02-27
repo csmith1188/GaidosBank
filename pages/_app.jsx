@@ -1,10 +1,13 @@
 import NavBar from './navBar'
 import '../styles/styles.scss'
 import { useAtom } from 'jotai'
-import { currentUserAtom, DebugAtoms } from '../atoms'
+import { useHydrateAtoms } from 'jotai/utils'
+import { currentUserAtom, leaderBoardAtom, DebugAtoms } from '../atoms'
 import { useEffect } from 'react'
 
 export default function App({ Component, pageProps }) {
+  useHydrateAtoms(new Map([[currentUserAtom, leaderBoardAtom]]))
+
   var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
   function updateCurrentUser() {

@@ -9,10 +9,10 @@ export default function Home() {
 	var [leaderBoard, setLeaderBoard] = useState([])
 
 	useEffect(() => {
-		if (!currentUser.isAuthenticated) {
+		if (currentUser && !currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	}, [currentUser])
+	})
 
 	function getLeaderBoard() {
 		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
@@ -33,7 +33,7 @@ export default function Home() {
 	}, [])
 
 	let theme
-	if (currentUser.theme === 'dark') {
+	if (currentUser && currentUser.theme === 'dark') {
 		theme = {
 			text: 'rgb(255, 255, 255)'
 		}
@@ -65,19 +65,19 @@ export default function Home() {
 				marginBottom: '0px',
 				justifyContent: 'center',
 				textAlign: 'center',
-				color: theme.text
+				color: 'white'
 			}}
 		>
 			<p>
-				Welcome back, {currentUser.username}!<br />
-				You have $ {currentUser.balance} in your Balance
+				Welcome back, {currentUser ? currentUser.username : ''}!<br />
+				You have ${currentUser ? currentUser.balance : ''} in your Balance
 			</p>
 			<p
 				style={{
 					backgroundColor: 'rgb(255, 215, 0)',
 					padding: '0.5%',
 					borderStyle: 'solid',
-					borderColor: theme.text,
+					borderColor: 'white',
 					borderWidth: '5%',
 					borderRadius: '50px',
 					width: '25%',
@@ -89,7 +89,7 @@ export default function Home() {
 			>
 				Leader Board
 			</p>
-			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' noSSR />
+			{/* <Table columns={columns} data={leaderBoard} id='leaderBoardTable' noSSR /> */}
 		</div >
 	)
 }
