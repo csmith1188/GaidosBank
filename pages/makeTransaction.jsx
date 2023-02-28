@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
-import * as Form from '../components/form'
+import * as form from '../components/form'
 
-export default function makeTransaction() {
+export default function MakeTransaction() {
 	var currentUser = useAtomValue(currentUserAtom)
 	var account, amount
 
@@ -26,20 +26,19 @@ export default function makeTransaction() {
 	}
 
 	return (
-		<Form.root onSubmit={handleSubmit} theme={currentUser.theme}>
-			<Form.input
+		<form.root onSubmit={handleSubmit} theme={currentUser.theme} id='makeTransaction'>
+			<form.input
 				type='text'
-				placeholder='Username / id'
+				placeholder='Username / ID'
 				theme={currentUser.theme}
 				onChange={(event) => account = event.target.value} />
-			<br />
-			<Form.input
+			<form.input
 				type='number'
-				placeholder='amount'
+				placeholder='Amount'
+				min='1'
 				theme={currentUser.theme}
 				onChange={(event) => amount = event.target.value} />
-			<br />
-			<Form.input type='submit' value='Submit' theme={currentUser.theme} />
-		</Form.root>
+			<form.input type='submit' theme={currentUser.theme} />
+		</form.root>
 	)
 }

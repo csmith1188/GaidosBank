@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
+import * as form from '../components/form'
 
 export default function Login() {
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
@@ -50,31 +51,31 @@ export default function Login() {
 
 	if (currentUser.theme) theme = 'rgb(255, 255, 255)'
 	else theme = 'rgb(0, 0, 0)'
-
+	Math.r
 
 	return (
-		<div
-			style={{
-				width: '80%',
-				marginLeft: '10%',
-				marginBottom: '0px',
-				justifyContent: 'center',
-				textAlign: 'center',
-				theme: { theme }
-			}}
-		>
-			<form onSubmit={handleSubmit} style={{ marginTop: '2rem', zoom: '250%' }}>
-				<label htmlFor=''></label>
-				<input
+		<div id='login'>
+			<form.root onSubmit={handleSubmit} theme={currentUser.theme}>
+				<form.label htmlFor='' theme={currentUser.theme}></form.label>
+				<form.input
 					type='text'
 					id='username'
+					placeholder='Username'
 					value={username}
 					onChange={(event) => username = event.target.value}
+					theme={currentUser.theme}
 				/>
 				<br />
-				<input type='text' id='password' value={password} onChange={(event) => password = event.target.value} /><br />
-				<input type='submit' />
-			</form>
+				<form.input
+					type='text'
+					id='password'
+					placeholder='Password'
+					value={password}
+					onChange={(event) => password = event.target.value}
+					theme={currentUser.theme} />
+				<br />
+				<form.input type='submit' theme={currentUser.theme} />
+			</form.root>
 		</div>
 	)
 }

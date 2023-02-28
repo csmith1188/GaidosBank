@@ -1,8 +1,10 @@
 import * as nav from '../components/nav'
 import { useAtom } from 'jotai';
 import { currentUserAtom } from '../atoms'
+import { useIsMounted } from '../hooks/useIsMounted';
 
 export default function NavBar() {
+	const mounted = useIsMounted()
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom);
 
 	function updateCurrentUser() {
@@ -51,12 +53,12 @@ export default function NavBar() {
 						View Transactions
 					</nav.link>
 				</nav.item>
-				{currentUser.permissions === 'admin' &&
-					(<nav.item>
+				{mounted && currentUser.permissions === 'admin' &&
+					<nav.item>
 						<nav.link theme={currentUser.theme} active='true' href='/Admin'>
 							Admin
 						</nav.link>
-					</nav.item>)
+					</nav.item>
 				}
 			</nav.list>
 			<nav.list id='title'>

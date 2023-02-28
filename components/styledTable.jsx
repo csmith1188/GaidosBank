@@ -1,18 +1,20 @@
 import { styled } from '@stitches/react'
+import { Table } from './table'
 
 export const root = styled('table', {
 	variants: {
 		theme: {
 			light: {
+				borderColor: 'rgb(200, 200, 200)',
 			},
 			dark: {
+				borderColor: 'rgb(75, 75, 75)',
 			}
 		},
 		border: {
 			true: {
 				width: '90%',
 				marginLeft: '5%',
-				borderColor: 'rgb(75, 75, 75)',
 				borderStyle: 'solid'
 			},
 			false: {
@@ -100,20 +102,4 @@ export const th = styled('th', {
 		theme: 'light'
 	},
 	backgroundColor: 'rgb(0, 0, 0)'
-})
-
-export const td = styled('td', {
-	variants: {
-		theme: {
-			light: {
-				color: 'rgb(0, 0, 0)'
-			},
-			dark: {
-				color: 'rgb(255, 255, 255)'
-			}
-		}
-	},
-	defaultVariants: {
-		theme: 'light'
-	}
 })

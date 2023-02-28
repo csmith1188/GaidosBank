@@ -4,7 +4,6 @@ export const root = styled('form', {
 	variants: {
 		theme: {
 			light: {
-				backgroundColor: 'rgb(160, 160, 160)',
 			},
 			dark: {
 			}

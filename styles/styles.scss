@@ -26,6 +26,27 @@ body {
 		sans-serif;
 }
 
+// input {
+// 	padding: MIN(0.5vh, 10vw);
+// 	border-width: MIN(0.4vh);
+// 	border-radius: MIN(5vh, 10vw);
+// }
+input {
+	padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
+	border-width: MIN(0.4vh);
+	transition: 0.5s;
+	outline: none;
+	border-radius: MIN(5vh, 10vw);
+
+	&[type=submit] {
+		width: fit-content;
+	}
+}
+
+input[type=text]:focus {
+	filter: invert(60%)
+}
+
 #viewTransactionsTable {
 	width: 90%;
 	margin-left: 5%;
@@ -39,14 +60,8 @@ body {
 	padding: MIN(1.5vh, 10vw);
 	padding-top: MIN(1.5vh, 10vw);
 
-	input {
-		padding: MIN(0.5vh, 10vw);
-		border-width: MIN(0.4vh);
-		border-radius: MIN(5vh, 10vw);
-	}
 
 	button {
-		// background: none;
 		border: none;
 	}
 
@@ -90,6 +105,12 @@ body {
 	width: 90%;
 	margin-left: 5%;
 	margin-top: 3vh;
+
+	p {
+		text-align: center;
+		font-size: 3vh;
+		font-weight: bold;
+	}
 
 	table {
 		border-spacing: MAX(1vh, 0vw);
@@ -137,6 +158,35 @@ body {
 				padding: 2px;
 			}
 		}
+	}
+}
+
+#login {
+	margin-top: 8vh;
+	display: grid;
+	width: 90%;
+	margin-left: 5%;
+	justify-content: center;
+
+	form {
+		zoom: 300%;
+
+		input {
+			margin-bottom: 1.5vh;
+		}
+	}
+}
+
+#makeTransaction {
+	margin-top: 2vh;
+	display: grid;
+	width: 90%;
+	margin-left: 5%;
+	justify-content: center;
+	zoom: 300%;
+
+	input {
+		margin-bottom: 1.5vh;
 	}
 }
 

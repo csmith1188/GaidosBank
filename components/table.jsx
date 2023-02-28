@@ -32,7 +32,7 @@ export const Table = (props) => {
 	} = useTable(
 		tableProps,
 		useGlobalFilter,
-		useSortBy,
+		(props.sortable ? useSortBy : ''),
 	)
 
 	const { globalFilter } = state
@@ -42,12 +42,12 @@ export const Table = (props) => {
 			{props.canFilter ?
 				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 				: null}
-			<styledTable.root {...getTableProps()} theme={currentUser.theme} border={props.border} id={props.id}>
+			<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
 				<styledTable.thead theme={currentUser.theme}>
 					{headerGroups.map(headerGroup => (
 						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme}>
 							{headerGroup.headers.map(column => (
-								<styledTable.th key={column.id} {...column.getHeaderProps(column.getSortByToggleProps())} theme={currentUser.theme}>
+								<styledTable.th key={column.id} {...column.getHeaderProps(props.sortable ? column.getSortByToggleProps() : '')} theme={currentUser.theme}>
 									{column.render('Header')}
 									<span>
 										{column.isSorted
