@@ -11,7 +11,6 @@ export default withIronSessionApiRoute(
 		if (request.query.amount && request.query.amount > 0) amount = parseInt(request.query.amount)
 		else amount = null;
 		if (sender) {
-			console.log(receiver, amount)
 			if (receiver != null && amount != null) {
 				database.get(
 					'SELECT * FROM users WHERE username = ?', sender, (error, sender) => {

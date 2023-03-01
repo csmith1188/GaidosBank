@@ -6,48 +6,48 @@ import { currentUserAtom, leaderBoardAtom, DebugAtoms } from '../atoms'
 import { useEffect } from 'react'
 
 export default function App({ Component, pageProps }) {
-  useHydrateAtoms(new Map([[currentUserAtom, leaderBoardAtom]]))
+	useHydrateAtoms(new Map([[currentUserAtom, leaderBoardAtom]]))
 
-  var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
-  function updateCurrentUser() {
-    setCurrentUser({
-      balance: currentUser.balance,
-      username: currentUser.username,
-      id: currentUser.id,
-      permissions: currentUser.permissions,
-      theme: currentUser.theme,
-      isAuthenticated: currentUser.isAuthenticated,
-      transactions: currentUser.transactions
-    })
-  }
+	function updateCurrentUser() {
+		setCurrentUser({
+			balance: currentUser.balance,
+			username: currentUser.username,
+			id: currentUser.id,
+			permissions: currentUser.permissions,
+			theme: currentUser.theme,
+			isAuthenticated: currentUser.isAuthenticated,
+			transactions: currentUser.transactions
+		})
+	}
 
-  function changeTheme() {
-    if (currentUser.theme === 'dark') {
-      document.body.style.backgroundColor = 'rgb(20, 20, 20)'
-    } else {
-      document.body.style.backgroundColor = 'rgb(255, 255, 255)'
-    }
-  }
+	function changeTheme() {
+		if (currentUser.theme === 'dark') {
+			document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+		} else {
+			document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+		}
+	}
 
-  function toggleTheme() {
-    if (currentUser.theme === 'dark') currentUser.theme = 'light'
-    else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-    updateCurrentUser()
-    changeTheme()
-  }
+	function toggleTheme() {
+		if (currentUser.theme === 'dark') currentUser.theme = 'light'
+		else if (currentUser.theme === 'light') currentUser.theme = 'dark'
+		updateCurrentUser()
+		changeTheme()
+	}
 
-  useEffect(() => {
-    window.addEventListener('load', changeTheme())
-  })
+	useEffect(() => {
+		window.addEventListener('load', changeTheme())
+	})
 
-  return (
-    <>
-      <DebugAtoms>
-        <NavBar></NavBar >
-        <Component {...pageProps} />
-        <button onClick={toggleTheme}>Toggle theme</button>
-      </DebugAtoms>
-    </>
-  )
+	return (
+		<>
+			<DebugAtoms>
+				<NavBar></NavBar >
+				<Component {...pageProps} />
+				<button onClick={toggleTheme}>Toggle theme</button>
+			</DebugAtoms>
+		</>
+	)
 }

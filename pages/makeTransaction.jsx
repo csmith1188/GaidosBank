@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 import * as form from '../components/form'
+import { Toast } from '@radix-ui/react-toast'
 
 export default function MakeTransaction() {
 	var currentUser = useAtomValue(currentUserAtom)
