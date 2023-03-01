@@ -47,7 +47,6 @@ export default function Login() {
 	return (
 		<div id='login'>
 			<form.root onSubmit={handleSubmit} theme={currentUser.theme}>
-				<form.label htmlFor='' theme={currentUser.theme}></form.label>
 				<form.input
 					type='text'
 					id='username'

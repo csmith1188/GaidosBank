@@ -18,6 +18,7 @@ body {
 
 form {
 	justify-content: center;
+	font-size: MIN(2vh, 10vw);
 
 	input {
 		padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
@@ -160,31 +161,31 @@ form {
 	justify-content: center;
 
 	form {
+		display: grid;
 		zoom: 300%;
 
 
 		// label {
 		// 	width: max-content;
 		// }
-		> {
+		input[type=text] {
 			margin-left: 50%;
 			transform: translateX(-50%);
-
-			input {
-				&[type=text] {
-					margin-bottom: 1.5vh;
-				}
-			}
+			margin-bottom: 1.5vh;
 		}
 	}
 
-	a {
-		text-decoration: none;
-		padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
-		width: fit-content;
-		border-width: MIN(0.4vh);
-		border-radius: MIN(5vh, 10vw);
-		border-style: solid;
+	div {
+		justify-content: space-around;
+
+		a {
+			text-decoration: none;
+			padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
+			width: fit-content;
+			border-width: MIN(0.4vh);
+			border-radius: MIN(5vh, 10vw);
+			border-style: solid;
+		}
 	}
 }
 
