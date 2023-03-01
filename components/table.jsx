@@ -4,7 +4,6 @@ import * as styledTable from './styledTable'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import { GlobalFilter } from './GlobalFilter'
-import { ColumnFilter } from './ColumnFilter'
 
 export const Table = (props) => {
 	const columns = useMemo(() => props.columns, [props.columns])

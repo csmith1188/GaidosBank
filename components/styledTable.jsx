@@ -103,3 +103,19 @@ export const th = styled('th', {
 	},
 	backgroundColor: 'rgb(0, 0, 0)'
 })
+
+export const td = styled('td', {
+	variants: {
+		theme: {
+			light: {
+				color: 'rgb(0, 0, 0)'
+			},
+			dark: {
+				color: 'rgb(255, 255, 255)'
+			}
+		}
+	},
+	defaultVariants: {
+		theme: 'light'
+	}
+})

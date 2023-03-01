@@ -26,11 +26,6 @@ body {
 		sans-serif;
 }
 
-// input {
-// 	padding: MIN(0.5vh, 10vw);
-// 	border-width: MIN(0.4vh);
-// 	border-radius: MIN(5vh, 10vw);
-// }
 input {
 	padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
 	border-width: MIN(0.4vh);
@@ -171,7 +166,7 @@ input[type=text]:focus {
 	form {
 		zoom: 300%;
 
-		input {
+		input[type=text] {
 			margin-bottom: 1.5vh;
 		}
 	}
@@ -186,7 +181,16 @@ input[type=text]:focus {
 	zoom: 300%;
 
 	input {
-		margin-bottom: 1.5vh;
+
+		&[type=text],
+		&[type=number] {
+			margin-bottom: 1.5vh;
+			margin-top: 0.75vh;
+		}
+
+		&[type=submit] {
+			margin-top: 1vh;
+		}
 	}
 }
 

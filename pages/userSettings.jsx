@@ -5,7 +5,6 @@ import { IconSun, IconMoonStars } from '@tabler/icons'
 import Router from 'next/router'
 import { useEffect } from 'react'
 
-
 export default function UserSettings() {
 	const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 

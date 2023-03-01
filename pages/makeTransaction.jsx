@@ -27,14 +27,18 @@ export default function MakeTransaction() {
 
 	return (
 		<form.root onSubmit={handleSubmit} theme={currentUser.theme} id='makeTransaction'>
+			<form.label for='account' theme={currentUser.theme}>Account</form.label>
 			<form.input
 				type='text'
 				placeholder='Username / ID'
+				id='account'
 				theme={currentUser.theme}
 				onChange={(event) => account = event.target.value} />
+			<form.label for='amount' theme={currentUser.theme}>Amount</form.label>
 			<form.input
 				type='number'
 				placeholder='Amount'
+				id='amount'
 				min='1'
 				theme={currentUser.theme}
 				onChange={(event) => amount = event.target.value} />

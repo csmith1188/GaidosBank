@@ -6,6 +6,7 @@ import { Table } from '../components/table'
 import { useIsMounted } from '../hooks/useIsMounted'
 import * as text from '../components/text'
 
+
 export default function Home() {
 	const mounted = useIsMounted()
 	var currentUser = useAtomValue(currentUserAtom)
@@ -58,7 +59,7 @@ export default function Home() {
 					You have ${currentUser ? currentUser.balance : ''} in your Balance
 				</text.p>
 			) : ''}
-			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' noSSR />
+			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' />
 		</div >
 	)
 }
