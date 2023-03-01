@@ -2,6 +2,7 @@ import * as nav from '../components/nav'
 import { useAtom } from 'jotai';
 import { currentUserAtom } from '../atoms'
 import { useIsMounted } from '../hooks/useIsMounted';
+import { IconSun, IconMoonStars } from '@tabler/icons'
 
 export default function NavBar() {
 	const mounted = useIsMounted()
@@ -34,11 +35,20 @@ export default function NavBar() {
 			.catch(error => { throw error })
 	}
 
-	// function ifAdmin(tag) {
-	// 	if (currentUser.permissions === 'admin') {
-	// 		return tag
-	// 	}
-	// }
+	function changeTheme() {
+		if (currentUser.theme === 'dark') {
+			document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+		} else {
+			document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+		}
+	}
+
+	function toggleTheme() {
+		if (currentUser.theme === 'dark') currentUser.theme = 'light'
+		else if (currentUser.theme === 'light') currentUser.theme = 'dark'
+		updateCurrentUser()
+		changeTheme()
+	}
 
 	return (
 		<nav.root theme={currentUser.theme} id='nav'>
@@ -62,8 +72,7 @@ export default function NavBar() {
 				}
 			</nav.list>
 			<nav.list id='title'>
-				<nav.item
-				>
+				<nav.item>
 					<nav.link
 						style={{ color: 'rgb(19, 161, 14)', }}
 						theme={currentUser.theme}
@@ -75,22 +84,32 @@ export default function NavBar() {
 				</nav.item>
 			</nav.list>
 			<nav.list className='list' id='list2'>
-				<nav.item>
+				{/* <nav.item>
 					<nav.link theme={currentUser.theme} active='true' href='/userSettings'>
 						User Settings
-					</nav.link>
-				</nav.item>
+						</nav.link>
+				</nav.item> */}
 				<nav.item>
 					<nav.button
 						theme={currentUser.theme}
 						onClick={logout}
 						id='logout'
-						className='navButton'
 					>
 						logout
 					</nav.button>
 				</nav.item>
 			</nav.list>
+			<nav.button
+				theme={currentUser.theme}
+				onClick={toggleTheme}
+				id='theme'
+			>
+				{
+					currentUser.theme === 'dark' ?
+						<IconSun style={{ color: 'rgb(255,200,0)' }} />
+						: <IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
+				}
+			</nav.button>
 		</nav.root >
 	)
 }

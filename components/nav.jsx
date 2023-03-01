@@ -53,8 +53,6 @@ export const link = styled(NavigationMenu.Link, {
 	defaultVariants: {
 		color: 'light'
 	},
-	fontWeight: 'bold',
-	textDecoration: 'none'
 })
 
 export const button = styled('button', {

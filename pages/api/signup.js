@@ -5,44 +5,51 @@ const bcrypt = require('bcrypt')
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let username, password, confirmPassword;
+		let id, username, password, confirmPassword, theme;
+		if (request.query.id) username = request.query.id
+		else id = null
 		if (request.query.username) username = request.query.username
 		else username = null
 		if (request.query.password) password = request.query.password
 		else password = null
 		if (request.query.confirmPassword) confirmPassword = request.query.confirmPassword
 		else confirmPassword = null
-		if (username && password && confirmPassword) {
-			database.get(
-				'SELECT * FROM users WHERE username = ?',
-				[username],
-				(error, results) => {
-					if (error) throw error
-					if (!results) {
-						if (password == confirmPassword) {
-							bcrypt.hash(
-								password,
-								10,
-								(error, hashedPassword) => {
-									if (error) throw error
-									database.get(
-										'INSERT INTO users (username, password, balance, permissions, theme) VALUES (?, ?, ?, ? , ?)',
-										[username, hashedPassword, 0, 'user', 'light'],
-										(error, results) => {
-											if (results) {
+		if (request.query.username) theme = request.query.theme
+		else theme = 'light'
+
+		if (id && username && password && confirmPassword && theme) {
+			if (password == confirmPassword) {
+				bcrypt.hash(
+					password,
+					10,
+					(error, hashedPassword) => {
+						if (error) throw error
+						database.get(
+							'SELECT * FROM users WHERE username = ? OR id =?',
+							[username, id],
+							(error, results) => {
+								if (error) throw error
+								if (!results) {
+									if (id) {
+										database.get(
+											'INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ? , ?, ?)',
+											[id, username, hashedPassword, 0, 'user', theme],
+											(error, results) => {
 												if (error) throw error
-												request.session.username = username
-												response.send({ error: 'none' })
-											} else response.send({ error: 'no results' })
-										}
-									)
-								}
-							)
-						} else response.send({ error: 'password do not match' })
-					} else response.send({ error: 'user exist' })
-				}
-			)
-		} else response.send({ error: 'missing username, password or confirmPassword' })
+												if (results) {
+													request.session.username = username
+													response.send({ error: 'none' })
+												} else response.send({ error: 'no results (contact teacher if this happens its not supposed to)' })
+											}
+										)
+									} else console.log('major problem');
+								} else response.send({ error: 'User already has Username or Id sent' })
+							}
+						)
+					}
+				)
+			} else response.send({ error: 'Passwords do not match' })
+		} else response.send({ error: 'missing ID, Username, Password or Confirm Password' })
 	},
 	{
 		cookieName: "session",

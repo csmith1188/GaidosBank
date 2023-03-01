@@ -79,3 +79,27 @@ export const h4 = styled('h4', {
 		theme: 'light'
 	}
 })
+
+export const a = styled('a', {
+	variants: {
+		theme: {
+			light: {
+				color: 'rgb(0,0,0)',
+				borderColor: 'rgb(0, 0, 0)',
+				'&:hover': {
+					color: 'rgb(0,0,225)'
+				}
+			},
+			dark: {
+				color: 'rgb(255,255,255)',
+				borderColor: 'rgb(255, 255, 255)',
+				'&:hover': {
+					color: 'rgb(100,100,220)'
+				}
+			}
+		}
+	},
+	defaultVariants: {
+		color: 'light'
+	}
+})

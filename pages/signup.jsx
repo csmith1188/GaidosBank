@@ -23,13 +23,14 @@ export default function Login() {
 		})
 	}
 
-	let username, password
+	let id, username, password, confirmPassword
 
 	function handleSubmit(event) {
 		event.preventDefault()
-		fetch('/api/login?username=' + username + '&password=' + password)
+		fetch('/api/signup?id=' + id + 'username=' + username + '&password=' + password + '&confirmPassword=' + confirmPassword + '&theme=' + currentUser.theme)
 			.then(response => response.json())
 			.then(data => {
+				console.log(data);
 				currentUser = data
 				updateCurrentUser()
 				console.log(data);
@@ -40,14 +41,18 @@ export default function Login() {
 	}
 	let theme
 
-	if (currentUser.theme) theme = 'rgb(255, 255, 255)'
-	else theme = 'rgb(0, 0, 0)'
-	Math.r
-
 	return (
 		<div id='login'>
 			<form.root onSubmit={handleSubmit} theme={currentUser.theme}>
 				<form.label htmlFor='' theme={currentUser.theme}></form.label>
+				{/* <form.input
+					type='text'
+					id='id'
+					placeholder='Id'
+					value={id}
+					onChange={(event) => id = event.target.value}
+					theme={currentUser.theme}
+				/> */}
 				<form.input
 					type='text'
 					id='username'
@@ -62,6 +67,13 @@ export default function Login() {
 					placeholder='Password'
 					value={password}
 					onChange={(event) => password = event.target.value}
+					theme={currentUser.theme} />
+				<form.input
+					type='text'
+					id='confirmPassword'
+					placeholder='Confirm Password'
+					value={confirmPassword}
+					onChange={(event) => confirmPassword = event.target.value}
 					theme={currentUser.theme} />
 				<div>
 					<form.input type='submit' theme={currentUser.theme} />

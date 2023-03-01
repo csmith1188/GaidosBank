@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import * as ToggleGroup from '../components/toggleGroup'
 import { IconSun, IconMoonStars } from '@tabler/icons'
@@ -6,13 +6,13 @@ import Router from 'next/router'
 import { useEffect } from 'react'
 
 export default function UserSettings() {
-	const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+	const currentUser = useAtomValue(currentUserAtom)
 
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	}, [])
+	}, [currentUser])
 
 	if (currentUser && currentUser.theme) {
 		let theme
@@ -31,14 +31,14 @@ export default function UserSettings() {
 				}}
 			>
 				<br />
-				<ToggleGroup.Root color={theme.color} type="single" defaultValue='light'>
-					<ToggleGroup.Item color={theme.color} value='light'>
-						<IconSun style={{ color: 'rgb(255,200,0)', height: '1rem', width: '1rem' }} />
-					</ToggleGroup.Item>
-					<ToggleGroup.Item color={theme.color} value='dark'>
+				<ToggleGroup.root theme={currentUser.theme} type="single" defaultValue='light'>
+					<ToggleGroup.item theme={currentUser.theme} value='light'>
+						<IconSun style={{ color: 'rgb(255,200,0)' }} />
+					</ToggleGroup.item>
+					<ToggleGroup.item theme={currentUser.theme} value='dark'>
 						<IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
-					</ToggleGroup.Item>
-				</ToggleGroup.Root>
+					</ToggleGroup.item>
+				</ToggleGroup.root>
 			</div>
 		)
 	}

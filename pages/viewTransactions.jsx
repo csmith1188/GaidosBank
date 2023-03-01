@@ -18,8 +18,7 @@ export default function ViewTransactions() {
 	}, [currentUser])
 
 	useEffect(() => {
-		// fetch('/api/getTransactions?user=' + currentUser.username)
-		fetch('/api/getTransactions')
+		fetch('/api/getTransactions?user=' + currentUser.username)
 			.then(response => response.json())
 			.then(data => {
 				for (let transaction of data) {
