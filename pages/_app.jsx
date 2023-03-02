@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }) {
             .then(response => response.json())
             .then(data => {
               currentUser = {
-                theme: currentUser.theme,
+                theme: 'light',
                 isAuthenticated: false,
                 transactions: [],
                 balance: 0
