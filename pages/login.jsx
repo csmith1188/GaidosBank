@@ -4,11 +4,8 @@ import Router from 'next/router'
 import * as form from '../components/form'
 import * as text from '../components/text'
 import { useEffect } from 'react'
-import { useIsMounted } from '../hooks/useIsMounted'
 
 export default function Login() {
-	const mounted = useIsMounted()
-
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
 	useEffect(() => {
@@ -41,7 +38,6 @@ export default function Login() {
 		fetch('/api/login?username=' + username + '&password=' + password)
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
 				if (data.error) {
 					errorElement.getElementsByTagName('p')[0].innerHTML = data.error
 					errorElement.style.visibility = ''
@@ -80,9 +76,9 @@ export default function Login() {
 				</div>
 			</form.root>
 			<div id='error'>
-				<button onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
+				<text.button theme={currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
-				</button>
+				</text.button>
 				<text.p theme={currentUser.theme}></text.p>
 			</div>
 		</div>

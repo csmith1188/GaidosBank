@@ -8,11 +8,14 @@ export default withIronSessionApiRoute(
 		let receiver, amount;
 		if (request.query.account) receiver = request.query.account
 		else receiver = null;
-		if (request.query.amount && request.query.amount > 0) amount = parseInt(request.query.amount)
+		if (request.query.amount && Number.isInteger(request.query.amount) && request.query.amount > 0) amount = Number.parseInt(request.query.amount)
 		else amount = null;
+
+		console.log(sender, sender, amount)
 		if (sender) {
 			if (sender !== receiver) {
-				if (receiver != null && amount != null) {
+				if (receiver && amount) {
+
 					database.get(
 						'SELECT * FROM users WHERE username = ?', sender, (error, sender) => {
 							if (error) throw error;
@@ -45,7 +48,7 @@ export default withIronSessionApiRoute(
 								})
 							} else response.send({ error: 'Account logged into doesn\'t exist somehow.' })
 						})
-				} else response.send({ error: 'Missing account, amount and/or item.' })
+				} else response.send({ error: 'Missing account and / or amount.' })
 			} else response.send({ error: 'You can\'t send money to yourself.' })
 		} else response.send({ error: 'Not logged in.' })
 	},

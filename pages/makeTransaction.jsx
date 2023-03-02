@@ -3,6 +3,8 @@ import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 import * as form from '../components/form'
+import * as text from '../components/text'
+
 
 export default function MakeTransaction() {
 	var currentUser = useAtomValue(currentUserAtom)
@@ -14,35 +16,63 @@ export default function MakeTransaction() {
 		}
 	}, [currentUser])
 
+	useEffect(() => {
+		document.getElementById('error').style.visibility = 'hidden'
+	}, [])
+
 	function handleSubmit(event) {
+		let errorElement = document.getElementById('error')
+		let p = errorElement.getElementsByTagName('p')[0]
+		let button = errorElement.getElementsByTagName('button')[0]
 		event.preventDefault()
-		if (account && amount) {
-			fetch(`/api/makeTransaction?account=${account}&amount=${amount}`)
-				.then(response => response.json())
-				.then(data => {
-					console.log(data)
-				})
-		}
+		fetch(`/api/makeTransaction?account=${account}&amount=${amount}`)
+			.then(response => response.json())
+			.then(data => {
+				if (data) {
+					console.log(data);
+					errorElement.style.visibility = ''
+					if (data.error !== 'none') {
+						errorElement.className = 'error'
+						p.innerHTML = data.error
+					}
+					else {
+						console.log('hi');
+						errorElement.className = 'success'
+						p.innerHTML = 'Transaction successful!'
+					}
+					setTimeout(() => {
+						errorElement.style.visibility = 'hidden'
+					}, 2000)
+				}
+			})
 	}
 
 	return (
-		<form.root onSubmit={handleSubmit} theme={currentUser.theme} id='makeTransaction'>
-			<form.label for='account' theme={currentUser.theme}>Account</form.label>
-			<form.input
-				type='text'
-				placeholder='Username / ID'
-				id='account'
-				theme={currentUser.theme}
-				onChange={(event) => account = event.target.value} />
-			<form.label for='amount' theme={currentUser.theme}>Amount</form.label>
-			<form.input
-				type='number'
-				placeholder='Amount'
-				id='amount'
-				min='1'
-				theme={currentUser.theme}
-				onChange={(event) => amount = event.target.value} />
-			<form.input type='submit' theme={currentUser.theme} />
-		</form.root>
+		<div id='makeTransaction'>
+			<form.root onSubmit={handleSubmit} theme={currentUser.theme}>
+				<form.label htmlFor='account' theme={currentUser.theme}>Account</form.label>
+				<form.input
+					type='text'
+					placeholder='Username / ID'
+					id='account'
+					theme={currentUser.theme}
+					onChange={(event) => account = event.target.value} />
+				<form.label htmlFor='amount' theme={currentUser.theme}>Amount</form.label>
+				<form.input
+					type='number'
+					placeholder='Amount'
+					id='amount'
+					min='1'
+					theme={currentUser.theme}
+					onChange={(event) => amount = event.target.value} />
+				<form.input type='submit' theme={currentUser.theme} />
+			</form.root>
+			<div id='error'>
+				<text.button theme={currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
+					X
+				</text.button>
+				<text.p theme={currentUser.theme}></text.p>
+			</div>
+		</div>
 	)
 }

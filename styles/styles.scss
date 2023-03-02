@@ -225,30 +225,69 @@ form {
 
 
 #makeTransaction {
-	margin-top: 2vh;
-	display: grid;
-	width: 90%;
-	margin-left: 5%;
-	zoom: 300%;
+	form {
+		margin-top: 2vh;
+		display: grid;
+		width: 90%;
+		margin-left: 5%;
+		zoom: 300%;
 
-	// label {
-	// 	margin-left: 50%;
-	// 	transform: translateX(-50%);
-	// }
+		// label {
+		// 	margin-left: 50%;
+		// 	transform: translateX(-50%);
+		// }
 
-	input {
+		input {
+			margin-left: 50%;
+			transform: translateX(-50%);
+
+			&[type=text],
+			&[type=number] {
+				margin-bottom: 1.5vh;
+				margin-top: 0.75vh;
+			}
+
+			&[type=submit] {
+				margin-top: 1vh;
+			}
+		}
+	}
+
+	#error {
+		font-weight: bold;
+		margin-top: 5vh;
+		border-style: solid;
+		border-width: MIN(0.4vh);
+		border-radius: MIN(5vh, 10vw);
+		width: 60%;
 		margin-left: 50%;
 		transform: translateX(-50%);
 
-		&[type=text],
-		&[type=number] {
-			margin-bottom: 1.5vh;
-			margin-top: 0.75vh;
+		button {
+			font-size: 2.5vh;
+			position: absolute;
+			right: 1.5ch;
+			top: 1.5ch;
+
+			&:hover {
+				color: rgb(255, 0, 0);
+			}
 		}
 
-		&[type=submit] {
-			margin-top: 1vh;
+		p {
+			font-size: 3.5vh;
+			width: fit-content;
+			padding-left: 5%;
+			padding-right: 10%;
 		}
+	}
+
+	.error {
+		border-color: rgb(255, 0, 0);
+	}
+
+	.success {
+		border-color: rgb(0, 255, 0);
 	}
 }
 
