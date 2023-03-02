@@ -103,3 +103,31 @@ export const a = styled('a', {
 		color: 'light'
 	}
 })
+
+export const button = styled('button', {
+	variants: {
+		theme: {
+			light: {
+				color: 'rgb(0,0,0)',
+				borderColor: 'rgb(0, 0, 0)',
+				'&:hover': {
+					color: 'rgb(0,0,225)'
+				}
+			},
+			dark: {
+				color: 'rgb(255,255,255)',
+				borderColor: 'rgb(255, 255, 255)',
+				'&:hover': {
+					color: 'rgb(100,100,220)'
+				}
+			}
+		}
+	},
+	defaultVariants: {
+		color: 'light'
+	},
+	fontWeight: 'bold',
+	textDecoration: 'none',
+	border: 'none',
+	background: 'none',
+})

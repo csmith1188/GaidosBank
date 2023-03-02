@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		let id, username, password, confirmPassword, theme;
-		if (request.query.id) username = request.query.id
+		if (request.query.id) id = request.query.id
 		else id = null
 		if (request.query.username) username = request.query.username
 		else username = null
@@ -14,7 +14,7 @@ export default withIronSessionApiRoute(
 		else password = null
 		if (request.query.confirmPassword) confirmPassword = request.query.confirmPassword
 		else confirmPassword = null
-		if (request.query.username) theme = request.query.theme
+		if (request.query.theme) theme = request.query.theme
 		else theme = 'light'
 
 		if (id && username && password && confirmPassword && theme) {
@@ -30,26 +30,26 @@ export default withIronSessionApiRoute(
 							(error, results) => {
 								if (error) throw error
 								if (!results) {
-									if (id) {
-										database.get(
-											'INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ? , ?, ?)',
-											[id, username, hashedPassword, 0, 'user', theme],
-											(error, results) => {
+									console.log(id, username, hashedPassword, 0, 'user', theme);
+									database.get(
+										'INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ? , ?, ?)',
+										[id, username, hashedPassword, 0, 'user', theme],
+										(error, results) => {
+											if (error) throw error
+											database.get('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
 												if (error) throw error
-												if (results) {
-													request.session.username = username
-													response.send({ error: 'none' })
-												} else response.send({ error: 'no results (contact teacher if this happens its not supposed to)' })
-											}
-										)
-									} else console.log('major problem');
-								} else response.send({ error: 'User already has Username or Id sent' })
+												request.session.username = username
+												response.send(results)
+											})
+										}
+									)
+								} else response.send({ error: 'A User already has that Username or Id.' })
 							}
 						)
 					}
 				)
-			} else response.send({ error: 'Passwords do not match' })
-		} else response.send({ error: 'missing ID, Username, Password or Confirm Password' })
+			} else response.send({ error: 'Passwords do not match.' })
+		} else response.send({ error: 'missing ID, Username, Password or Confirm Password.' })
 	},
 	{
 		cookieName: "session",

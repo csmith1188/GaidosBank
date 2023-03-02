@@ -25,7 +25,7 @@ export default function NavBar() {
 			.then(response => response.json())
 			.then(data => {
 				currentUser = {
-					theme: 'dark',
+					theme: currentUser.theme,
 					isAuthenticated: false,
 					transactions: [],
 					balance: 0

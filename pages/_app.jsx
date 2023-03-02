@@ -1,14 +1,33 @@
 import NavBar from './navBar'
 import '../styles/styles.scss'
 import { useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import { currentUserAtom, leaderBoardAtom, DebugAtoms } from '../atoms'
-import { useEffect } from 'react'
+import { currentUserAtom, DebugAtoms } from '../atoms'
+import { useEffect, useState } from 'react'
 
 export default function App({ Component, pageProps }) {
-  useHydrateAtoms(new Map([[currentUserAtom, leaderBoardAtom]]))
-
   var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+
+  useEffect(() => {
+    fetch('/api/isAuthenticated')
+      .then(response => response.json())
+      .then(data => {
+        if (!data) {
+          fetch('/api/logout')
+            .then(response => response.json())
+            .then(data => {
+              currentUser = {
+                theme: currentUser.theme,
+                isAuthenticated: false,
+                transactions: [],
+                balance: 0
+              }
+              updateCurrentUser()
+            })
+            .catch(error => { throw error })
+        }
+      })
+      .catch(error => { throw error })
+  })
 
   function updateCurrentUser() {
     setCurrentUser({

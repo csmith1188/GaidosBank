@@ -2,6 +2,10 @@ body {
 	margin: 0;
 }
 
+button {
+	cursor: pointer;
+}
+
 :root {
 	font-family:
 		system-ui,
@@ -18,7 +22,6 @@ body {
 
 form {
 	justify-content: center;
-	font-size: MIN(2vh, 10vw);
 
 	input {
 		padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
@@ -153,38 +156,69 @@ form {
 }
 
 
-#login {
+#login,
+#signup {
 	margin-top: 8vh;
 	display: grid;
-	width: 90%;
-	margin-left: 5%;
 	justify-content: center;
 
 	form {
+		font-size: 8vh;
 		display: grid;
-		zoom: 300%;
-
 
 		// label {
 		// 	width: max-content;
 		// }
-		input[type=text] {
-			margin-left: 50%;
-			transform: translateX(-50%);
-			margin-bottom: 1.5vh;
+		input {
+			font-size: inherit;
+
+			&[type=text] {
+				margin-bottom: 1.5vh;
+			}
 		}
 	}
 
-	div {
-		justify-content: space-around;
+	#buttons {
+		display: flex;
+		justify-content: space-evenly;
 
 		a {
+			width: fit-content;
 			text-decoration: none;
 			padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
-			width: fit-content;
-			border-width: MIN(0.4vh);
+			border-width: 0.4vh;
 			border-radius: MIN(5vh, 10vw);
 			border-style: solid;
+		}
+	}
+
+	#error {
+		font-weight: bold;
+		margin-top: 5vh;
+		border-color: rgb(255, 0, 0);
+		border-style: solid;
+		border-width: MIN(0.4vh);
+		border-radius: MIN(5vh, 10vw);
+		width: 60%;
+		margin-left: 50%;
+		transform: translateX(-50%);
+
+		button {
+			font-size: 2.5vh;
+			position: absolute;
+			right: 1.5ch;
+			top: 1.5ch;
+
+			&:hover {
+				color: rgb(255, 0, 0);
+			}
+		}
+
+		p {
+			font-size: 3.5vh;
+			width: fit-content;
+			padding-left: 5%;
+			padding-right: 10%;
 		}
 	}
 }
@@ -237,23 +271,17 @@ $listWidth2: calc($listWidth - $themeButtonWidth - $themeButtonMargin);
 		border-bottom-width: $navBorder;
 
 		:has(#title) {
-			margin-top: calc(($navHeight - $titleHeight) / 2);
+			margin: calc(($navHeight - $titleHeight) / 2) 0;
 			height: $titleHeight;
-			margin-bottom: calc(($navHeight - $titleHeight) / 2);
 			width: $titleWidth;
 			display: grid;
 			place-content: center;
 		}
 
 		:has(.list) {
-			margin-top: calc(($navHeight - $listHeight) / 2);
 			height: $listHeight;
-			margin-bottom: calc(($navHeight - $listHeight) / 2);
-			margin-left:
-				calc(($navWidth - $titleWidth - $listWidth * 2) / 2);
+			margin: calc(($navHeight - $listHeight) / 2) calc(($navWidth - $titleWidth - $listWidth * 2) / 2);
 			width: $listWidth;
-			margin-right:
-				calc(($navWidth - $titleWidth - $listWidth * 2) / 2);
 			display: grid;
 			place-content: center;
 		}

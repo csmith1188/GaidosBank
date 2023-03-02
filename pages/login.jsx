@@ -3,13 +3,19 @@ import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 import * as form from '../components/form'
 import * as text from '../components/text'
+import { useEffect } from 'react'
+import { useIsMounted } from '../hooks/useIsMounted'
 
 export default function Login() {
+	const mounted = useIsMounted()
+
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
-	if (typeof window !== 'undefined' && currentUser.isAuthenticated) {
-		Router.push('/')
-	}
+	useEffect(() => {
+		if (currentUser.isAuthenticated) {
+			Router.push('/')
+		}
+	}, [currentUser])
 
 	function updateCurrentUser() {
 		setCurrentUser({
@@ -25,24 +31,30 @@ export default function Login() {
 
 	let username, password
 
+	useEffect(() => {
+		document.getElementById('error').style.visibility = 'hidden'
+	}, [])
+
 	function handleSubmit(event) {
+		let errorElement = document.getElementById('error')
 		event.preventDefault()
 		fetch('/api/login?username=' + username + '&password=' + password)
 			.then(response => response.json())
 			.then(data => {
-				currentUser = data
-				updateCurrentUser()
 				console.log(data);
-				setTimeout(() => {
-					Router.push('/')
-				}, 10000);
+				if (data.error) {
+					errorElement.getElementsByTagName('p')[0].innerHTML = data.error
+					errorElement.style.visibility = ''
+					setTimeout(() => {
+						errorElement.style.visibility = 'hidden'
+					}, 2000)
+				}
+				else {
+					currentUser = data
+					updateCurrentUser()
+				}
 			})
 	}
-	let theme
-
-	if (currentUser.theme) theme = 'rgb(255, 255, 255)'
-	else theme = 'rgb(0, 0, 0)'
-	Math.r
 
 	return (
 		<div id='login'>
@@ -62,11 +74,17 @@ export default function Login() {
 					value={password}
 					onChange={(event) => password = event.target.value}
 					theme={currentUser.theme} />
-				<div>
+				<div id='buttons'>
 					<form.input type='submit' theme={currentUser.theme} />
-					<text.a href='/login' theme={currentUser.theme}>Login</text.a>
+					<text.a href='/signup' theme={currentUser.theme}>Signup</text.a>
 				</div>
 			</form.root>
+			<div id='error'>
+				<button onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
+					X
+				</button>
+				<text.p theme={currentUser.theme}></text.p>
+			</div>
 		</div>
 	)
 }

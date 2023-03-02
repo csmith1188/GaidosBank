@@ -9,6 +9,7 @@ import * as text from '../components/text'
 
 export default function Home() {
 	const mounted = useIsMounted()
+
 	var currentUser = useAtomValue(currentUserAtom)
 	var [leaderBoard, setLeaderBoard] = useState([])
 
