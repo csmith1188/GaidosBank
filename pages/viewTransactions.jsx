@@ -3,9 +3,6 @@ import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
-import * as form from '../components/form'
-import * as collapsible from '../components/collapsible'
-import { HamburgerMenuIcon, Cross1Icon } from '@radix-ui/react-icons';
 
 export default function ViewTransactions() {
 	var currentUser = useAtomValue(currentUserAtom)
@@ -100,7 +97,17 @@ export default function ViewTransactions() {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div id='viewTransactionsTable' color='currentUser.theme'>
+		<div id='viewTransactionsTable' color={currentUser.theme}
+			style={
+				currentUser.theme === 'dark' ? {
+					backgroundColor: 'rgb(0, 0, 0)',
+					borderColor: 'rgb(75, 75, 75)'
+				}
+					: {
+						borderColor: 'rgb(0, 0, 0)'
+					}
+			}
+		>
 			<Table columns={columns} data={transactions} sortable={true} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
 		</div >
 	)

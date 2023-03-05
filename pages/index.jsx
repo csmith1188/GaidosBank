@@ -4,7 +4,7 @@ import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
 import { useIsMounted } from '../hooks/useIsMounted'
-import * as text from '../components/text'
+import * as text from '../components/styled/text'
 
 
 export default function Home() {

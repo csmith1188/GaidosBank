@@ -1,16 +1,21 @@
 import { useState } from 'react'
+import * as form from './styled/form'
+import { useAtomValue } from 'jotai'
+import { currentUserAtom } from '../atoms'
 
 export const GlobalFilter = ({ filter, setFilter }) => {
+	var currentUser = useAtomValue(currentUserAtom);
 
 	return (
-		<span>
+		<form.label theme={currentUser.theme}>
 			Search:{' '}
-			<input
+			<form.input
 				value={filter || ''}
 				onChange={e => {
 					setFilter(e.target.value)
 				}}
+				theme={currentUser.theme}
 			/>
-		</span>
+		</form.label>
 	)
 }

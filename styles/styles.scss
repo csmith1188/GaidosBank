@@ -1,5 +1,17 @@
+$navHeight: 6vh;
+$navWidth: 100vw;
+$navBorder: 1.2vh;
+$titleHeight: calc($navHeight * 0.7);
+$titleWidth: calc($navWidth * 0.2);
+$listHeight: calc($navHeight * 0.5);
+$listWidth: calc($navWidth * 0.38);
+$themeButtonWidth: calc($listWidth* 0.1);
+$themeButtonMargin: calc($themeButtonWidth * 0.2);
+$listWidth2: calc($listWidth - $themeButtonWidth - $themeButtonMargin);
+
 body {
 	margin: 0;
+	// overflow-x: hidden;
 }
 
 button {
@@ -22,64 +34,76 @@ button {
 
 form {
 	justify-content: center;
+}
 
-	input {
-		padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
-		border-width: MIN(0.4vh);
-		transition: 0.5s;
-		outline: none;
-		border-radius: MIN(5vh, 10vw);
-		width: fit-content;
+input {
+	padding: 0.5vh 1vh;
+	border-width: 0.4vh;
+	transition: 0.5s;
+	outline: none;
+	border-radius: 5vh;
+	width: fit-content;
 
-		&[type=text]:focus {
-			filter: invert(60%)
-		}
+	&[type=text]:focus {
+		filter: invert(60%)
+	}
 
-		&[type=submit] {
-			cursor: pointer;
-		}
+	&[type=submit] {
+		cursor: pointer;
 	}
 }
 
+#__next {
+	display: grid;
+}
+
 #viewTransactionsTable {
+	height: calc(88vh - $navHeight);
 	width: 90%;
-	margin-left: 5%;
-	background-color: rgb(0, 0, 0);
-	border-color: rgb(75, 75, 75);
+	justify-self: center;
 	border-style: solid;
 	overflow: hidden;
 	margin-top: 3vh;
-	border-width: MIN(0.75vh, 10vw);
-	border-radius: MIN(5vh, 10vw);
-	padding: MIN(1.5vh, 10vw);
-	padding-top: MIN(1.5vh, 10vw);
-
+	border-width: 0.75vh;
+	border-radius: 5vh;
+	padding: 1.5vh;
+	padding-top: 1.5vh;
+	display: grid;
 
 	button {
 		border: none;
 	}
 
 	table {
-		border-spacing: MAX(1vh, 0vw);
+		border-spacing: 1vh;
 
 		thead {
 			top: 0;
-			position: sticky;
 
 			th {
-				font-size: MIN(3vh, 10vw);
+				font-size: 3vh;
 				padding: 2px;
 				border-style: solid;
-				border-width: MIN(0.5vh, 10vw);
-				border-radius: MIN(5vh, 10vw);
+				border-width: 0.5vh;
+				border-radius: 5vh;
 			}
 		}
 
 		tbody {
 			td {
-				font-size: MIN(2.5vh, 10vw);
+				font-size: 2.5vh;
 				padding: 2px;
 			}
+		}
+	}
+
+	label {
+		margin: 2vh 0;
+		font-size: 4vh;
+		justify-self: center;
+
+		input {
+			font-size: inherit;
 		}
 	}
 }
@@ -280,17 +304,6 @@ form {
 	}
 }
 
-
-$navHeight: 6vh;
-$navWidth: 100vw;
-$navBorder: 1.2vh;
-$titleHeight: calc($navHeight * 0.7);
-$titleWidth: calc($navWidth * 0.2);
-$listHeight: calc($navHeight * 0.5);
-$listWidth: calc($navWidth * 0.38);
-$themeButtonWidth: calc($listWidth* 0.1);
-$themeButtonMargin: calc($themeButtonWidth * 0.2);
-$listWidth2: calc($listWidth - $themeButtonWidth - $themeButtonMargin);
 
 #nav {
 	@media (orientation:landscape) {

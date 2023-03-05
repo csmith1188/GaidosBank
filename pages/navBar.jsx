@@ -1,4 +1,4 @@
-import * as nav from '../components/nav'
+import * as nav from '../components/styled/nav'
 import { useAtom } from 'jotai';
 import { currentUserAtom } from '../atoms'
 import { useIsMounted } from '../hooks/useIsMounted';

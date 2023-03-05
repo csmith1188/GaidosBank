@@ -1,5 +1,5 @@
 import { styled } from '@stitches/react'
-import { Table } from './table'
+import { Table } from '../table'
 
 export const root = styled('table', {
 	variants: {
@@ -8,6 +8,7 @@ export const root = styled('table', {
 				borderColor: 'rgb(200, 200, 200)'
 			},
 			dark: {
+				backgroundColor: 'rgb(0, 0, 0)',
 				borderColor: 'rgb(75, 75, 75)'
 			}
 		},
@@ -28,7 +29,6 @@ export const root = styled('table', {
 	},
 	textAlign: 'center',
 	overflow: 'hidden',
-	backgroundColor: 'rgb(0, 0, 0)',
 })
 
 export const thead = styled('thead', {
@@ -108,6 +108,7 @@ export const th = styled('th', {
 			},
 			dark: {
 				color: 'rgb(255, 255, 255)',
+				backgroundColor: 'rgb(0, 0, 0)',
 				borderColor: 'rgb(75, 75, 75)'
 			}
 		}
@@ -115,7 +116,6 @@ export const th = styled('th', {
 	defaultVariants: {
 		theme: 'light'
 	},
-	backgroundColor: 'rgb(0, 0, 0)'
 })
 
 export const td = styled('td', {

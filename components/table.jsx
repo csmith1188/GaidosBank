@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { useTable, useSortBy, useGlobalFilter } from 'react-table'
-import * as styledTable from './styledTable'
+import * as styledTable from './styled/table'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import { GlobalFilter } from './GlobalFilter'
+import * as scrollArea from './styled/scrollArea'
 
 export const Table = (props) => {
 	const columns = useMemo(() => props.columns, [props.columns])
@@ -38,9 +39,12 @@ export const Table = (props) => {
 
 	return (
 		<>
+			{/* <scrollArea.root>
+				<scrollArea.viewport> */}
 			{props.canFilter ?
 				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-				: null}
+				: null
+			}
 			<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
 				<styledTable.thead theme={currentUser.theme}>
 					{headerGroups.map(headerGroup => (
@@ -77,6 +81,15 @@ export const Table = (props) => {
 					})}
 				</styledTable.tbody>
 			</styledTable.root>
+			{/* </scrollArea.viewport>
+				<scrollArea.scrollbar orientation="horizontal">
+					<scrollArea.thumb />
+				</scrollArea.scrollbar>
+				<scrollArea.scrollbar orientation="vertical">
+					<scrollArea.thumb />
+				</scrollArea.scrollbar>
+				<scrollArea.corner />
+			</scrollArea.root> */}
 		</>
 	)
 }
