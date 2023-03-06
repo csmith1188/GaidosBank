@@ -3,8 +3,12 @@ import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
+import { useIsMounted } from '../hooks/useIsMounted'
+import Head from 'next/head'
 
 export default function ViewTransactions() {
+	const mounted = useIsMounted()
+
 	var currentUser = useAtomValue(currentUserAtom)
 	var [transactions, setTransactions] = useState([])
 
@@ -97,17 +101,23 @@ export default function ViewTransactions() {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div id='viewTransactionsTable' color={currentUser.theme}
+		<div
+			id='viewTransactionsTable'
 			style={
-				currentUser.theme === 'dark' ? {
-					backgroundColor: 'rgb(0, 0, 0)',
-					borderColor: 'rgb(75, 75, 75)'
-				}
-					: {
-						borderColor: 'rgb(0, 0, 0)'
+				mounted ?
+					currentUser.theme === 'dark' ? {
+						backgroundColor: 'rgb(0, 0, 0)',
+						borderColor: 'rgb(75, 75, 75)'
 					}
+						: {
+							borderColor: 'rgb(0, 0, 0)'
+						}
+					: {}
 			}
 		>
+			<Head>
+				<title>View Transaction</title>
+			</Head>
 			<Table columns={columns} data={transactions} sortable={true} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
 		</div >
 	)

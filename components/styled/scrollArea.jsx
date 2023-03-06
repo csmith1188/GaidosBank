@@ -33,22 +33,32 @@ export const scrollbar = styled(scrollArea.Scrollbar, {
 	variants: {
 		theme: {
 			light: {
+				backgroundColor: 'rgb(160, 160, 160)',
+				'&:hover': {
+					backgroundColor: 'rgb(140, 140, 140)'
+				}
 			},
 			dark: {
+				backgroundColor: 'rgb(255, 255, 255)',
+				'&:hover': {
+					backgroundColor: 'rgb(160, 160, 160)'
+				}
 			}
 		}
 	},
 	defaultVariants: {
 		theme: 'light'
-	}
+	},
 })
 
 export const thumb = styled(scrollArea.Thumb, {
 	variants: {
 		theme: {
 			light: {
+				backgroundColor: 'rgb(60, 60, 60)'
 			},
 			dark: {
+				backgroundColor: 'rgb(30, 30, 30)',
 			}
 		}
 	},

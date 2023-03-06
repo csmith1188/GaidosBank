@@ -39,57 +39,59 @@ export const Table = (props) => {
 
 	return (
 		<>
-			{/* <scrollArea.root>
-				<scrollArea.viewport> */}
-			{props.canFilter ?
-				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-				: null
-			}
-			<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
-				<styledTable.thead theme={currentUser.theme}>
-					{headerGroups.map(headerGroup => (
-						<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme}>
-							{headerGroup.headers.map(column => (
-								<styledTable.th key={column.id} {...column.getHeaderProps(props.sortable ? column.getSortByToggleProps() : '')} theme={currentUser.theme}>
-									{column.render('Header')}
-									<span>
-										{column.isSorted
-											? column.isSortedDesc
-												? ' 🔽'
-												: ' 🔼'
-											: ''}
-									</span>
-								</styledTable.th>
-							))}
-						</styledTable.tr>
-					))}
-				</styledTable.thead>
-				<styledTable.tbody {...getTableBodyProps()} theme={currentUser.theme}>
-					{rows.map(row => {
-						prepareRow(row)
-						return (
-							<styledTable.tr key={row.index} {...row.getRowProps()} theme={currentUser.theme}>
-								{row.cells.map(cell => {
+			<scrollArea.root className='scrollAreaRoot' theme={currentUser.theme}>
+				<scrollArea.viewport className='scrollAreaViewport' theme={currentUser.theme}>
+					<div id='table'>
+						{props.canFilter ?
+							<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+							: null
+						}
+						<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
+							<styledTable.thead theme={currentUser.theme}>
+								{headerGroups.map(headerGroup => (
+									<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme}>
+										{headerGroup.headers.map(column => (
+											<styledTable.th key={column.id} {...column.getHeaderProps(props.sortable ? column.getSortByToggleProps() : '')} theme={currentUser.theme}>
+												{column.render('Header')}
+												<span>
+													{column.isSorted
+														? column.isSortedDesc
+															? ' 🔽'
+															: ' 🔼'
+														: ''}
+												</span>
+											</styledTable.th>
+										))}
+									</styledTable.tr>
+								))}
+							</styledTable.thead>
+							<styledTable.tbody {...getTableBodyProps()} theme={currentUser.theme}>
+								{rows.map(row => {
+									prepareRow(row)
 									return (
-										<styledTable.td key={cell.column.id} {...cell.getCellProps()} theme={currentUser.theme}>
-											{cell.render('Cell')}
-										</styledTable.td>
+										<styledTable.tr key={row.index} {...row.getRowProps()} theme={currentUser.theme}>
+											{row.cells.map(cell => {
+												return (
+													<styledTable.td key={cell.column.id} {...cell.getCellProps()} theme={currentUser.theme}>
+														{cell.render('Cell')}
+													</styledTable.td>
+												)
+											})}
+										</styledTable.tr>
 									)
 								})}
-							</styledTable.tr>
-						)
-					})}
-				</styledTable.tbody>
-			</styledTable.root>
-			{/* </scrollArea.viewport>
-				<scrollArea.scrollbar orientation="horizontal">
-					<scrollArea.thumb />
+							</styledTable.tbody>
+						</styledTable.root>
+					</div>
+				</scrollArea.viewport>
+				<scrollArea.scrollbar className='scrollAreaScrollbar' orientation="horizontal" theme={currentUser.theme}>
+					<scrollArea.thumb className='scrollAreaThumb' theme={currentUser.theme} />
 				</scrollArea.scrollbar>
-				<scrollArea.scrollbar orientation="vertical">
-					<scrollArea.thumb />
+				<scrollArea.scrollbar className='scrollAreaScrollbar' orientation="vertical" theme={currentUser.theme}>
+					<scrollArea.thumb className='scrollAreaThumb' theme={currentUser.theme} />
 				</scrollArea.scrollbar>
-				<scrollArea.corner />
-			</scrollArea.root> */}
+				<scrollArea.corner className='scrollAreaCorner' theme={currentUser.theme} />
+			</scrollArea.root>
 		</>
 	)
 }

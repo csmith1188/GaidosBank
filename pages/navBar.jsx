@@ -105,9 +105,12 @@ export default function NavBar() {
 				id='theme'
 			>
 				{
-					currentUser.theme === 'dark' ?
-						<IconSun style={{ color: 'rgb(255,200,0)' }} />
-						: <IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
+					mounted &&
+					(
+						currentUser.theme === 'dark' ?
+							<IconSun style={{ color: 'rgb(255,200,0)' }} />
+							: <IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
+					)
 				}
 			</nav.button>
 		</nav.root >

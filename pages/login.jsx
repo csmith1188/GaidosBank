@@ -1,9 +1,10 @@
 import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
-import * as form from '../components/form'
-import * as text from '../components/text'
+import * as form from '../components/styled/form'
+import * as text from '../components/styled/text'
 import { useEffect } from 'react'
+import Head from 'next/head'
 
 export default function Login() {
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
@@ -54,6 +55,9 @@ export default function Login() {
 
 	return (
 		<div id='login'>
+			<Head>
+				<title>Login</title>
+			</Head>
 			<form.root onSubmit={handleSubmit} theme={currentUser.theme}>
 				<form.input
 					type='text'

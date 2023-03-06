@@ -3,8 +3,9 @@ import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
-import { useIsMounted } from '../hooks/useIsMounted'
 import * as text from '../components/styled/text'
+import { useIsMounted } from '../hooks/useIsMounted'
+import Head from 'next/head'
 
 
 export default function Home() {
@@ -54,6 +55,9 @@ export default function Home() {
 
 	return (
 		<div id='home'>
+			<Head>
+				<title>Home</title>
+			</Head>
 			{mounted ? (
 				<text.p theme={currentUser.theme}>
 					Welcome back, {currentUser ? currentUser.username : ''}!<br />
