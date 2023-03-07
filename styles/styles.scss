@@ -242,8 +242,10 @@ $scrollbarSize: 0.5vw;
 		input {
 			font-size: inherit;
 
-			&[type=text] {
-				margin-bottom: 1.5vh;
+			&[type=number],
+			&[type=text],
+			&[type=password] {
+				margin-bottom: 2vh;
 			}
 		}
 	}

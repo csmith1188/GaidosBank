@@ -62,14 +62,16 @@ export default function Login() {
 				<form.input
 					type='text'
 					id='username'
+					autoComplete='username'
 					placeholder='Username'
 					value={username}
 					onChange={(event) => username = event.target.value}
 					theme={currentUser.theme}
 				/>
 				<form.input
-					type='text'
+					type='password'
 					id='password'
+					autoComplete='password'
 					placeholder='Password'
 					value={password}
 					onChange={(event) => password = event.target.value}

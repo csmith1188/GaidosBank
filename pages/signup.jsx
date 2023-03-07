@@ -39,7 +39,6 @@ export default function Login() {
 		fetch('/api/signup?id=' + id + '&username=' + username + '&password=' + password + '&confirmPassword=' + confirmPassword + '&theme=' + currentUser.theme)
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
 				if (data.error) {
 					errorElement.getElementsByTagName('p')[0].innerHTML = data.error
 					errorElement.style.visibility = ''
@@ -67,6 +66,7 @@ export default function Login() {
 					type='number'
 					min='0'
 					id='id'
+					autoComplete='off'
 					placeholder='Id'
 					value={id}
 					onChange={(event) => id = event.target.value}
@@ -75,21 +75,24 @@ export default function Login() {
 				<form.input
 					type='text'
 					id='username'
+					autoComplete='username'
 					placeholder='Username'
 					value={username}
 					onChange={(event) => username = event.target.value}
 					theme={currentUser.theme}
 				/>
 				<form.input
-					type='text'
+					type='password'
 					id='password'
+					autoComplete='password'
 					placeholder='Password'
 					value={password}
 					onChange={(event) => password = event.target.value}
 					theme={currentUser.theme} />
 				<form.input
-					type='text'
+					type='password'
 					id='confirmPassword'
+					autoComplete='password'
 					placeholder='Confirm Password'
 					value={confirmPassword}
 					onChange={(event) => confirmPassword = event.target.value}

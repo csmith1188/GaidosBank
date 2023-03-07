@@ -1,8 +1,9 @@
-import * as nav from '../components/styled/nav'
+import * as nav from './styled/nav'
 import { useAtom } from 'jotai';
 import { currentUserAtom } from '../atoms'
 import { useIsMounted } from '../hooks/useIsMounted';
-import { IconSun, IconMoonStars } from '@tabler/icons'
+// import { IconSun, IconMoonStars } from '@tabler/icons'
+import { IconSun } from '@tabler/icons'
 
 export default function NavBar() {
 	const mounted = useIsMounted()
