@@ -36,7 +36,6 @@ export default withIronSessionApiRoute(
 											isAuthenticated: true,
 											session: request.session
 										})
-										console.log(request.session);
 									}, 10)
 								} else response.send({ isAuthenticated: false })
 							}

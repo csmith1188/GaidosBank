@@ -5,8 +5,10 @@ import * as form from '../components/styled/form'
 import * as text from '../components/styled/text'
 import { useEffect } from 'react'
 import Head from 'next/head'
+import { useIsMounted } from '../hooks/useIsMounted'
 
 export default function Login() {
+	const mounted = useIsMounted()
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
 	useEffect(() => {
@@ -58,7 +60,7 @@ export default function Login() {
 			<Head>
 				<title>Login</title>
 			</Head>
-			<form.root onSubmit={handleSubmit} theme={currentUser.theme}>
+			<form.root onSubmit={handleSubmit} theme={mounted && currentUser.theme}>
 				<form.input
 					type='text'
 					id='username'
@@ -66,7 +68,7 @@ export default function Login() {
 					placeholder='Username'
 					value={username}
 					onChange={(event) => username = event.target.value}
-					theme={currentUser.theme}
+					theme={mounted && currentUser.theme}
 				/>
 				<form.input
 					type='password'
@@ -75,17 +77,17 @@ export default function Login() {
 					placeholder='Password'
 					value={password}
 					onChange={(event) => password = event.target.value}
-					theme={currentUser.theme} />
+					theme={mounted && currentUser.theme} />
 				<div id='buttons'>
-					<form.input type='submit' theme={currentUser.theme} />
-					<text.a href='/signup' theme={currentUser.theme}>Signup</text.a>
+					<form.input type='submit' theme={mounted && currentUser.theme} />
+					<text.a href='/signup' theme={mounted && currentUser.theme}>Signup</text.a>
 				</div>
 			</form.root>
 			<div id='error'>
-				<text.button theme={currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
+				<text.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
 				</text.button>
-				<text.p theme={currentUser.theme}></text.p>
+				<text.p theme={mounted && currentUser.theme}></text.p>
 			</div>
 		</div>
 	)

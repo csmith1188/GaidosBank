@@ -247,6 +247,18 @@ $scrollbarSize: 0.5vw;
 			&[type=password] {
 				margin-bottom: 2vh;
 			}
+
+			&:-webkit-autofill {
+				// font-size: 20px;
+			}
+
+			// &:-moz-autofill {
+			// 	font-size: 20px;
+			// }
+
+			// &:-ms-autofill {
+			// 	font-size: 20px;
+			// }
 		}
 	}
 

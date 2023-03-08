@@ -1,4 +1,4 @@
-import NavBar from './navBar'
+import NavBar from '../components/navBar'
 import '../styles/styles.scss'
 import { useAtom } from 'jotai'
 import { currentUserAtom, DebugAtoms } from '../atoms'
@@ -9,31 +9,28 @@ export default function App({ Component, pageProps }) {
   var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
   useEffect(() => {
-    fetch('/api/isAuthenticated')
-      .then(response => response.json())
-      .then(data => {
-        if (!data) {
-          fetch('/api/logout')
-            .then(response => response.json())
-            .then(data => {
-              // currentUser = {
-              //   theme: 'light',
-              //   isAuthenticated: false,
-              //   transactions: [],
-              //   balance: 0
-              // }
-              setCurrentUser({
-                theme: 'light',
-                isAuthenticated: false,
-                transactions: [],
-                balance: 0
+    if (!window.location.hash) {
+      window.location = window.location + '#loaded';
+      fetch('/api/isAuthenticated')
+        .then(response => response.json())
+        .then(data => {
+          if (!data) {
+            fetch('/api/logout')
+              .then(response => response.json())
+              .then(data => {
+                setCurrentUser({
+                  theme: 'light',
+                  isAuthenticated: false,
+                  transactions: [],
+                  balance: 0
+                })
+                updateCurrentUser()
               })
-              // updateCurrentUser()
-            })
-            .catch(error => { throw error })
-        }
-      })
-      .catch(error => { throw error })
+              .catch(error => { throw error })
+          }
+        })
+        .catch(error => { throw error })
+    }
   })
 
   function updateCurrentUser() {
@@ -66,8 +63,6 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     window.addEventListener('load', changeTheme())
   })
-
-  const TAGS = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 
   return (
     <>

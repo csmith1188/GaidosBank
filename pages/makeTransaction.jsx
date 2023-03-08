@@ -21,10 +21,12 @@ export default function MakeTransaction() {
 	}, [])
 
 	function handleSubmit(event) {
+		console.log(account, amount)
 		let errorElement = document.getElementById('error')
 		let p = errorElement.getElementsByTagName('p')[0]
 		let button = errorElement.getElementsByTagName('button')[0]
-		event.preventDefault()
+		// event.preventDefault()
+		console.log(`/api/makeTransaction?account=${account}&amount=${amount}`)
 		fetch(`/api/makeTransaction?account=${account}&amount=${amount}`)
 			.then(response => response.json())
 			.then(data => {

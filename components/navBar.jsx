@@ -2,8 +2,7 @@ import * as nav from './styled/nav'
 import { useAtom } from 'jotai';
 import { currentUserAtom } from '../atoms'
 import { useIsMounted } from '../hooks/useIsMounted';
-// import { IconSun, IconMoonStars } from '@tabler/icons'
-import { IconSun } from '@tabler/icons'
+import { IconSun, IconMoonStars } from '@tabler/icons'
 
 export default function NavBar() {
 	const mounted = useIsMounted()
@@ -52,21 +51,21 @@ export default function NavBar() {
 	}
 
 	return (
-		<nav.root theme={currentUser.theme} id='nav'>
+		<nav.root theme={mounted && currentUser.theme} id='nav'>
 			<nav.list className='list' id='list1'>
 				<nav.item>
-					<nav.link theme={currentUser.theme} active='true' href='/makeTransaction'>
+					<nav.link theme={mounted && currentUser.theme} active='true' href='/makeTransaction'>
 						Make Transaction
 					</nav.link>
 				</nav.item>
 				<nav.item>
-					<nav.link theme={currentUser.theme} active='true' href='/viewTransactions'>
+					<nav.link theme={mounted && currentUser.theme} active='true' href='/viewTransactions'>
 						View Transactions
 					</nav.link>
 				</nav.item>
 				{mounted && currentUser.permissions === 'admin' &&
 					<nav.item>
-						<nav.link theme={currentUser.theme} active='true' href='/Admin'>
+						<nav.link theme={mounted && currentUser.theme} active='true' href='/Admin'>
 							Admin
 						</nav.link>
 					</nav.item>
@@ -76,7 +75,7 @@ export default function NavBar() {
 				<nav.item>
 					<nav.link
 						style={{ color: 'rgb(19, 161, 14)', }}
-						theme={currentUser.theme}
+						theme={mounted && currentUser.theme}
 						active='true'
 						href='/'
 					>
@@ -86,13 +85,13 @@ export default function NavBar() {
 			</nav.list>
 			<nav.list className='list' id='list2'>
 				{/* <nav.item>
-					<nav.link theme={currentUser.theme} active='true' href='/userSettings'>
+					<nav.link theme={mounted&&currentUser.theme} active='true' href='/userSettings'>
 						User Settings
 						</nav.link>
 				</nav.item> */}
 				<nav.item>
 					<nav.button
-						theme={currentUser.theme}
+						theme={mounted && currentUser.theme}
 						onClick={logout}
 						id='logout'
 					>
@@ -101,7 +100,7 @@ export default function NavBar() {
 				</nav.item>
 			</nav.list>
 			<nav.button
-				theme={currentUser.theme}
+				theme={mounted && currentUser.theme}
 				onClick={toggleTheme}
 				id='theme'
 			>
