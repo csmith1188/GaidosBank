@@ -65,7 +65,7 @@ export default function NavBar() {
 				</nav.item>
 				{mounted && currentUser.permissions === 'admin' &&
 					<nav.item>
-						<nav.link theme={mounted && currentUser.theme} active='true' href='/Admin'>
+						<nav.link theme={mounted && currentUser.theme} active='true' href='/admin'>
 							Admin
 						</nav.link>
 					</nav.item>

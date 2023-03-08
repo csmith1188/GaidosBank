@@ -10,7 +10,11 @@ export default withIronSessionApiRoute(
 		else username = null
 		if (request.query.password) password = request.query.password
 		else password = null
-		if (username && password) {
+
+		if (
+			username !== null && username !== 'undefined' &&
+			password !== null && password !== 'undefined'
+		) {
 			database.get(
 				'SELECT * FROM users WHERE username = ?',
 				[username],
@@ -37,13 +41,13 @@ export default withIronSessionApiRoute(
 											session: request.session
 										})
 									}, 10)
-								} else response.send({ isAuthenticated: false })
+								} else response.send({ error: 'That is not the users password.' })
 							}
 						)
-					} else response.send({ isAuthenticated: false })
+					} else response.send({ error: 'User does not exist.' })
 				}
 			)
-		} else response.send({ isAuthenticated: false })
+		} else response.send({ error: 'Missing username or password.' })
 	},
 	{
 		cookieName: "session",

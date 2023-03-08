@@ -126,8 +126,10 @@ export const button = styled('button', {
 	defaultVariants: {
 		color: 'light'
 	},
+
 	fontWeight: 'bold',
 	textDecoration: 'none',
-	border: 'none',
+	borderStyle: 'none',
+	borderRightStyle: 'solid',
 	background: 'none',
 })
