@@ -1,0 +1,432 @@
+$navHeight: 6vh;
+$navWidth: 100vw;
+$navBorder: 1.2vh;
+$titleHeight: calc($navHeight * 0.7);
+$titleWidth: calc($navWidth * 0.2);
+$listHeight: calc($navHeight * 0.5);
+$listWidth: calc($navWidth * 0.38);
+$themeButtonWidth: calc($listWidth* 0.1);
+$themeButtonMargin: calc($themeButtonWidth * 0.2);
+$listWidth2: calc($listWidth - $themeButtonWidth - $themeButtonMargin);
+
+body {
+	margin: 0;
+	// overflow-x: hidden;
+}
+
+#__next {
+	display: grid;
+}
+
+button {
+	cursor: pointer;
+}
+
+:root {
+	font-family:
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		Roboto,
+		Oxygen, Ubuntu,
+		Cantarell,
+		'Open Sans',
+		'Helvetica Neue',
+		sans-serif;
+}
+
+form {
+	justify-content: center;
+}
+
+input {
+	padding: 0.5vh 1vh;
+	border-width: 0.4vh;
+	transition: 0.5s;
+	outline: none;
+	border-radius: 5vh;
+	width: fit-content;
+
+	&[type=text]:focus {
+		filter: invert(60%)
+	}
+
+	&[type=submit] {
+		cursor: pointer;
+	}
+}
+
+$scrollbarSize: 0.5vw;
+
+.scrollAreaRoot {
+	overflow: hidden;
+}
+
+.scrollAreaViewport {
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+}
+
+.scrollAreaScrollbar {
+	display: flex;
+	user-select: none;
+	touch-action: none;
+	padding: 0.1vw;
+	transition: background-color 160ms ease-out;
+
+	&[data-orientation='vertical'] {
+		width: $scrollbarSize;
+	}
+
+	&[data-orientation='horizontal'] {
+		flex-direction: column;
+		height: $scrollbarSize;
+	}
+}
+
+.scrollAreaThumb {
+	flex: 1;
+	border-radius: $scrollbarSize;
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 100%;
+		min-width: 44px;
+		min-height: 44px;
+	}
+}
+
+.scrollAreaCorner {
+	// background: var(--blackA8);
+}
+
+
+
+#viewTransactionsTable {
+	height: calc(88vh - $navHeight);
+	width: 90%;
+	justify-self: center;
+	border-style: solid;
+	margin-top: 3vh;
+	border-width: 0.75vh;
+	border-radius: 4vh;
+	display: grid;
+	overflow: hidden;
+
+	#table {
+		padding: 1.5vh 2.5vh;
+		// padding-top: 1.5vh;
+		display: grid;
+	}
+
+	button {
+		border: none;
+	}
+
+	table {
+		border-spacing: 1vh;
+
+		thead {
+			top: 0;
+
+			th {
+				font-size: 3vh;
+				padding: 2px;
+				border-style: solid;
+				border-width: 0.5vh;
+				border-radius: 5vh;
+			}
+		}
+
+		tbody {
+			td {
+				font-size: 2.5vh;
+				padding: 2px;
+			}
+		}
+	}
+
+	label {
+		margin: 2vh 0;
+		font-size: 4vh;
+		justify-self: center;
+
+		input {
+			font-size: inherit;
+		}
+	}
+}
+
+#home {
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 3vh;
+
+	p {
+		text-align: center;
+		font-size: 3vh;
+		font-weight: bold;
+	}
+
+	table {
+		border-spacing: MAX(1vh, 0vw);
+
+
+		thead {
+			top: 0;
+			position: sticky;
+
+			th {
+				font-size: MIN(3vh, 10vw);
+				padding: 2px;
+				border-color: rgb(75, 75, 75);
+				border-style: solid;
+				border-width: MIN(0.5vh, 10vw);
+				border-radius: MIN(5vh, 10vw);
+			}
+		}
+
+		tbody {
+			tr {
+				&:nth-child(even) {
+					background-color: rgb(50, 50, 50);
+				}
+
+				&:nth-child(odd) {
+					background-color: rgb(30, 30, 30);
+				}
+
+				&:nth-child(1) {
+					background-color: rgb(255, 215, 0);
+				}
+
+				&:nth-child(2) {
+					background-color: rgb(192, 192, 192);
+				}
+
+				&:nth-child(3) {
+					background-color: rgb(205, 127, 50);
+				}
+			}
+
+			td {
+				font-size: MIN(2.5vh, 10vw);
+				padding: 2px;
+			}
+		}
+	}
+}
+
+
+#login,
+#signup {
+	margin-top: 8vh;
+	display: grid;
+	justify-content: center;
+
+	form {
+		font-size: 8vh;
+		display: grid;
+
+		// label {
+		// 	width: max-content;
+		// }
+		input {
+			font-size: inherit;
+
+			&[type=number],
+			&[type=text],
+			&[type=password] {
+				margin-bottom: 2vh;
+			}
+
+			&:-webkit-autofill {
+				// font-size: 20px;
+			}
+
+			// &:-moz-autofill {
+			// 	font-size: 20px;
+			// }
+
+			// &:-ms-autofill {
+			// 	font-size: 20px;
+			// }
+		}
+	}
+
+	#buttons {
+		display: flex;
+		justify-content: space-evenly;
+
+		a {
+			width: fit-content;
+			text-decoration: none;
+			padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
+			border-width: 0.4vh;
+			border-radius: MIN(5vh, 10vw);
+			border-style: solid;
+		}
+	}
+
+	#error {
+		font-weight: bold;
+		margin-top: 5vh;
+		border-color: rgb(255, 0, 0);
+		border-style: solid;
+		border-width: MIN(0.4vh);
+		border-radius: MIN(5vh, 10vw);
+		width: 60%;
+		margin-left: 50%;
+		transform: translateX(-50%);
+
+		button {
+			font-size: 2.5vh;
+			position: absolute;
+			right: 1.5ch;
+			top: 1.5ch;
+
+			&:hover {
+				color: rgb(255, 0, 0);
+			}
+		}
+
+		p {
+			font-size: 3.5vh;
+			width: fit-content;
+			padding-left: 5%;
+			padding-right: 10%;
+		}
+	}
+}
+
+
+#makeTransaction {
+	form {
+		margin-top: 2vh;
+		display: grid;
+		width: 90%;
+		margin-left: 5%;
+		zoom: 300%;
+
+		// label {
+		// 	margin-left: 50%;
+		// 	transform: translateX(-50%);
+		// }
+
+		input {
+			margin-left: 50%;
+			transform: translateX(-50%);
+
+			&[type=text],
+			&[type=number] {
+				margin-bottom: 1.5vh;
+				margin-top: 0.75vh;
+			}
+
+			&[type=submit] {
+				margin-top: 1vh;
+			}
+		}
+	}
+
+	#error {
+		font-weight: bold;
+		margin-top: 5vh;
+		border-style: solid;
+		border-width: MIN(0.4vh);
+		border-radius: MIN(5vh, 10vw);
+		width: 60%;
+		margin-left: 50%;
+		transform: translateX(-50%);
+
+		button {
+			font-size: 2.5vh;
+			position: absolute;
+			right: 1.5ch;
+			top: 1.5ch;
+
+			&:hover {
+				color: rgb(255, 0, 0);
+			}
+		}
+
+		p {
+			font-size: 3.5vh;
+			width: fit-content;
+			padding-left: 5%;
+			padding-right: 10%;
+		}
+	}
+
+	.error {
+		border-color: rgb(255, 0, 0);
+	}
+
+	.success {
+		border-color: rgb(0, 255, 0);
+	}
+}
+
+
+#nav {
+	@media (orientation:landscape) {
+		height: $navHeight;
+		width: $navWidth;
+		border-bottom-width: $navBorder;
+
+		:has(#title) {
+			margin: calc(($navHeight - $titleHeight) / 2) 0;
+			height: $titleHeight;
+			width: $titleWidth;
+			display: grid;
+			place-content: center;
+		}
+
+		:has(.list) {
+			height: $listHeight;
+			margin: calc(($navHeight - $listHeight) / 2) calc(($navWidth - $titleWidth - $listWidth * 2) / 2);
+			width: $listWidth;
+			display: grid;
+			place-content: center;
+		}
+
+		#title {
+			font-size: MIN($titleHeight, $titleWidth/10.5);
+		}
+
+		a {
+			font-weight: bold;
+			text-decoration: none;
+		}
+
+		.list {
+			width: $listWidth2;
+			justify-content: space-around;
+			font-size: MIN($listHeight, $listWidth2/10.5);
+
+			button {
+				font-size: inherit;
+			}
+		}
+
+		#theme {
+			width: $themeButtonWidth;
+			margin-right: $themeButtonMargin;
+		}
+	}
+
+
+	@media (orientation:portrait) {
+		div {
+			border: 2px solid red;
+		}
+	}
+}
