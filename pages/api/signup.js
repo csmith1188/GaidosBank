@@ -57,7 +57,6 @@ export default withIronSessionApiRoute(
 							(error, results) => {
 								if (error) throw error
 								if (!results) {
-									console.log(1);
 									database.get(
 										'INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ? , ?, ?)',
 										[id, username, hashedPassword, 0, 'user', theme],
@@ -66,7 +65,6 @@ export default withIronSessionApiRoute(
 											database.get('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
 												if (error) throw error
 												if (results) {
-													console.log(2);
 													request.session.username = username
 													// fetch('/api/login?username=' + username + '&password=' + password)
 													// 	.then(loginResponse => loginResponse.json())
