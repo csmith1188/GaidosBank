@@ -5,8 +5,10 @@ import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import { GlobalFilter } from './GlobalFilter'
 import * as scrollArea from './styled/scrollArea'
+import { useIsMounted } from '../hooks/useIsMounted'
 
 export const Table = (props) => {
+	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
 	const data = useMemo(() => props.data, [props.data])
 	var currentUser = useAtomValue(currentUserAtom);
@@ -38,7 +40,19 @@ export const Table = (props) => {
 	const { globalFilter } = state
 
 	return (
-		<>
+		<div id='tableContainer'
+			style={
+				mounted ?
+					currentUser.theme === 'dark' ? {
+						backgroundColor: 'rgb(0, 0, 0)',
+						borderColor: 'rgb(75, 75, 75)'
+					}
+						: {
+							borderColor: 'rgb(0, 0, 0)'
+						}
+					: {}
+			}
+		>
 			<scrollArea.root className='scrollAreaRoot' theme={currentUser.theme}>
 				<scrollArea.viewport className='scrollAreaViewport' theme={currentUser.theme}>
 					<div id='table'>
@@ -92,6 +106,6 @@ export const Table = (props) => {
 				</scrollArea.scrollbar>
 				<scrollArea.corner className='scrollAreaCorner' theme={currentUser.theme} />
 			</scrollArea.root>
-		</>
+		</div>
 	)
 }

@@ -17,7 +17,7 @@ export default function Login() {
 		if (currentUser.isAuthenticated) {
 			Router.push('/')
 		}
-	}, [currentUser])
+	}, [currentUser.isAuthenticated])
 
 	function updateCurrentUser() {
 		setCurrentUser({
@@ -80,8 +80,8 @@ export default function Login() {
 
 	return (
 		<div id='login'>
-			<tabs.root defaultValue="login" orientation="vertical">
-				<tabs.list aria-label="tabs example">
+			<tabs.root defaultValue="login" orientation="vertical" theme={mounted && currentUser.theme}>
+				<tabs.list aria-label="tabs example" theme={mounted && currentUser.theme}>
 					<tabs.trigger value="login" theme={mounted && currentUser.theme}>
 						Login
 					</tabs.trigger>

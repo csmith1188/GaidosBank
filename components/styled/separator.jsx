@@ -1,7 +1,7 @@
 import { styled } from '@stitches/react'
-import { Root } from '@radix-ui/react-separator'
+import * as styledSeparator from '@radix-ui/react-separator'
 
-export const Separator = styled(Root, {
+export const Separator = styled(styledSeparator.Root, {
 	variants: {
 		theme: {
 			light: {

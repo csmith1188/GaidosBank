@@ -9,7 +9,7 @@ export default function boilerplate() {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	}, [currentUser])
+	}, [currentUser.isAuthenticated])
 
 	return (
 		//html

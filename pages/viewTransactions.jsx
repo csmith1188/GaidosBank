@@ -8,7 +8,6 @@ import Head from 'next/head'
 
 export default function ViewTransactions() {
 	const mounted = useIsMounted()
-
 	var currentUser = useAtomValue(currentUserAtom)
 	var [transactions, setTransactions] = useState([])
 
@@ -16,7 +15,7 @@ export default function ViewTransactions() {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	}, [currentUser])
+	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {
 		fetch('/api/getTransactions?user=' + currentUser.username)
@@ -98,7 +97,6 @@ export default function ViewTransactions() {
 		}
 	]
 
-	const [open, setOpen] = useState(false);
 
 	return (
 		<div

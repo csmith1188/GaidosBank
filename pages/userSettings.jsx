@@ -13,7 +13,7 @@ export default function UserSettings() {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	}, [currentUser])
+	}, [currentUser.isAuthenticated])
 
 	if (currentUser && currentUser.theme) {
 		let theme

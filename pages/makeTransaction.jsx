@@ -14,7 +14,7 @@ export default function MakeTransaction() {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	}, [currentUser])
+	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {
 		document.getElementById('error').style.visibility = 'hidden'

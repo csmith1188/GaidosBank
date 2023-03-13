@@ -10,15 +10,14 @@ import Head from 'next/head'
 
 export default function Home() {
 	const mounted = useIsMounted()
-
 	var currentUser = useAtomValue(currentUserAtom)
 	var [leaderBoard, setLeaderBoard] = useState([])
 
 	useEffect(() => {
-		if (currentUser && !currentUser.isAuthenticated) {
+		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	})
+	}, [currentUser.isAuthenticated])
 
 	function getLeaderBoard() {
 		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')

@@ -18,6 +18,10 @@ body {
 	display: grid;
 }
 
+* {
+	box-sizing: border-box;
+}
+
 button {
 	cursor: pointer;
 }
@@ -120,22 +124,73 @@ $scrollbarSize: 0.5vw;
 	}
 }
 
+div[role=tablist] {
+	display: flex;
+	justify-content: center;
+	padding-bottom: 2vh;
+
+	.separator {
+		margin: 0 5%;
+	}
+
+	button[role=tab] {
+		font-size: 6vh;
+		border-width: 0.4vh;
+	}
+}
+
+div[role=tabpanel] {
+	padding: 2vh;
+	border-width: 0.4vh;
+	border-radius: MIN(5vh, 10vw);
+}
 
 
 #viewTransactionsTable {
 	height: calc(88vh - $navHeight);
+	display: grid;
+	margin-top: 4vh;
 	width: 90%;
 	justify-self: center;
 	border-style: solid;
-	margin-top: 3vh;
 	border-width: 0.75vh;
 	border-radius: 4vh;
 	display: grid;
 	overflow: hidden;
+}
 
+#admin {
+	height: calc(88vh - $navHeight);
+	display: grid;
+	margin-top: 2vh;
+	width: 90%;
+	justify-self: center;
+
+	#tabRoot {
+		display: grid;
+
+		button[role=tab] {
+			font-size: 5vh;
+		}
+
+		div[role=tabpanel][data-state=active] {
+			height: calc(86vh - $navHeight);
+			display: grid;
+			margin-top: 1vh;
+			width: 90%;
+			justify-self: center;
+			border-style: solid;
+			border-width: 0.75vh;
+			border-radius: 4vh;
+			display: grid;
+			overflow: hidden;
+		}
+	}
+}
+
+#tableContainer {
 	#table {
 		padding: 1.5vh 2.5vh;
-		// padding-top: 1.5vh;
 		display: grid;
 	}
 
@@ -237,42 +292,17 @@ $scrollbarSize: 0.5vw;
 	}
 }
 
-
 #login {
 	margin-top: 8vh;
 	display: grid;
 	justify-content: center;
 
-	div[role=tablist] {
-		display: flex;
-		justify-content: center;
-		padding-bottom: 2vh;
-
-		.separator {
-			margin: 0 5%;
-		}
-
-		button[role=tab] {
-			font-size: 6vh;
-			border-width: 0.4vh;
-		}
-	}
-
-	div[role=tabpanel] {
-		padding: 2vh;
-		border-width: 0.4vh;
-		border-radius: MIN(5vh, 10vw);
-	}
-
 	form {
-		font-size: 8vh;
+		font-size: 8vh !important;
 		display: grid;
 
-		// label {
-		// 	width: max-content;
-		// }
 		input {
-			font-size: inherit;
+			font-size: 8vh !important;
 
 			&[type=number],
 			&[type=text],
@@ -284,17 +314,10 @@ $scrollbarSize: 0.5vw;
 				justify-self: center;
 			}
 
-			&:-webkit-autofill {
-				// font-size: 20px;
+			&::placeholder {
+				font-size: 8vh;
+				line-height: 1.5;
 			}
-
-			// &:-moz-autofill {
-			// 	font-size: 20px;
-			// }
-
-			// &:-ms-autofill {
-			// 	font-size: 20px;
-			// }
 		}
 	}
 
