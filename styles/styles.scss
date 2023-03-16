@@ -175,8 +175,8 @@ div[role=tabpanel] {
 	justify-self: center;
 
 	#tableContainer {
-		height: fit-content;
-		max-height: calc(80vh - $navHeight);
+		height: calc(80vh - $navHeight);
+		// max-height: fit-content;
 		display: grid;
 		overflow: hidden;
 	}
@@ -189,7 +189,7 @@ div[role=tabpanel] {
 		}
 
 		div[role=tabpanel][data-state=active] {
-			height: inherit;
+			height: fit-content;
 			display: grid;
 			margin-top: 0.5vh;
 			width: 90%;
@@ -198,7 +198,6 @@ div[role=tabpanel] {
 			border-width: 0.75vh;
 			border-radius: 4vh;
 			display: grid;
-			// overflow: hidden;
 		}
 	}
 }
