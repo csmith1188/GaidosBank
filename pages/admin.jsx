@@ -13,6 +13,7 @@ export default function Admin() {
 	const mounted = useIsMounted()
 	var currentUser = useAtomValue(currentUserAtom)
 	var [transactions, setTransactions] = useState([])
+	var [users, setUsers] = useState([])
 
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
@@ -100,6 +101,48 @@ export default function Admin() {
 		}
 	]
 
+	useEffect(() => {
+		fetch('/api/getUsers')
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+				setUsers(data)
+			})
+	}, [])
+
+	let userColumns = [
+		{
+			Header: 'ID',
+			accessor: 'id',
+			sortType: 'basic',
+			sortInverted: true
+		},
+		{
+			Header: 'Username',
+			accessor: 'username',
+			sortType: 'alphanumeric',
+			sortInverted: true
+		},
+		{
+			Header: 'Balance',
+			accessor: 'balance',
+			sortType: 'basic',
+			sortInverted: true
+		},
+		{
+			Header: 'Permissions',
+			accessor: 'permissions',
+			sortType: 'alphanumeric',
+			sortInverted: true
+		},
+		{
+			Header: 'Theme',
+			accessor: 'theme',
+			sortType: 'alphanumeric',
+			sortInverted: true
+		}
+	]
+
 	return (
 		<div id='admin'>
 			<Head>
@@ -115,10 +158,23 @@ export default function Admin() {
 						Transactions
 					</tabs.trigger>
 				</tabs.list>
-				<tabs.content id='users' value="users" theme={currentUser.theme}>
-					<text.p theme={currentUser.theme}>
-						Tab one content
-					</text.p>
+				<tabs.content
+					id='users'
+					value="users"
+					theme={currentUser.theme}
+					style={
+						mounted ?
+							currentUser.theme === 'dark' ? {
+								backgroundColor: 'rgb(0, 0, 0)',
+								borderColor: 'rgb(75, 75, 75)'
+							}
+								: {
+									borderColor: 'rgb(0, 0, 0)'
+								}
+							: {}
+					}
+				>
+					<Table columns={userColumns} data={users} sortable={true} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
 				</tabs.content>
 				<tabs.content
 					id='transactions'

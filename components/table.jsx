@@ -53,7 +53,7 @@ export const Table = (props) => {
 					: {}
 			}
 		>
-			<scrollArea.root className='scrollAreaRoot' theme={currentUser.theme} type='always'>
+			<scrollArea.root className='scrollAreaRoot' theme={currentUser.theme} type="auto">
 				<scrollArea.viewport className='scrollAreaViewport' theme={currentUser.theme}>
 					<div id='table'>
 						{props.canFilter ?
@@ -98,10 +98,10 @@ export const Table = (props) => {
 						</styledTable.root>
 					</div>
 				</scrollArea.viewport>
-				<scrollArea.scrollbar className='scrollAreaScrollbar' orientation="vertical" theme={currentUser.theme}>
+				<scrollArea.scrollbar className="scrollAreaScrollbar" orientation="vertical" theme={currentUser.theme}>
 					<scrollArea.thumb className='scrollAreaThumb' theme={currentUser.theme} />
 				</scrollArea.scrollbar>
-				<scrollArea.scrollbar className='scrollAreaScrollbar' orientation="horizontal" theme={currentUser.theme}>
+				<scrollArea.scrollbar className="scrollAreaScrollbar" orientation="horizontal" theme={currentUser.theme}>
 					<scrollArea.thumb className='scrollAreaThumb' theme={currentUser.theme} />
 				</scrollArea.scrollbar>
 				<scrollArea.corner className='scrollAreaCorner' theme={currentUser.theme} />

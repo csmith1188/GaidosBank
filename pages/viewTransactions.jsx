@@ -99,20 +99,7 @@ export default function ViewTransactions() {
 
 
 	return (
-		<div
-			id='viewTransactionsTable'
-			style={
-				mounted ?
-					currentUser.theme === 'dark' ? {
-						backgroundColor: 'rgb(0, 0, 0)',
-						borderColor: 'rgb(75, 75, 75)'
-					}
-						: {
-							borderColor: 'rgb(0, 0, 0)'
-						}
-					: {}
-			}
-		>
+		<div id='viewTransactionsTable'>
 			<Head>
 				<title>View Transaction</title>
 			</Head>

@@ -3,7 +3,6 @@ import '../styles/styles.scss'
 import { useAtom } from 'jotai'
 import { currentUserAtom, DebugAtoms } from '../atoms'
 import { useEffect, useState } from 'react'
-import * as scrollArea from '../components/styled/scrollArea'
 
 export default function App({ Component, pageProps }) {
   var [currentUser, setCurrentUser] = useAtom(currentUserAtom)

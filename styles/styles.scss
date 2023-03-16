@@ -91,9 +91,14 @@ $scrollbarSize: 0.5vw;
 }
 
 .scrollAreaThumb {
+	cursor: grab;
 	flex: 1;
 	border-radius: $scrollbarSize;
 	position: relative;
+
+	&:active {
+		cursor: grabbing;
+	}
 
 	&::before {
 		position: absolute;
@@ -146,16 +151,20 @@ div[role=tabpanel] {
 
 
 #viewTransactionsTable {
-	height: calc(88vh - $navHeight);
-	display: grid;
 	margin-top: 4vh;
 	width: 90%;
 	justify-self: center;
-	border-style: solid;
-	border-width: 0.75vh;
-	border-radius: 4vh;
-	display: grid;
 	overflow: hidden;
+
+	#tableContainer {
+		height: calc(88vh - $navHeight);
+		display: grid;
+		border-style: solid;
+		border-width: 0.75vh;
+		border-radius: 4vh;
+		display: grid;
+		overflow: hidden;
+	}
 }
 
 #admin {
@@ -165,6 +174,13 @@ div[role=tabpanel] {
 	width: 90%;
 	justify-self: center;
 
+	#tableContainer {
+		height: fit-content;
+		max-height: calc(80vh - $navHeight);
+		display: grid;
+		overflow: hidden;
+	}
+
 	#tabRoot {
 		display: grid;
 
@@ -173,16 +189,16 @@ div[role=tabpanel] {
 		}
 
 		div[role=tabpanel][data-state=active] {
-			height: calc(86vh - $navHeight);
+			height: inherit;
 			display: grid;
-			margin-top: 1vh;
+			margin-top: 0.5vh;
 			width: 90%;
 			justify-self: center;
 			border-style: solid;
 			border-width: 0.75vh;
 			border-radius: 4vh;
 			display: grid;
-			overflow: hidden;
+			// overflow: hidden;
 		}
 	}
 }
