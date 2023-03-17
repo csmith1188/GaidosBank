@@ -78,6 +78,7 @@ $scrollbarSize: 0.5vw;
 	user-select: none;
 	touch-action: none;
 	padding: 0.1vw;
+	border-radius: calc($scrollbarSize + (0.1vw * 2));
 	transition: background-color 160ms ease-out;
 
 	&[data-orientation=vertical] {
@@ -119,19 +120,18 @@ $scrollbarSize: 0.5vw;
 
 	&[data-orientation=horizontal] {
 		height: 0.5vh;
-		width: inherit;
 	}
 
 	&[data-orientation=vertical] {
-		height: inherit;
 		width: 0.5vh;
 	}
 }
 
 div[role=tablist] {
+	height: fit-content;
 	display: flex;
 	justify-content: center;
-	padding-bottom: 2vh;
+	margin-bottom: 2vh;
 
 	.separator {
 		margin: 0 5%;
@@ -168,15 +168,19 @@ div[role=tabpanel] {
 }
 
 #admin {
-	height: calc(88vh - $navHeight);
+	height: calc(96vh - $navHeight);
+	width: 100%;
 	display: grid;
-	margin-top: 2vh;
-	width: 90%;
+	align-content: center;
+	margin: 2vh 0;
 	justify-self: center;
 
+
 	#tableContainer {
-		height: calc(80vh - $navHeight);
-		// max-height: fit-content;
+		min-height: max-content;
+		max-height: calc(80vh - $navHeight);
+		min-width: 75vw;
+		max-width: max-content;
 		display: grid;
 		overflow: hidden;
 	}
@@ -190,9 +194,9 @@ div[role=tabpanel] {
 
 		div[role=tabpanel][data-state=active] {
 			height: fit-content;
+			width: fit-content;
 			display: grid;
 			margin-top: 0.5vh;
-			width: 90%;
 			justify-self: center;
 			border-style: solid;
 			border-width: 0.75vh;
