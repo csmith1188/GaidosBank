@@ -34,7 +34,7 @@ export default function ViewTransactions() {
 				}
 				setTransactions(data)
 			})
-	}, [])
+	})
 
 	let columns = [
 		{
@@ -81,18 +81,18 @@ export default function ViewTransactions() {
 					['hours', timestampA.hours, timestampB.hours],
 					['minutes', timestampA.minutes, timestampB.minutes],
 					['seconds', timestampA.seconds, timestampB.seconds],
-				];
+				]
 
 				for (const [unit, a, b] of timestamps) {
 					if (a < b) {
-						return -1;
+						return -1
 					}
 					if (a > b) {
-						return 1;
+						return 1
 					}
 				}
 
-				return 0;
+				return 0
 			}
 		}
 	]
@@ -103,7 +103,13 @@ export default function ViewTransactions() {
 			<Head>
 				<title>View Transaction</title>
 			</Head>
-			<Table columns={columns} data={transactions} sortable={true} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
+			<Table
+				columns={columns}
+				data={transactions}
+				sortable={true}
+				sortBy={[{ id: 'readableTimestamp', desc: false }]}
+				canFilter={true}
+			/>
 		</div >
 	)
 }

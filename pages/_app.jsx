@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     if (!window.location.hash) {
-      window.location = window.location + '#loaded';
+      window.location = window.location + '#loaded'
       fetch('/api/isAuthenticated')
         .then(response => response.json())
         .then(data => {
@@ -52,13 +52,6 @@ export default function App({ Component, pageProps }) {
     }
   }
 
-  function toggleTheme() {
-    if (currentUser.theme === 'dark') currentUser.theme = 'light'
-    else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-    updateCurrentUser()
-    changeTheme()
-  }
-
   useEffect(() => {
     window.addEventListener('load', changeTheme())
   })
@@ -66,7 +59,7 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <DebugAtoms>
-        <NavBar></NavBar >
+        <NavBar />
         <Component {...pageProps} />
       </DebugAtoms>
     </>
