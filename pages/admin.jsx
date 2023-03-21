@@ -11,9 +11,10 @@ import { Separator } from '../components/styled/separator'
 
 export default function Admin() {
 	const mounted = useIsMounted()
-	var currentUser = useAtomValue(currentUserAtom)
-	var [transactions, setTransactions] = useState([])
-	var [users, setUsers] = useState([])
+	let currentUser = useAtomValue(currentUserAtom)
+	let [transactions, setTransactions] = useState([])
+	let [users, setUsers] = useState([])
+	const [skipPageReset, setSkipPageReset] = useState(false)
 
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
@@ -85,18 +86,18 @@ export default function Admin() {
 					['hours', timestampA.hours, timestampB.hours],
 					['minutes', timestampA.minutes, timestampB.minutes],
 					['seconds', timestampA.seconds, timestampB.seconds],
-				];
+				]
 
 				for (const [unit, a, b] of timestamps) {
 					if (a < b) {
-						return -1;
+						return -1
 					}
 					if (a > b) {
-						return 1;
+						return 1
 					}
 				}
 
-				return 0;
+				return 0
 			}
 		}
 	]
@@ -109,6 +110,7 @@ export default function Admin() {
 				setUsers(data)
 			})
 	}, [])
+	const [originalUsers] = useState(users)
 
 	let userColumns = [
 		{
@@ -143,6 +145,35 @@ export default function Admin() {
 		}
 	]
 
+	useEffect(() => {
+		setSkipPageReset(false)
+	}, [])
+
+	const resetUsers = () => setUsers(originalUsers)
+
+	function updateUsers(rowIndex, columnId, value) {
+		console.log(rowIndex, columnId, value)
+		setSkipPageReset(true)
+		setUsers(old =>
+			old.map((row, index) => {
+				if (index === rowIndex) {
+					return {
+						...old[rowIndex],
+						[columnId]: value,
+					}
+				}
+				if (window !== undefined) {
+					fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
+						.then(response => response.json())
+						.then(data => {
+							console.log(data)
+						})
+					return row
+				}
+			})
+		)
+	}
+
 	return (
 		<div id='admin'>
 			<Head>
@@ -174,7 +205,16 @@ export default function Admin() {
 							: {}
 					}
 				>
-					<Table columns={userColumns} data={users} sortable={true} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
+					<button onClick={resetUsers}>Reset Users</button>
+					<Table
+						columns={userColumns}
+						data={users}
+						sortable={true}
+						sortBy={[{ id: 'readableTimestamp', desc: false }]}
+						canFilter={true}
+						updateData={updateUsers}
+						skipPageReset={skipPageReset}
+					/>
 				</tabs.content>
 				<tabs.content
 					id='transactions'
@@ -192,7 +232,13 @@ export default function Admin() {
 							: {}
 					}
 				>
-					<Table columns={transactionsColumns} data={transactions} sortable={true} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
+					<Table
+						columns={transactionsColumns}
+						data={transactions}
+						sortable={true}
+						sortBy={[{ id: 'readableTimestamp', desc: false }]}
+						canFilter={true}
+					/>
 				</tabs.content>
 			</tabs.root >
 		</div>

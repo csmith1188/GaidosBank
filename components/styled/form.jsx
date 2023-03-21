@@ -27,12 +27,20 @@ export const input = styled('input', {
 				color: 'rgb(255, 255, 255)',
 				borderColor: 'rgb(255, 255, 255)',
 			}
+		},
+		border: {
+			true: {
+				borderStyle: 'solid',
+			},
+			false: {
+				borderStyle: 'hidden',
+			}
 		}
 	},
 	defaultVariants: {
-		theme: 'light'
+		theme: 'light',
+		border: 'true'
 	},
-	borderStyle: 'solid',
 })
 
 export const label = styled('label', {

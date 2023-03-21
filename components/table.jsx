@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useTable, useSortBy, useGlobalFilter } from 'react-table'
 import * as styledTable from './styled/table'
 import { useAtomValue } from 'jotai'
@@ -6,20 +6,48 @@ import { currentUserAtom } from '../atoms'
 import { GlobalFilter } from './GlobalFilter'
 import * as scrollArea from './styled/scrollArea'
 import { useIsMounted } from '../hooks/useIsMounted'
+import * as form from '../components/styled/form'
 
 export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
 	const data = useMemo(() => props.data, [props.data])
-	var currentUser = useAtomValue(currentUserAtom);
+	const skipPageReset = props.skipPageReset
+	const updateData = props.updateData
+	const currentUser = useAtomValue(currentUserAtom)
 
-	let tableProps = {
-		columns,
-		data
+	// Create an editable cell renderer
+	const EditableCell = ({
+		value: initialValue,
+		row: { index },
+		column: { id },
+		updateData, // This is a custom function that we supplied to our table instance
+	}) => {
+		// We need to keep and update the state of the cell normally
+		const [value, setValue] = useState(initialValue)
+
+		const onChange = e => {
+			setValue(e.target.value)
+		}
+
+		// We'll only update the external data when the input is blurred
+		const onBlur = () => {
+			updateData(index, id, value)
+		}
+
+		// If the initialValue is changed external, sync it up with our state
+		useEffect(() => {
+			setValue(initialValue)
+		}, [initialValue])
+
+		return (updateData ?
+			<form.input theme={currentUser.theme} value={value} onChange={onChange} onBlur={onBlur} />
+			: initialValue)
 	}
 
-	if (props.sortBy) tableProps.initialState = {
-		sortBy: props.sortBy
+	// Set our editable cell renderer as the default Cell renderer
+	const defaultColumn = {
+		Cell: EditableCell
 	}
 
 	const {
@@ -30,9 +58,16 @@ export const Table = (props) => {
 		rows,
 		prepareRow,
 		state,
-		setGlobalFilter
+		setGlobalFilter,
 	} = useTable(
-		tableProps,
+		{
+			columns,
+			data,
+			defaultColumn,
+			initialState: (props.sortBy ? { sortBy: props.sortBy } : ''),
+			autoResetPage: (skipPageReset ? !skipPageReset : ''),
+			updateData: (updateData ? updateData : '')
+		},
 		useGlobalFilter,
 		(props.sortable ? useSortBy : ''),
 	)

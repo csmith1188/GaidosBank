@@ -208,6 +208,10 @@ div[role=tabpanel] {
 	#table {
 		padding: 1.5vh 2.5vh;
 		display: grid;
+
+		input {
+			border-width: 0.25vh;
+		}
 	}
 
 	button {
@@ -222,7 +226,7 @@ div[role=tabpanel] {
 
 			th {
 				font-size: 3vh;
-				padding: 2px;
+				padding: 0.5vh 1vh;
 				border-style: solid;
 				border-width: 0.5vh;
 				border-radius: 5vh;

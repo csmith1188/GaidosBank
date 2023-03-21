@@ -1,12 +1,12 @@
 import * as nav from './styled/nav'
-import { useAtom } from 'jotai';
+import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import { useIsMounted } from '../hooks/useIsMounted';
+import { useIsMounted } from '../hooks/useIsMounted'
 import { IconSun, IconMoonStars } from '@tabler/icons'
 
 export default function NavBar() {
 	const mounted = useIsMounted()
-	var [currentUser, setCurrentUser] = useAtom(currentUserAtom);
+	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
 	function updateCurrentUser() {
 		setCurrentUser({

@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }) {
       fetch('/api/isAuthenticated')
         .then(response => response.json())
         .then(data => {
-          if (!data) {
+          if (data == false) {
             fetch('/api/logout')
               .then(response => response.json())
               .then(data => {
