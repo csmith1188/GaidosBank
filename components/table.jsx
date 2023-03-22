@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useTable, useSortBy, useGlobalFilter } from 'react-table'
 import * as styledTable from './styled/table'
 import { useAtomValue } from 'jotai'
@@ -6,33 +6,92 @@ import { currentUserAtom } from '../atoms'
 import { GlobalFilter } from './GlobalFilter'
 import * as scrollArea from './styled/scrollArea'
 import { useIsMounted } from '../hooks/useIsMounted'
+import * as form from '../components/styled/form'
+import * as text from '../components/styled/text'
 
 export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
-	const data = useMemo(() => props.data, [props.data])
+	const [data, setData] = useState(useMemo(() => props.data, [props.data]))
+	const skipPageReset = props.skipPageReset
+	const updateData = props.updateData
 	const sortBy = props.sortBy
+	const sortable = props.sortable
+	const canFilter = props.canFilter
+	const editableCols = props.editableCols
 	const currentUser = useAtomValue(currentUserAtom)
+	const [originalData] = useState(data)
+	let changes = []
+
+	function resetData() {
+		setData(originalData)
+	}
+
+	// Create an editable cell renderer
+	function EditableCell({
+		value: initialValue,
+		row: { index },
+		column: { id },
+		updateData, // This is a custom function that we supplied to our table instance
+	}) {
+		// We need to keep and update the state of the cell normally
+		const [value, setValue] = useState(initialValue)
+		const onChange = e => {
+			setValue(e.target.value)
+			changes.push({ index: index, id: id, value: value })
+		}
+
+		// If the initialValue is changed external, sync it up with our state
+		useEffect(() => {
+			setValue(initialValue)
+		}, [initialValue])
+
+		if (updateData) {
+			for (let col of editableCols) {
+				console.log(col, id)
+				if (col == id) {
+					return <form.input border={false} theme={currentUser.theme} value={value} onChange={onChange} />
+				}
+			}
+			return initialValue
+		}
+		else return initialValue
+	}
+
+	// Set our editable cell renderer as the default Cell renderer
+	const defaultColumn = {
+		Cell: EditableCell
+	}
 
 	const {
 		getTableProps,
 		getTableBodyProps,
 		headerGroups,
+		footerGroups,
 		rows,
 		prepareRow,
 		state,
-		setGlobalFilter
+		setGlobalFilter,
 	} = useTable(
 		{
 			columns,
 			data,
-			sortBy: (sortBy ? sortBy : null)
+			defaultColumn,
+			initialState: (sortBy ? { sortBy: sortBy } : ''),
+			autoResetPage: (skipPageReset ? !skipPageReset : ''),
+			updateData: (updateData ? updateData : '')
 		},
 		useGlobalFilter,
-		(props.sortable ? useSortBy : ''),
+		(sortable ? useSortBy : ''),
 	)
 
 	const { globalFilter } = state
+
+	function saveData() {
+		for (let change of changes) {
+			console.log(change)
+		}
+	}
 
 	return (
 		<div id='tableContainer'
@@ -51,16 +110,20 @@ export const Table = (props) => {
 			<scrollArea.root className='scrollAreaRoot' theme={currentUser.theme} type="auto">
 				<scrollArea.viewport className='scrollAreaViewport' theme={currentUser.theme}>
 					<div id='table'>
-						{props.canFilter ?
-							<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-							: null
-						}
+						<div id='input'>
+							{updateData ? <text.button theme={currentUser.theme} onClick={resetData} > Reset</text.button> : ''}
+							{canFilter ?
+								<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+								: ''
+							}
+							{updateData ? <text.button theme={currentUser.theme} onClick={saveData}>Save</text.button> : ''}
+						</div>
 						<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
 							<styledTable.thead theme={currentUser.theme}>
 								{headerGroups.map(headerGroup => (
 									<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme}>
 										{headerGroup.headers.map(column => (
-											<styledTable.th key={column.id} {...column.getHeaderProps(props.sortable ? column.getSortByToggleProps() : '')} theme={currentUser.theme}>
+											<styledTable.th key={column.id} {...column.getHeaderProps(sortable ? column.getSortByToggleProps() : '')} theme={currentUser.theme}>
 												{column.render('Header')}
 												<span>
 													{column.isSorted
@@ -101,6 +164,6 @@ export const Table = (props) => {
 				</scrollArea.scrollbar>
 				<scrollArea.corner className='scrollAreaCorner' theme={currentUser.theme} />
 			</scrollArea.root>
-		</div>
+		</div >
 	)
 }

@@ -213,6 +213,7 @@ export default function Admin() {
 						canFilter={true}
 						updateData={updateUsers}
 						skipPageReset={skipPageReset}
+						editableCols={['balance', 'permissions', 'theme']}
 					/>
 				</tabs.content>
 				<tabs.content

@@ -25,7 +25,6 @@ export default withIronSessionApiRoute(
 								console.log(editingUser, property)
 								if (editingUser[property] !== 'undefined') {
 									console.log(editingUser[property])
-									database.e
 									database.exec(`UPDATE users set ${property}=${value} WHERE username='${editingUser.username}'`, (error, results) => {
 										if (error) throw error
 										response.json({ error: 'none', query: request.query })
