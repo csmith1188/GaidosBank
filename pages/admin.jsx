@@ -205,7 +205,6 @@ export default function Admin() {
 							: {}
 					}
 				>
-					<button onClick={resetUsers}>Reset Users</button>
 					<Table
 						columns={userColumns}
 						data={users}
