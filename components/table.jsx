@@ -13,10 +13,7 @@ export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
 	const [data, setData] = useState([])
-	useEffect(() => {
-		setData(props.data)
-		console.log(props.data)
-	}, [props.data])
+	useEffect(() => setData(props.data), [props.data])
 	const skipPageReset = props.skipPageReset
 	const updateData = props.updateData
 	const sortBy = props.sortBy
@@ -24,8 +21,9 @@ export const Table = (props) => {
 	const canFilter = props.canFilter
 	const editableCols = props.editableCols
 	const currentUser = useAtomValue(currentUserAtom)
-	const [originalData] = useState(data)
-	let changes = []
+	const [originalData, setOriginalData] = useState([])
+	useEffect(() => setOriginalData(data))
+	const changes = useState([])
 
 	function resetData() {
 		setData(originalData)
@@ -40,8 +38,14 @@ export const Table = (props) => {
 	}) {
 		// We need to keep and update the state of the cell normally
 		const [value, setValue] = useState(initialValue)
-		const onChange = e => {
-			setValue(e.target.value)
+		const onChange = event => {
+			setValue(event.target.value)
+			if (currentUser.theme == 'dark') {
+				event.target.style.color = 'rgb(0,0,255)'
+			}
+			else {
+				event.target.style.color = 'rgb(255,255,255)'
+			}
 			changes.push({ index: index, id: id, value: value })
 		}
 
@@ -51,10 +55,9 @@ export const Table = (props) => {
 		}, [initialValue])
 
 		if (updateData) {
-			for (let col of editableCols) {
-				console.log(col, id)
-				if (col == id) {
-					return <form.input border={false} theme={currentUser.theme} value={value} onChange={onChange} />
+			for (let column of editableCols) {
+				if (column == id) {
+					return <form.input border={false} theme={currentUser.theme} pop={true} value={value} onChange={onChange} />
 				}
 			}
 			return initialValue
@@ -63,9 +66,12 @@ export const Table = (props) => {
 	}
 
 	// Set our editable cell renderer as the default Cell renderer
-	const defaultColumn = {
-		Cell: EditableCell
-	}
+	const defaultColumn = useMemo(
+		() => ({
+			Cell: EditableCell
+		}),
+		[]
+	)
 
 	const {
 		getTableProps,
@@ -91,6 +97,8 @@ export const Table = (props) => {
 	const { globalFilter } = state
 
 	function saveData() {
+		console.log('hi')
+		console.log(changes)
 		for (let change of changes) {
 			console.log(change)
 		}

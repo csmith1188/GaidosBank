@@ -20,6 +20,8 @@ body {
 
 * {
 	box-sizing: border-box;
+	transition-property: color, background-color, border-color, filter;
+	transition-duration: 0.5s;
 }
 
 button {
@@ -47,13 +49,12 @@ form {
 input {
 	padding: 0.5vh 1vh;
 	border-width: 0.4vh;
-	transition: 0.5s;
 	outline: none;
 	border-radius: 5vh;
 	width: fit-content;
 
 	&[type=text]:focus {
-		filter: invert(60%)
+		filter: invert(60%);
 	}
 
 	&[type=submit] {
@@ -79,7 +80,7 @@ $scrollbarSize: 0.5vw;
 	touch-action: none;
 	padding: 0.1vw;
 	border-radius: calc($scrollbarSize + (0.1vw * 2));
-	transition: background-color 160ms ease-out;
+	// transition: background-color 160ms ease-out;
 
 	&[data-orientation=vertical] {
 		width: $scrollbarSize;
@@ -211,7 +212,7 @@ div[role=tabpanel] {
 
 		#input {
 			margin: 2vh 0;
-			margin-top: 0;
+
 			font-size: 4vh;
 			width: 100%;
 			display: flex;
@@ -220,57 +221,62 @@ div[role=tabpanel] {
 			button {
 				font-size: inherit;
 			}
+
+			label {
+				//TODO: make sticky
+				padding: 0.5vh 1vh;
+				outline: none;
+				border-radius: 5vh;
+				width: fit-content;
+				border-style: solid;
+				border-width: 0.4vh;
+
+				&:focus-within {
+					filter: invert(60%)
+				}
+
+				input {
+					border-style: hidden;
+					font-size: inherit;
+				}
+			}
 		}
 
-		label {
-			//TODO: make sticky
-			padding: 0.5vh 1vh;
-			transition: 0.5s;
-			outline: none;
-			border-radius: 5vh;
-			width: fit-content;
-			border-color: rgb(255, 255, 255);
-			border-style: solid;
-			border-width: 0.4vh;
+		button {
+			border: none;
+		}
+
+		table {
+			border-spacing: 1vh;
+
+			thead {
+				//TODO: make sticky
+
+				th {
+					font-size: 3vh;
+					padding: 0.5vh 1vh;
+					border-style: solid;
+					border-width: 0.5vh;
+					border-radius: 5vh;
+				}
+			}
+
+			tbody {
+				td {
+					font-size: 2.5vh;
+					padding: 2px;
+				}
+			}
 
 			input {
-				border-style: hidden;
-				font-size: inherit;
-			}
-		}
-	}
-
-	button {
-		border: none;
-	}
-
-	table {
-		border-spacing: 1vh;
-
-		thead {
-			//TODO: make sticky
-
-			th {
-				font-size: 3vh;
-				padding: 0.5vh 1vh;
-				border-style: solid;
-				border-width: 0.5vh;
-				border-radius: 5vh;
-			}
-		}
-
-		tbody {
-			td {
 				font-size: 2.5vh;
 				padding: 2px;
-			}
-		}
+				text-align: center;
 
-		input {
-			font-size: 2.5vh;
-			padding: 2px;
-			text-align: center;
-			color: rgb(130, 0, 255)
+				&:focus {
+					border-style: solid;
+				}
+			}
 		}
 	}
 }

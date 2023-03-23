@@ -11,9 +11,9 @@ import { Separator } from '../components/styled/separator'
 
 export default function Admin() {
 	const mounted = useIsMounted()
-	let currentUser = useAtomValue(currentUserAtom)
-	let [transactions, setTransactions] = useState([])
-	let [users, setUsers] = useState([])
+	const currentUser = useAtomValue(currentUserAtom)
+	const [transactions, setTransactions] = useState([])
+	const [users, setUsers] = useState([])
 	const [skipPageReset, setSkipPageReset] = useState(false)
 
 	useEffect(() => {
@@ -106,7 +106,6 @@ export default function Admin() {
 		fetch('/api/getUsers')
 			.then(response => response.json())
 			.then(data => {
-				console.log(data)
 				setUsers(data)
 			})
 	}, [])
