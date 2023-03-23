@@ -67,7 +67,6 @@ export const Table = (props) => {
 		getTableProps,
 		getTableBodyProps,
 		headerGroups,
-		footerGroups,
 		rows,
 		prepareRow,
 		state,
