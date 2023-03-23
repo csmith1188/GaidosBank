@@ -12,7 +12,11 @@ import * as text from '../components/styled/text'
 export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
-	const [data, setData] = useState(useMemo(() => props.data, [props.data]))
+	const [data, setData] = useState([])
+	useEffect(() => {
+		setData(props.data)
+		console.log(props.data)
+	}, [props.data])
 	const skipPageReset = props.skipPageReset
 	const updateData = props.updateData
 	const sortBy = props.sortBy
