@@ -12,8 +12,7 @@ import * as text from '../components/styled/text'
 export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
-	const [data, setData] = useState([])
-	useEffect(() => setData(props.data), [props.data])
+	const [data, setData] = useState(props.data)
 	const skipPageReset = props.skipPageReset
 	const updateData = props.updateData
 	const sortBy = props.sortBy
@@ -21,35 +20,35 @@ export const Table = (props) => {
 	const canFilter = props.canFilter
 	const editableCols = props.editableCols
 	const currentUser = useAtomValue(currentUserAtom)
-	const [originalData, setOriginalData] = useState([])
-	useEffect(() => setOriginalData(data))
-	const changes = useState([])
+	const [initialData] = useState(data)
+	console.log(initialData)
+	const [changes, setChanges] = useState([])
 
 	function resetData() {
-		setData(originalData)
+		setData(initialData)
 	}
 
-	// Create an editable cell renderer
 	function EditableCell({
 		value: initialValue,
 		row: { index },
 		column: { id },
-		updateData, // This is a custom function that we supplied to our table instance
+		updateData,
+		data,
 	}) {
-		// We need to keep and update the state of the cell normally
 		const [value, setValue] = useState(initialValue)
-		const onChange = event => {
+		function onChange(event) {
 			setValue(event.target.value)
+			data[index][id] = Number(event.target.value)
+			setData(data)
+
 			if (currentUser.theme == 'dark') {
 				event.target.style.color = 'rgb(0,0,255)'
 			}
 			else {
 				event.target.style.color = 'rgb(255,255,255)'
 			}
-			changes.push({ index: index, id: id, value: value })
 		}
 
-		// If the initialValue is changed external, sync it up with our state
 		useEffect(() => {
 			setValue(initialValue)
 		}, [initialValue])
@@ -64,14 +63,9 @@ export const Table = (props) => {
 		}
 		else return initialValue
 	}
-
-	// Set our editable cell renderer as the default Cell renderer
-	const defaultColumn = useMemo(
-		() => ({
-			Cell: EditableCell
-		}),
-		[]
-	)
+	const defaultColumn = {
+		Cell: EditableCell
+	}
 
 	const {
 		getTableProps,
@@ -97,10 +91,15 @@ export const Table = (props) => {
 	const { globalFilter } = state
 
 	function saveData() {
-		console.log('hi')
-		console.log(changes)
-		for (let change of changes) {
-			console.log(change)
+		for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+			let row = data[rowIndex]
+			let initialRow = initialData[rowIndex]
+
+			if (row !== initialRow) {
+				console.log(`Object at index ${rowIndex} has changed:`)
+				console.log(`Before: ${JSON.stringify(initialRow)}`)
+				console.log(`After: ${JSON.stringify(row)}`)
+			}
 		}
 	}
 
