@@ -24,7 +24,37 @@ export const Table = (props) => {
 
 	function resetData() {
 		setData(initialData)
+		let tbody = document.getElementsByTagName('tbody')[0]
+		let thead = document.getElementsByTagName('thead')[0]
+		console.log(data)
+		for (let trIndex = 0; trIndex < tbody.children.length; trIndex++) {
+			let tr = tbody.children[trIndex]
+			for (let tdIndex = 0; tdIndex < tr.children.length; tdIndex++) {
+				let td = tr.children[tdIndex]
+				if (td.children[0]) {
+					let input = td.children[0]
+					if (input) {
+						let property = thead.children[0].children[tdIndex].innerText.toLowerCase()
+						property = property.split(' ')
+						for (let word in property) {
+							if (word > 0)
+								property[word] = property[word][0].toUpperCase() + property[word].substring(1)
+						}
+						property = property.join(' ')
+						console.log(data[(trIndex)][property], input.value)
+						// input.value = data[trIndex][property]
+						if (currentUser.theme == 'dark') {
+							input.style.color = 'rgb(130, 0, 255)'
+						}
+						else {
+							input.style.color = 'rgb(100, 100, 255)'
+						}
+					}
+				}
+			}
+		}
 	}
+
 
 	function EditableCell({
 		value: initialValue,
@@ -39,11 +69,20 @@ export const Table = (props) => {
 			data[index][id] = event.target.value
 			setData(data)
 
-			if (currentUser.theme == 'dark') {
-				event.target.style.color = 'rgb(0,0,255)'
-			}
-			else {
-				event.target.style.color = 'rgb(255,255,255)'
+			if (data[index][id] != initialData[index][id]) {
+				if (currentUser.theme == 'dark') {
+					event.target.style.color = 'rgb(0,0,255)'
+				}
+				else {
+					event.target.style.color = 'rgb(255,255,255)'
+				}
+			} else {
+				if (currentUser.theme == 'dark') {
+					event.target.style.color = 'rgb(130, 0, 255)'
+				}
+				else {
+					event.target.style.color = 'rgb(100, 100, 255)'
+				}
 			}
 		}
 
