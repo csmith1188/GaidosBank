@@ -36,7 +36,7 @@ export const Table = (props) => {
 		const [value, setValue] = useState(initialValue)
 		function onChange(event) {
 			setValue(event.target.value)
-			data[index][id] = Number(event.target.value)
+			data[index][id] = event.target.value
 			setData(data)
 
 			if (currentUser.theme == 'dark') {
@@ -89,18 +89,19 @@ export const Table = (props) => {
 	const { globalFilter } = state
 
 	function saveData() {
+		console.log('save')
 		for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
 			let row = data[rowIndex]
 			let initialRow = initialData[rowIndex]
 
-			if (JSON.stringify(row) !== JSON.stringify(initialRow)) {
-				console.log(row)
+			if (row != initialRow) {
 				for (let columnIndex in row) {
 					let column = row[columnIndex]
-					let initialColumn = initialData[columnIndex]
+					let initialColumn = initialRow[columnIndex]
 
-					if (column !== initialColumn) {
-						console.log(column, initialColumn)
+					if (column != initialColumn) {
+						console.log(row)
+						console.log(row.id, columnIndex, column)
 					}
 				}
 			}
