@@ -20,9 +20,7 @@ export const Table = (props) => {
 	const canFilter = props.canFilter
 	const editableCols = props.editableCols
 	const currentUser = useAtomValue(currentUserAtom)
-	const [initialData] = useState(data)
-	console.log(initialData)
-	const [changes, setChanges] = useState([])
+	const initialData = props.data
 
 	function resetData() {
 		setData(initialData)
@@ -95,10 +93,16 @@ export const Table = (props) => {
 			let row = data[rowIndex]
 			let initialRow = initialData[rowIndex]
 
-			if (row !== initialRow) {
-				console.log(`Object at index ${rowIndex} has changed:`)
-				console.log(`Before: ${JSON.stringify(initialRow)}`)
-				console.log(`After: ${JSON.stringify(row)}`)
+			if (JSON.stringify(row) !== JSON.stringify(initialRow)) {
+				console.log(row)
+				for (let columnIndex in row) {
+					let column = row[columnIndex]
+					let initialColumn = initialData[columnIndex]
+
+					if (column !== initialColumn) {
+						console.log(column, initialColumn)
+					}
+				}
 			}
 		}
 	}

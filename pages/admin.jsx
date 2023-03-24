@@ -178,68 +178,70 @@ export default function Admin() {
 			<Head>
 				<title>Admin</title>
 			</Head>
-			<tabs.root id='tabRoot' defaultValue="users" orientation="vertical" theme={currentUser.theme}>
-				<tabs.list aria-label="tabs example" theme={currentUser.theme}>
-					<tabs.trigger value="users" theme={currentUser.theme}>
-						Users
-					</tabs.trigger>
-					<Separator className='separator' decorative orientation="vertical" theme={mounted && currentUser.theme} />
-					<tabs.trigger value="transactions" theme={currentUser.theme}>
-						Transactions
-					</tabs.trigger>
-				</tabs.list>
-				<tabs.content
-					id='users'
-					value="users"
-					theme={currentUser.theme}
-					style={
-						mounted ?
-							currentUser.theme === 'dark' ? {
-								backgroundColor: 'rgb(0, 0, 0)',
-								borderColor: 'rgb(75, 75, 75)'
-							}
-								: {
-									borderColor: 'rgb(0, 0, 0)'
+			{users.length && transactions.length ?
+				<tabs.root id='tabRoot' defaultValue="users" orientation="vertical" theme={currentUser.theme}>
+					<tabs.list aria-label="tabs example" theme={currentUser.theme}>
+						<tabs.trigger value="users" theme={currentUser.theme}>
+							Users
+						</tabs.trigger>
+						<Separator className='separator' decorative orientation="vertical" theme={mounted && currentUser.theme} />
+						<tabs.trigger value="transactions" theme={currentUser.theme}>
+							Transactions
+						</tabs.trigger>
+					</tabs.list>
+					<tabs.content
+						id='users'
+						value="users"
+						theme={currentUser.theme}
+						style={
+							mounted ?
+								currentUser.theme === 'dark' ? {
+									backgroundColor: 'rgb(0, 0, 0)',
+									borderColor: 'rgb(75, 75, 75)'
 								}
-							: {}
-					}
-				>
-					<Table
-						columns={userColumns}
-						data={users}
-						sortable={true}
-						sortBy={[{ id: 'readableTimestamp', desc: false }]}
-						canFilter={true}
-						updateData={updateUsers}
-						skipPageReset={skipPageReset}
-						editableCols={['balance', 'permissions', 'theme']}
-					/>
-				</tabs.content>
-				<tabs.content
-					id='transactions'
-					value="transactions"
-					theme={currentUser.theme}
-					style={
-						mounted ?
-							currentUser.theme === 'dark' ? {
-								backgroundColor: 'rgb(0, 0, 0)',
-								borderColor: 'rgb(75, 75, 75)'
-							}
-								: {
-									borderColor: 'rgb(0, 0, 0)'
+									: {
+										borderColor: 'rgb(0, 0, 0)'
+									}
+								: {}
+						}
+					>
+						<Table
+							columns={userColumns}
+							data={users}
+							sortable={true}
+							sortBy={[{ id: 'readableTimestamp', desc: false }]}
+							canFilter={true}
+							updateData={updateUsers}
+							skipPageReset={skipPageReset}
+							editableCols={['balance', 'permissions', 'theme']}
+						/>
+					</tabs.content>
+					<tabs.content
+						id='transactions'
+						value="transactions"
+						theme={currentUser.theme}
+						style={
+							mounted ?
+								currentUser.theme === 'dark' ? {
+									backgroundColor: 'rgb(0, 0, 0)',
+									borderColor: 'rgb(75, 75, 75)'
 								}
-							: {}
-					}
-				>
-					<Table
-						columns={transactionsColumns}
-						data={transactions}
-						sortable={true}
-						sortBy={[{ id: 'readableTimestamp', desc: false }]}
-						canFilter={true}
-					/>
-				</tabs.content>
-			</tabs.root >
+									: {
+										borderColor: 'rgb(0, 0, 0)'
+									}
+								: {}
+						}
+					>
+						<Table
+							columns={transactionsColumns}
+							data={transactions}
+							sortable={true}
+							sortBy={[{ id: 'readableTimestamp', desc: false }]}
+							canFilter={true}
+						/>
+					</tabs.content>
+				</tabs.root >
+				: ''}
 		</div>
 	)
 }
