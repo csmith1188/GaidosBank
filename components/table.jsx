@@ -99,7 +99,6 @@ export const Table = (props) => {
 				'\ndata: ' + data[5].balance,
 				'\nevent: ' + event.target.value
 			)
-			// console.log(initialData[index][id], data[index][id])
 			if (value != initialValue) {
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'
