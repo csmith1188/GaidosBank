@@ -21,15 +21,11 @@ export const Table = (props) => {
 	const canFilter = props.canFilter
 	const editableColumns = props.editableColumns
 	const currentUser = useAtomValue(currentUserAtom)
-	const [initialData, setInitialData] = useState(props.data)
+	const [initialData] = useState(props.data)
 
 	useEffect(() => {
 		setData(props.data)
-		setInitialData(props.data)
 	}, [props.data])
-
-
-
 
 	function toCamelCase(string) {
 		string = string.toLowerCase()
@@ -70,30 +66,57 @@ export const Table = (props) => {
 		data,
 	}) {
 		const [value, setValue] = useState(initialValue)
-		function onChange(event) {
+
+		const onChange = (event) => {
 			setValue(event.target.value)
-			let value = event.target.value
+			console.log(
+				'initialData: ' + initialData[5].balance,
+				'\nvalue: ' + value,
+				'\ndata: ' + data[5].balance,
+				'\nevent: ' + event.target.value
+			)
 			if (Number(value)) {
 				console.log(Number(value))
-				value = Number(value)
+				setValue(Number(value))
 			}
+			console.log(
+				'initialData: ' + initialData[5].balance,
+				'\nvalue: ' + value,
+				'\ndata: ' + data[5].balance,
+				'\nevent: ' + event.target.value
+			)
 			data[index][id] = value
+			console.log(
+				'initialData: ' + initialData[5].balance,
+				'\nvalue: ' + value,
+				'\ndata: ' + data[5].balance,
+				'\nevent: ' + event.target.value
+			)
 			setData(data)
-
-			console.log(value, initialValue)
+			console.log(
+				'initialData: ' + initialData[5].balance,
+				'\nvalue: ' + value,
+				'\ndata: ' + data[5].balance,
+				'\nevent: ' + event.target.value
+			)
+			// console.log(initialData[index][id], data[index][id])
 			if (value != initialValue) {
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'
+					event.target.style.borderColor = 'rgb(0,0,255)'
 				}
 				else {
 					event.target.style.color = 'rgb(255,255,255)'
+					event.target.style.borderColor = 'rgb(255,255,255)'
 				}
 			} else {
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(130, 0, 255)'
+					event.target.style.borderColor = 'rgb(130, 0, 255)'
 				}
 				else {
 					event.target.style.color = 'rgb(100, 100, 255)'
+					event.target.style.borderColor = 'rgb(100, 100, 255)'
 				}
 			}
 		}
@@ -106,7 +129,7 @@ export const Table = (props) => {
 			if (column.column == id) {
 				if (Array.isArray(column.type)) {
 					// return initialValue
-					return <Select onChange={(event) => { console.log(event) }} name={column.column} items={column.type} defaultValue={value} pop={true} theme={currentUser.theme} />
+					return <Select onChange={onChange} name={column.column} items={column.type} defaultValue={value} pop={true} theme={currentUser.theme} />
 				}
 				else {
 					return <form.input

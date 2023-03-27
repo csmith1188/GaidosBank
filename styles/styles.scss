@@ -266,23 +266,43 @@ div[role=tabpanel] {
 				tr {
 					td {
 						font-size: 2.5vh;
-						padding: 2px;
+						padding: 0.5vh;
 					}
 				}
 			}
 
 			input {
 				font-size: 2.5vh;
-				padding: 2px;
 				text-align: center;
 
 				&:focus {
 					border-style: solid;
 				}
 			}
+
+			select {
+				padding-bottom: 0.25vh;
+				font-size: 2.5vh;
+				text-align: center;
+				border-radius: 5vh;
+				border-width: 0.4vh;
+
+				option {
+					background-color: black;
+					padding-bottom: 0.25vh;
+					font-size: 2.5vh;
+					text-align: center;
+					border-radius: 5vh;
+					border-width: 0.4vh;
+				}
+			}
+
 		}
 
+
 		.selectTrigger {
+			margin: 0.5vh 0;
+			font-size: inherit;
 			border-radius: 5vh;
 			border-width: 0.4vh;
 		}
