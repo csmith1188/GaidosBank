@@ -1,5 +1,3 @@
-import * as select from "./styled/select"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'
 import React from 'react'
 import * as form from './styled/form'
 
