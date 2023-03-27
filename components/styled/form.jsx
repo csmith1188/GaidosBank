@@ -43,13 +43,15 @@ export const input = styled('input', {
 			theme: 'dark',
 			css: {
 				color: 'rgb(130, 0, 255)',
+				fontWeight: 'bold'
 			}
 		},
 		{
 			pop: 'true',
 			theme: 'light',
 			css: {
-				color: 'rgb(100, 100, 255)',
+				color: 'rgb(50, 50, 255)',
+				fontWeight: 'bold'
 			}
 		}
 	],
@@ -57,7 +59,7 @@ export const input = styled('input', {
 		theme: 'light',
 		pop: 'false',
 		border: 'true'
-	},
+	}
 })
 
 export const label = styled('label', {

@@ -148,29 +148,29 @@ export default function Admin() {
 		setSkipPageReset(false)
 	}, [])
 
-	const resetUsers = () => setUsers(originalUsers)
-
 	function updateUsers(rowIndex, columnId, value) {
-		console.log(rowIndex, columnId, value)
 		setSkipPageReset(true)
-		setUsers(old =>
-			old.map((row, index) => {
-				if (index === rowIndex) {
-					return {
-						...old[rowIndex],
-						[columnId]: value,
+		if (rowIndex && columnId && value) {
+			console.log(rowIndex, columnId, value)
+			setUsers(old =>
+				old.map((row, index) => {
+					if (index === rowIndex) {
+						return {
+							...old[rowIndex],
+							[columnId]: value,
+						}
 					}
-				}
-				if (window !== undefined) {
-					fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
-						.then(response => response.json())
-						.then(data => {
-							console.log(data)
-						})
-					return row
-				}
-			})
-		)
+					if (window !== undefined) {
+						fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
+							.then(response => response.json())
+							.then(data => {
+								console.log(data)
+							})
+						return row
+					}
+				})
+			)
+		} else return
 	}
 
 	return (
@@ -213,7 +213,20 @@ export default function Admin() {
 							canFilter={true}
 							updateData={updateUsers}
 							skipPageReset={skipPageReset}
-							editableCols={['balance', 'permissions', 'theme']}
+							editableColumns={[
+								{
+									column: 'balance',
+									type: 'int'
+								},
+								{
+									column: 'permissions',
+									type: ['user', 'admin']
+								},
+								{
+									column: 'theme',
+									type: ['dark', 'light']
+								}
+							]}
 						/>
 					</tabs.content>
 					<tabs.content

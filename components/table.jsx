@@ -8,6 +8,7 @@ import * as scrollArea from './styled/scrollArea'
 import { useIsMounted } from '../hooks/useIsMounted'
 import * as form from '../components/styled/form'
 import * as text from '../components/styled/text'
+import { Select } from '../components/select'
 
 export const Table = (props) => {
 	const mounted = useIsMounted()
@@ -18,58 +19,69 @@ export const Table = (props) => {
 	const sortBy = props.sortBy
 	const sortable = props.sortable
 	const canFilter = props.canFilter
-	const editableCols = props.editableCols
+	const editableColumns = props.editableColumns
 	const currentUser = useAtomValue(currentUserAtom)
-	const initialData = props.data
+	const [initialData, setInitialData] = useState(props.data)
 
-	function resetData() {
-		setData(initialData)
-		let tbody = document.getElementsByTagName('tbody')[0]
-		let thead = document.getElementsByTagName('thead')[0]
-		console.log(data)
-		for (let trIndex = 0; trIndex < tbody.children.length; trIndex++) {
-			let tr = tbody.children[trIndex]
-			for (let tdIndex = 0; tdIndex < tr.children.length; tdIndex++) {
-				let td = tr.children[tdIndex]
-				if (td.children[0]) {
-					let input = td.children[0]
-					if (input) {
-						let property = thead.children[0].children[tdIndex].innerText.toLowerCase()
-						property = property.split(' ')
-						for (let word in property) {
-							if (word > 0)
-								property[word] = property[word][0].toUpperCase() + property[word].substring(1)
-						}
-						property = property.join(' ')
-						console.log(data[(trIndex)][property], input.value)
-						// input.value = data[trIndex][property]
-						if (currentUser.theme == 'dark') {
-							input.style.color = 'rgb(130, 0, 255)'
-						}
-						else {
-							input.style.color = 'rgb(100, 100, 255)'
-						}
-					}
-				}
-			}
+	useEffect(() => {
+		setData(props.data)
+		setInitialData(props.data)
+	}, [props.data])
+
+
+
+
+	function toCamelCase(string) {
+		string = string.toLowerCase()
+		let words = string.split(' ')
+
+		for (let i = 0; i < words.length; i++) {
+			if (i > 0)
+				words[i] = words[i][0].toUpperCase() + words[i].slice(1)
 		}
+
+		return words.join("")
 	}
 
+	function toNormalString(camelCaseString) {
+		const words = camelCaseString.split(/(?=[A-Z](?![0-9])|(?<![0-9])[0-9])/)
+
+		const capitalizedWords = words.map(word => {
+			const firstLetter = word.charAt(0).toUpperCase()
+			const restOfWord = word.slice(1).toLowerCase()
+			return firstLetter + restOfWord
+		})
+
+		const normalString = capitalizedWords.join(' ')
+
+		return normalString
+	}
+
+	function resetData() {
+		console.log('reset')
+		setData(initialData)
+		updateData()
+	}
 
 	function EditableCell({
 		value: initialValue,
 		row: { index },
 		column: { id },
-		updateData,
 		data,
 	}) {
 		const [value, setValue] = useState(initialValue)
 		function onChange(event) {
 			setValue(event.target.value)
-			data[index][id] = event.target.value
+			let value = event.target.value
+			if (Number(value)) {
+				console.log(Number(value))
+				value = Number(value)
+			}
+			data[index][id] = value
 			setData(data)
 
-			if (data[index][id] != initialData[index][id]) {
+			console.log(value, initialValue)
+			if (value != initialValue) {
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'
 				}
@@ -90,18 +102,55 @@ export const Table = (props) => {
 			setValue(initialValue)
 		}, [initialValue])
 
-		if (updateData) {
-			for (let column of editableCols) {
-				if (column == id) {
-					return <form.input border={false} theme={currentUser.theme} pop={true} value={value} onChange={onChange} />
+		for (let column of editableColumns) {
+			if (column.column == id) {
+				if (Array.isArray(column.type)) {
+					// return initialValue
+					return <Select onChange={(event) => { console.log(event) }} name={column.column} items={column.type} defaultValue={value} pop={true} theme={currentUser.theme} />
+				}
+				else {
+					return <form.input
+						type={
+							column.type == 'int' || column.type == 'number'
+								? 'number'
+								: ''
+						}
+						min={column.type == 'int' ? 0 : ''}
+						step={column.type == 'int' ? 1 : ''}
+						onKeyDown={
+							column.type == 'int' ?
+								(event) => {
+									if (
+										event.key === "Backspace" ||
+										event.key === "Delete" ||
+										event.key === "ArrowUp" ||
+										event.key === "ArrowDown" ||
+										event.key === "ArrowLeft" ||
+										event.key === "ArrowRight" ||
+										event.key === 'Home' ||
+										event.key === 'End' ||
+										(event.key >= 0 && event.key <= 9)
+									) {
+										// Allow input
+										return true
+									} else {
+										// Prevent input
+										event.preventDefault()
+										return false
+									}
+								}
+								: ''
+						}
+						border={false}
+						theme={currentUser.theme}
+						pop={true}
+						value={value}
+						onChange={onChange}
+					/>
 				}
 			}
-			return initialValue
 		}
-		else return initialValue
-	}
-	const defaultColumn = {
-		Cell: EditableCell
+		return initialValue
 	}
 
 	const {
@@ -116,9 +165,9 @@ export const Table = (props) => {
 		{
 			columns,
 			data,
-			defaultColumn,
+			defaultColumn: (updateData ? { Cell: EditableCell } : {}),
 			initialState: (sortBy ? { sortBy: sortBy } : ''),
-			autoResetPage: (skipPageReset ? !skipPageReset : ''),
+			autoResetPage: (updateData ? !skipPageReset : ''),
 			updateData: (updateData ? updateData : '')
 		},
 		useGlobalFilter,
@@ -129,18 +178,20 @@ export const Table = (props) => {
 
 	function saveData() {
 		console.log('save')
+		console.log(data, initialData)
 		for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
 			let row = data[rowIndex]
 			let initialRow = initialData[rowIndex]
 
+			if (rowIndex == 5)
+				console.log(row, initialRow)
 			if (row != initialRow) {
 				for (let columnIndex in row) {
 					let column = row[columnIndex]
 					let initialColumn = initialRow[columnIndex]
 
 					if (column != initialColumn) {
-						console.log(row)
-						console.log(row.id, columnIndex, column)
+						console.log(column, initialColumn)
 					}
 				}
 			}
@@ -165,12 +216,12 @@ export const Table = (props) => {
 				<scrollArea.viewport className='scrollAreaViewport' theme={currentUser.theme}>
 					<div id='table'>
 						<div id='input'>
-							{updateData ? <text.button theme={currentUser.theme} onClick={resetData} > Reset</text.button> : ''}
+							{updateData ? <text.button theme={currentUser.theme} onClick={resetData} className='editButton'> Reset</text.button> : ''}
 							{canFilter ?
 								<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 								: ''
 							}
-							{updateData ? <text.button theme={currentUser.theme} onClick={saveData}>Save</text.button> : ''}
+							{updateData ? <text.button theme={currentUser.theme} onClick={saveData} className='editButton'>Save</text.button> : ''}
 						</div>
 						<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
 							<styledTable.thead theme={currentUser.theme}>

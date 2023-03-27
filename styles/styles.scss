@@ -148,7 +148,6 @@ div[role=tabpanel] {
 	border-radius: MIN(5vh, 10vw);
 }
 
-
 #viewTransactionsTable {
 	margin-top: 4vh;
 	width: 90%;
@@ -242,7 +241,7 @@ div[role=tabpanel] {
 			}
 		}
 
-		button {
+		.editButton {
 			border: none;
 		}
 
@@ -252,19 +251,23 @@ div[role=tabpanel] {
 			thead {
 				//TODO: make sticky
 
-				th {
-					font-size: 3vh;
-					padding: 0.5vh 1vh;
-					border-style: solid;
-					border-width: 0.5vh;
-					border-radius: 5vh;
+				tr {
+					th {
+						font-size: 3vh;
+						padding: 0.5vh 1vh;
+						border-style: solid;
+						border-width: 0.5vh;
+						border-radius: 5vh;
+					}
 				}
 			}
 
 			tbody {
-				td {
-					font-size: 2.5vh;
-					padding: 2px;
+				tr {
+					td {
+						font-size: 2.5vh;
+						padding: 2px;
+					}
 				}
 			}
 
@@ -277,6 +280,30 @@ div[role=tabpanel] {
 					border-style: solid;
 				}
 			}
+		}
+
+		.selectTrigger {
+			border-radius: 5vh;
+			border-width: 0.4vh;
+		}
+
+		.selectContent {
+			border-radius: 2vh;
+			z-index: 1;
+		}
+
+		.selectItem {
+			padding: 0.2vh 1vh;
+		}
+
+		input[type=number]::-webkit-inner-spin-button,
+		input[type=number]::-webkit-inner-spin-button {
+			visibility: hidden;
+		}
+
+		input[type=number]:focus-within::-webkit-inner-spin-button,
+		input[type=number]:focus-within::-webkit-inner-spin-button {
+			visibility: visible;
 		}
 	}
 }

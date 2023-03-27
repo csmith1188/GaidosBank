@@ -6,7 +6,7 @@ import { Table } from '../components/table'
 import * as text from '../components/styled/text'
 import { useIsMounted } from '../hooks/useIsMounted'
 import Head from 'next/head'
-
+import { Select } from '../components/select'
 
 export default function Home() {
 	const mounted = useIsMounted()
