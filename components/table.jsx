@@ -65,59 +65,62 @@ export const Table = (props) => {
 		column: { id },
 		data,
 	}) {
-		const [value, setValue] = useState(initialValue)
+		let [value, setValue] = useState(initialValue)
 
-		const onChange = (event) => {
-			setValue(event.target.value)
-			console.log(
-				'initialData: ' + initialData[5].balance,
-				'\nvalue: ' + value,
-				'\ndata: ' + data[5].balance,
-				'\nevent: ' + event.target.value
+		function onChange(event) {
+			// console.log(
+			// 	'initialData: ' + initialData[5].balance,
+			// 	'\nvalue: ' + value,
+			// 	'\ndata: ' + data[5].balance,
+			// 	'\nevent: ' + event.target.value
+			// )
+			console.log(value, event.target.value)
+			value = Number(event.target.value)
+				? Number(event.target.value)
+				: event.target.value
+			setValue(
+				value
 			)
-			if (Number(value)) {
-				console.log(Number(value))
-				setValue(Number(value))
-			}
-			console.log(
-				'initialData: ' + initialData[5].balance,
-				'\nvalue: ' + value,
-				'\ndata: ' + data[5].balance,
-				'\nevent: ' + event.target.value
-			)
-			data[index][id] = value
-			console.log(
-				'initialData: ' + initialData[5].balance,
-				'\nvalue: ' + value,
-				'\ndata: ' + data[5].balance,
-				'\nevent: ' + event.target.value
-			)
-			setData(data)
-			console.log(
-				'initialData: ' + initialData[5].balance,
-				'\nvalue: ' + value,
-				'\ndata: ' + data[5].balance,
-				'\nevent: ' + event.target.value
-			)
-			if (value != initialValue) {
-				if (currentUser.theme == 'dark') {
-					event.target.style.color = 'rgb(0,0,255)'
-					event.target.style.borderColor = 'rgb(0,0,255)'
-				}
-				else {
-					event.target.style.color = 'rgb(255,255,255)'
-					event.target.style.borderColor = 'rgb(255,255,255)'
-				}
-			} else {
-				if (currentUser.theme == 'dark') {
-					event.target.style.color = 'rgb(130, 0, 255)'
-					event.target.style.borderColor = 'rgb(130, 0, 255)'
-				}
-				else {
-					event.target.style.color = 'rgb(100, 100, 255)'
-					event.target.style.borderColor = 'rgb(100, 100, 255)'
-				}
-			}
+			console.log(value, event.target.value)
+			// 	console.log(
+			// 	'initialData: ' + initialData[5].balance,
+			// 	'\nvalue: ' + value,
+			// 	'\ndata: ' + data[5].balance,
+			// 	'\nevent: ' + event.target.value
+			// )
+			// data[index][id] = value
+			// console.log(
+			// 	'initialData: ' + initialData[5].balance,
+			// 	'\nvalue: ' + value,
+			// 	'\ndata: ' + data[5].balance,
+			// 	'\nevent: ' + event.target.value
+			// )
+			// setData(data)
+			// console.log(
+			// 	'initialData: ' + initialData[5].balance,
+			// 	'\nvalue: ' + value,
+			// 	'\ndata: ' + data[5].balance,
+			// 	'\nevent: ' + event.target.value
+			// )
+			// if (value != initialValue) {
+			// 	if (currentUser.theme == 'dark') {
+			// 		event.target.style.color = 'rgb(0,0,255)'
+			// 		event.target.style.borderColor = 'rgb(0,0,255)'
+			// 	}
+			// 	else {
+			// 		event.target.style.color = 'rgb(255,255,255)'
+			// 		event.target.style.borderColor = 'rgb(255,255,255)'
+			// 	}
+			// } else {
+			// 	if (currentUser.theme == 'dark') {
+			// 		event.target.style.color = 'rgb(130, 0, 255)'
+			// 		event.target.style.borderColor = 'rgb(130, 0, 255)'
+			// 	}
+			// 	else {
+			// 		event.target.style.color = 'rgb(100, 100, 255)'
+			// 		event.target.style.borderColor = 'rgb(100, 100, 255)'
+			// 	}
+			// }
 		}
 
 		useEffect(() => {
