@@ -25,7 +25,7 @@ export default withIronSessionApiRoute(
 								if (user[property] !== undefined) {
 									database.run(`UPDATE users set ${property}='${value}' WHERE username='${user.username}'`, (error, results) => {
 										if (error) throw error
-										response.json({ error: null, query: `UPDATE users set ${property}='${value}' WHERE username='${user.username}'` })
+										response.json({ error: null })
 									})
 								} else response.json({ error: 'property does not exist' })
 							})

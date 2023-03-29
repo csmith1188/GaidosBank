@@ -13,8 +13,8 @@ import { Select } from '../components/select'
 export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
+	const [initialData, setInitialData] = useState(props.data)
 	const [data, setData] = useState(props.data)
-	const [initialData, setInitialData] = useState(data)
 	const skipPageReset = props.skipPageReset
 	const updateData = props.updateData
 	const sortBy = props.sortBy
@@ -25,7 +25,9 @@ export const Table = (props) => {
 	const currentUser = useAtomValue(currentUserAtom)
 
 	useEffect(() => {
+		setInitialData(props.data)
 		setData(props.data)
+		console.log('useEffect data: ', initialData, data)
 	}, [props.data])
 
 	function resetData() {
@@ -42,6 +44,7 @@ export const Table = (props) => {
 		let [value, setValue] = useState(initialValue)
 
 		function onChange(event) {
+			console.log('onChange 1: ', initialData[index][id], data[index][id])
 			value = Number(event.target.value)
 				? Number(event.target.value)
 				: event.target.value
@@ -50,6 +53,8 @@ export const Table = (props) => {
 			)
 			data[index][id] = value
 			setData(data)
+			console.log('onChange 2: ', initialData[index][id], data[index][id], initialValue, value)
+			console.log('onChange ___________________________')
 			if (value != initialValue) {
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'
@@ -73,12 +78,13 @@ export const Table = (props) => {
 
 		useEffect(() => {
 			setValue(initialValue)
-		}, [initialValue])
+			if (index == 0, id == 'theme')
+				console.log('useEffect value: ', initialValue, value)
+		}, [props.data])
 
 		for (let column of editableColumns) {
 			if (column.column == id) {
 				if (Array.isArray(column.type)) {
-					// return initialValue
 					return <Select onChange={onChange} name={column.column} items={column.type} defaultValue={value} pop={true} theme={currentUser.theme} />
 				}
 				else {
@@ -150,38 +156,39 @@ export const Table = (props) => {
 	const { globalFilter } = state
 
 	function saveData() {
+		console.log('save')
 		for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
 			let row = data[rowIndex]
 			let initialRow = initialData[rowIndex]
 
+			if (rowIndex == 0)
+				console.log('before row check: ', initialRow.theme, row.theme)
 			if (row != initialRow) {
 				for (let columnIndex in row) {
 					let column = row[columnIndex]
 					let initialColumn = initialRow[columnIndex]
 
+					if (rowIndex == 0 && columnIndex == 'theme')
+						console.log('after row check: ', initialColumn, column)
 					if (column !== initialColumn) {
-						console.log(
-							'initialRow: ', initialRow,
-							'\nrow: ', row,
-							'\ncolumn: ', column,
-							'\ninitialColumn: ', initialColumn,
-							'\nurl: ', `/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`
-						)
+						console.log('after column check/before column change: ', initialColumn, column)
+						initialColumn = column
+						console.log('after column change: ', initialColumn, column)
 						if (window !== undefined) {
 							fetch(`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`)
 								.then(response => response.json())
 								.then(data => {
-									console.log(data)
+									console.log('fetch: ', data)
 								})
 						}
 					}
 				}
 			}
 		}
-		// getData()
-		setInitialData(data)
 		updateData()
-		console.log(data[5], initialData[5])
+		setTimeout(() => {
+			getData()
+		}, 16)
 	}
 
 	return (

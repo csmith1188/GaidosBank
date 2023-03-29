@@ -110,6 +110,7 @@ export default function Admin() {
 		fetch('/api/getUsers')
 			.then(response => response.json())
 			.then(data => {
+				console.log('getUsers: ', data)
 				setUsers(data)
 			})
 	}
@@ -159,7 +160,7 @@ export default function Admin() {
 	function updateUsers(rowIndex, columnId, value) {
 		setSkipPageReset(true)
 		if (rowIndex && columnId && value) {
-			console.log(rowIndex, columnId, value)
+			console.log('updateUsers: ', rowIndex, columnId, value)
 			setUsers(old =>
 				old.map((row, index) => {
 					if (index === rowIndex) {
@@ -168,14 +169,15 @@ export default function Admin() {
 							[columnId]: value,
 						}
 					}
-					if (window !== undefined) {
-						fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
-							.then(response => response.json())
-							.then(data => {
-								console.log(data)
-							})
-						return row
-					}
+					return row
+					// if (window !== undefined) {
+					// 	fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
+					// 		.then(response => response.json())
+					// 		.then(data => {
+					// 			console.log('fetch: ', data)
+					// 		})
+					// 	return row
+					// }
 				})
 			)
 		} else return

@@ -32,20 +32,33 @@ export default function App({ Component, pageProps }) {
     }
   })
 
-  setInterval(() => {
-    if (window !== undefined && currentUser.isAuthenticated) {
-      fetch('/api/getCurrentUser')
-        .then(response => response.json())
-        .then(data => {
-          currentUser.balance = data.balance
-          currentUser.username = data.username
-          currentUser.id = data.id
-          currentUser.permissions = data.permissions
-          currentUser.theme = data.theme
-          updateCurrentUser()
-        })
-    }
-  }, 1000)
+  useEffect(() => {
+    setInterval(() => {
+      if (currentUser.isAuthenticated) {
+        fetch('/api/getCurrentUser')
+          .then(response => response.json())
+          .then(data => {
+            if (currentUser.username !== data.username) currentUser.username = data.username
+            else data.username = null
+            if (currentUser.id !== data.id) currentUser.id = data.id
+            else data.id = null
+            if (currentUser.balance !== data.balance) currentUser.balance = data.balance
+            else data.balance = null
+            if (currentUser.permissions !== data.permissions) currentUser.permissions = data.permissions
+            else data.permissions = null
+            if (currentUser.theme !== data.theme) currentUser.theme = data.theme
+            else data.theme = null
+            if (
+              data.username ||
+              data.id ||
+              data.balance ||
+              data.permissions ||
+              data.theme
+            ) updateCurrentUser()
+          })
+      }
+    }, 1000)
+  }, [])
 
   function updateCurrentUser() {
     setCurrentUser({
