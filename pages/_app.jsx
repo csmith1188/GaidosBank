@@ -32,6 +32,21 @@ export default function App({ Component, pageProps }) {
     }
   })
 
+  setInterval(() => {
+    if (window !== undefined && currentUser.isAuthenticated) {
+      fetch('/api/getCurrentUser')
+        .then(response => response.json())
+        .then(data => {
+          currentUser.balance = data.balance
+          currentUser.username = data.username
+          currentUser.id = data.id
+          currentUser.permissions = data.permissions
+          currentUser.theme = data.theme
+          updateCurrentUser()
+        })
+    }
+  }, 1000)
+
   function updateCurrentUser() {
     setCurrentUser({
       balance: currentUser.balance,

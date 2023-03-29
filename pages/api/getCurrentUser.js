@@ -9,13 +9,12 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		var currentUser = request.session.username;
+		var currentUser = request.session.username
 		database.get(
 			'SELECT * FROM users WHERE username = ?',
 			currentUser,
 			(error, results) => {
-				if (error) throw error.message
-				console.log(request.session)
+				if (error) throw error
 				if (results) response.send(results)
 				else response.send({ error: 'no user' })
 			}

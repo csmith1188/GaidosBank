@@ -179,7 +179,6 @@ export const Table = (props) => {
 			}
 		}
 		// getData()
-		// setData(data)
 		setInitialData(data)
 		updateData()
 		console.log(data[5], initialData[5])
