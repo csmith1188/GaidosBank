@@ -14,47 +14,21 @@ export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
 	const [data, setData] = useState(props.data)
+	const [initialData, setInitialData] = useState(data)
 	const skipPageReset = props.skipPageReset
 	const updateData = props.updateData
 	const sortBy = props.sortBy
+	const getData = props.getData
 	const sortable = props.sortable
 	const canFilter = props.canFilter
 	const editableColumns = props.editableColumns
 	const currentUser = useAtomValue(currentUserAtom)
-	const [initialData] = useState(props.data)
 
 	useEffect(() => {
 		setData(props.data)
 	}, [props.data])
 
-	function toCamelCase(string) {
-		string = string.toLowerCase()
-		let words = string.split(' ')
-
-		for (let i = 0; i < words.length; i++) {
-			if (i > 0)
-				words[i] = words[i][0].toUpperCase() + words[i].slice(1)
-		}
-
-		return words.join("")
-	}
-
-	function toNormalString(camelCaseString) {
-		const words = camelCaseString.split(/(?=[A-Z](?![0-9])|(?<![0-9])[0-9])/)
-
-		const capitalizedWords = words.map(word => {
-			const firstLetter = word.charAt(0).toUpperCase()
-			const restOfWord = word.slice(1).toLowerCase()
-			return firstLetter + restOfWord
-		})
-
-		const normalString = capitalizedWords.join(' ')
-
-		return normalString
-	}
-
 	function resetData() {
-		console.log('reset')
 		setData(initialData)
 		updateData()
 	}
@@ -68,59 +42,33 @@ export const Table = (props) => {
 		let [value, setValue] = useState(initialValue)
 
 		function onChange(event) {
-			// console.log(
-			// 	'initialData: ' + initialData[5].balance,
-			// 	'\nvalue: ' + value,
-			// 	'\ndata: ' + data[5].balance,
-			// 	'\nevent: ' + event.target.value
-			// )
-			console.log(value, event.target.value)
 			value = Number(event.target.value)
 				? Number(event.target.value)
 				: event.target.value
 			setValue(
 				value
 			)
-			console.log(value, event.target.value)
-			// 	console.log(
-			// 	'initialData: ' + initialData[5].balance,
-			// 	'\nvalue: ' + value,
-			// 	'\ndata: ' + data[5].balance,
-			// 	'\nevent: ' + event.target.value
-			// )
-			// data[index][id] = value
-			// console.log(
-			// 	'initialData: ' + initialData[5].balance,
-			// 	'\nvalue: ' + value,
-			// 	'\ndata: ' + data[5].balance,
-			// 	'\nevent: ' + event.target.value
-			// )
-			// setData(data)
-			// console.log(
-			// 	'initialData: ' + initialData[5].balance,
-			// 	'\nvalue: ' + value,
-			// 	'\ndata: ' + data[5].balance,
-			// 	'\nevent: ' + event.target.value
-			// )
-			// if (value != initialValue) {
-			// 	if (currentUser.theme == 'dark') {
-			// 		event.target.style.color = 'rgb(0,0,255)'
-			// 		event.target.style.borderColor = 'rgb(0,0,255)'
-			// 	}
-			// 	else {
-			// 		event.target.style.color = 'rgb(255,255,255)'
-			// 		event.target.style.borderColor = 'rgb(255,255,255)'
-			// 	}
-			// } else {
-			// 	if (currentUser.theme == 'dark') {
-			// 		event.target.style.color = 'rgb(130, 0, 255)'
-			// 		event.target.style.borderColor = 'rgb(130, 0, 255)'
-			// 	}
-			// 	else {
-			// 		event.target.style.color = 'rgb(100, 100, 255)'
-			// 		event.target.style.borderColor = 'rgb(100, 100, 255)'
-			// 	}
-			// }
+			data[index][id] = value
+			setData(data)
+			if (value != initialValue) {
+				if (currentUser.theme == 'dark') {
+					event.target.style.color = 'rgb(0,0,255)'
+					event.target.style.borderColor = 'rgb(0,0,255)'
+				}
+				else {
+					event.target.style.color = 'rgb(255,255,255)'
+					event.target.style.borderColor = 'rgb(255,255,255)'
+				}
+			} else {
+				if (currentUser.theme == 'dark') {
+					event.target.style.color = 'rgb(130, 0, 255)'
+					event.target.style.borderColor = 'rgb(130, 0, 255)'
+				}
+				else {
+					event.target.style.color = 'rgb(100, 100, 255)'
+					event.target.style.borderColor = 'rgb(100, 100, 255)'
+				}
+			}
 		}
 
 		useEffect(() => {
@@ -202,25 +150,39 @@ export const Table = (props) => {
 	const { globalFilter } = state
 
 	function saveData() {
-		console.log('save')
-		console.log(data, initialData)
 		for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
 			let row = data[rowIndex]
 			let initialRow = initialData[rowIndex]
 
-			if (rowIndex == 5)
-				console.log(row, initialRow)
 			if (row != initialRow) {
 				for (let columnIndex in row) {
 					let column = row[columnIndex]
 					let initialColumn = initialRow[columnIndex]
 
-					if (column != initialColumn) {
-						console.log(column, initialColumn)
+					if (column !== initialColumn) {
+						console.log(
+							'initialRow: ', initialRow,
+							'\nrow: ', row,
+							'\ncolumn: ', column,
+							'\ninitialColumn: ', initialColumn,
+							'\nurl: ', `/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`
+						)
+						if (window !== undefined) {
+							fetch(`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`)
+								.then(response => response.json())
+								.then(data => {
+									console.log(data)
+								})
+						}
 					}
 				}
 			}
 		}
+		// getData()
+		// setData(data)
+		setInitialData(data)
+		updateData()
+		console.log(data[5], initialData[5])
 	}
 
 	return (

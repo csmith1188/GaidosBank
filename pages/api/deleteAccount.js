@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		let username = request.session.username
-		database.get(
+		database.exec(
 			'DELETE FROM users WHERE username = ?',
 			[username],
 			(error, results) => {

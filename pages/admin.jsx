@@ -22,7 +22,7 @@ export default function Admin() {
 		}
 	}, [currentUser.isAuthenticated])
 
-	useEffect(() => {
+	function getTransactions() {
 		fetch('/api/getTransactions')
 			.then(response => response.json())
 			.then(data => {
@@ -39,6 +39,10 @@ export default function Admin() {
 				}
 				setTransactions(data)
 			})
+	}
+
+	useEffect(() => {
+		getTransactions()
 	}, [])
 
 	let transactionsColumns = [
@@ -102,12 +106,16 @@ export default function Admin() {
 		}
 	]
 
-	useEffect(() => {
+	function getUsers() {
 		fetch('/api/getUsers')
 			.then(response => response.json())
 			.then(data => {
 				setUsers(data)
 			})
+	}
+
+	useEffect(() => {
+		getUsers()
 	}, [])
 	const [originalUsers] = useState(users)
 
@@ -213,6 +221,7 @@ export default function Admin() {
 							canFilter={true}
 							updateData={updateUsers}
 							skipPageReset={skipPageReset}
+							getData={getUsers}
 							editableColumns={[
 								{
 									column: 'balance',
@@ -251,6 +260,7 @@ export default function Admin() {
 							sortable={true}
 							sortBy={[{ id: 'readableTimestamp', desc: false }]}
 							canFilter={true}
+							getData={getTransactions}
 						/>
 					</tabs.content>
 				</tabs.root >

@@ -4,38 +4,48 @@ const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	function handler(request, response) {
-		let currentUser, editingUser, index, property, value
-		if (request.query.index) index = request.query.index
-		else index = null
+		let currentUser, user, property, value
+		if (request.query.user) user = request.query.user
+		else user = null
 		if (request.query.property) property = request.query.property
 		else property = null
 		if (request.query.value) value = request.query.value
 		else value = null
 
-		if (request.session.username) {
-			database.get(`SELECT * FROM users WHERE username='${request.session.username}'`, (error, results) => {
-				if (error) throw error
-				if (results) currentUser = results
-				if (currentUser.permissions == 'admin') {
-					database.all('SELECT * FROM users', (error, results) => {
-						if (error) throw error
-						if (results) {
-							if (results[index]) {
-								editingUser = results[index]
-								console.log(editingUser, property)
-								if (editingUser[property] !== 'undefined') {
-									console.log(editingUser[property])
-									database.exec(`UPDATE users set ${property}=${value} WHERE username='${editingUser.username}'`, (error, results) => {
+		if (user) {
+			if (request.session.username) {
+				database.get(`SELECT * FROM users WHERE username='${request.session.username}'`, (error, results) => {
+					if (error) throw error
+					if (results) currentUser = results
+					if (currentUser.permissions == 'admin') {
+						if (isNaN(user)) {
+							database.get(`SELECT * FROM users where username='${user}'`, (error, results) => {
+								if (error) throw error
+								if (results) user = results
+								if (user[property] !== undefined) {
+									database.run(`UPDATE users set ${property}='${value}' WHERE username='${user.username}'`, (error, results) => {
 										if (error) throw error
-										response.json({ error: 'none', query: request.query })
+										response.json({ error: null })
 									})
 								} else response.json({ error: 'property does not exist' })
-							} else response.json({ error: 'there is no user with that index' })
+							})
 						}
-					})
-				} else response.json({ error: 'not admin' })
-			})
-		} else response.json({ error: 'not logged in' })
+						else if (!isNaN(user) && Number.isInteger(parseFloat(user))) {
+							database.get(`SELECT * FROM users where id='${user}'`, (error, results) => {
+								if (error) throw error
+								if (results) user = result
+								if (user[property] !== undefined) {
+									database.run(`UPDATE users set ${property}='${value}' WHERE username='${user.username}'`, (error, results) => {
+										if (error) throw error
+										response.json({ error: null })
+									})
+								} else response.json({ error: 'property does not exist', })
+							})
+						} else response.json({ error: 'id has to be integer' })
+					} else response.json({ error: 'not admin' })
+				})
+			} else response.json({ error: 'not logged in' })
+		} else response.send({ error: 'no user requested' })
 	},
 	{
 		cookieName: "session",
