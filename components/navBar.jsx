@@ -8,46 +8,38 @@ export default function NavBar() {
 	const mounted = useIsMounted()
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
-	function updateCurrentUser() {
-		setCurrentUser({
-			balance: currentUser.balance,
-			username: currentUser.username,
-			id: currentUser.id,
-			permissions: currentUser.permissions,
-			theme: currentUser.theme,
-			isAuthenticated: currentUser.isAuthenticated,
-			transactions: currentUser.transactions
-		})
-	}
-
-	const logout = () => {
-		fetch('/api/logout')
-			.then(response => response.json())
-			.then(data => {
-				currentUser = {
-					theme: currentUser.theme,
-					isAuthenticated: false,
-					transactions: [],
-					balance: 0
-				}
-				updateCurrentUser()
+	const logout = async () => {
+		const response = await fetch('/api/logout')
+		const data = await response.json()
+		try {
+			setCurrentUser({
+				theme: currentUser.theme,
+				isAuthenticated: false,
+				transactions: [],
+				balance: 0
 			})
-			.catch(error => { throw error })
+		} catch (error) {
+			throw error
+		}
 	}
 
 	function changeTheme() {
-		if (currentUser.theme === 'dark') {
-			document.body.style.backgroundColor = 'rgb(20, 20, 20)'
-		} else {
-			document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+		if (typeof window !== 'undefined') {
+			if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+			else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
 		}
 	}
 
 	function toggleTheme() {
-		if (currentUser.theme === 'dark') currentUser.theme = 'light'
-		else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-		updateCurrentUser()
-		changeTheme()
+		try {
+			setCurrentUser(prevUser => ({
+				...prevUser,
+				theme: currentUser.theme === 'dark' ? currentUser.theme === 'light' : currentUser.theme === 'dark'
+			}))
+			changeTheme()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	return (
@@ -95,7 +87,7 @@ export default function NavBar() {
 						onClick={logout}
 						id='logout'
 					>
-						logout
+						Logout
 					</nav.button>
 				</nav.item>
 			</nav.list>

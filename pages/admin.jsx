@@ -1,13 +1,14 @@
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
-import { useEffect, useState } from 'react'
+import { useDebugValue, useEffect, useState } from 'react'
 import { Table } from '../components/table'
 import * as text from '../components/styled/text'
 import { useIsMounted } from '../hooks/useIsMounted'
 import Head from 'next/head'
 import * as tabs from '../components/styled/tabs'
 import { Separator } from '../components/styled/separator'
+import * as React from 'react'
 
 export default function Admin() {
 	const mounted = useIsMounted()
@@ -15,7 +16,6 @@ export default function Admin() {
 	const [transactions, setTransactions] = useState([])
 	const [users, setUsers] = useState([])
 	const [skipPageReset, setSkipPageReset] = useState(false)
-
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
@@ -32,8 +32,7 @@ export default function Admin() {
 						"July", "August", "September", "October", "November", "December"
 					]
 					transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
-					if (transaction.timestamp.hours > 12)
-						transaction.timestamp.hours = transaction.timestamp.hours - 12
+					if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
 					else transaction.timestamp.hours = transaction.timestamp.hours
 					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
 				}
@@ -169,15 +168,16 @@ export default function Admin() {
 							[columnId]: value,
 						}
 					}
-					return row
-					// if (window !== undefined) {
-					// 	fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
-					// 		.then(response => response.json())
-					// 		.then(data => {
-					// 			console.log('fetch: ', data)
-					// 		})
-					// 	return row
-					// }
+					// return row
+					if (window !== 'undefined') {
+						console.log(rowIndex, columnId, value)
+						fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
+							.then(response => response.json())
+							.then(data => {
+								console.log('fetch: ', data)
+							})
+						return row
+					}
 				})
 			)
 		} else return

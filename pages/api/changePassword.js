@@ -5,17 +5,17 @@ const bcrypt = require('bcrypt')
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let username = request.session.username;
+		let username = request.session.username
 		username = 'Rev'
-		let currentPassword, newPassword, confirmNewPassword;
-		if (request.query.currentPassword) currentPassword = request.query.currentPassword
-		else currentPassword = null
-		if (request.query.newPassword) newPassword = request.query.newPassword
-		else newPassword = null
-		if (request.query.confirmNewPassword)
-			confirmPassword = request.query.confirmNewPassword
-		else confirmNewPassword = null
-		if (newPassword && confirmNewPassword) {
+		let currentPassword = request.query.currentPassword
+		let newPassword = request.query.newPassword
+		let confirmNewPassword = request.query.confirmNewPassword
+
+		if (
+			typeof currentPassword !== 'undefined' &&
+			typeof newPassword !== 'undefined' &&
+			typeof confirmNewPassword !== 'undefined'
+		) {
 			if (newPassword == confirmNewPassword) {
 				database.get(
 					'SELECT password FROM users WHERE username = ?',
@@ -48,7 +48,7 @@ export default withIronSessionApiRoute(
 					}
 				)
 			} else response.send({ error: 'newPassword and confirmNewPassword don\'t match' })
-		} else response.send({ error: 'missing newPassword and/or confirmNewPassword' })
+		} else response.send({ error: 'missing currentPassword and/or newPassword and/or confirmNewPassword' })
 	},
 	{
 		cookieName: "session",

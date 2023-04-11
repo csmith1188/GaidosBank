@@ -13,7 +13,7 @@ import { Select } from '../components/select'
 export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
-	const [initialData, setInitialData] = useState(props.data)
+	const [initialData] = useState(props.data)
 	const [data, setData] = useState(props.data)
 	const skipPageReset = props.skipPageReset
 	const updateData = props.updateData
@@ -25,9 +25,8 @@ export const Table = (props) => {
 	const currentUser = useAtomValue(currentUserAtom)
 
 	useEffect(() => {
-		setInitialData(props.data)
 		setData(props.data)
-		console.log('useEffect data: ', initialData, data)
+		// console.log('useEffect data: ', initialData, data)
 	}, [props.data])
 
 	function resetData() {
@@ -59,8 +58,7 @@ export const Table = (props) => {
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'
 					event.target.style.borderColor = 'rgb(0,0,255)'
-				}
-				else {
+				} else {
 					event.target.style.color = 'rgb(255,255,255)'
 					event.target.style.borderColor = 'rgb(255,255,255)'
 				}
@@ -68,8 +66,7 @@ export const Table = (props) => {
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(130, 0, 255)'
 					event.target.style.borderColor = 'rgb(130, 0, 255)'
-				}
-				else {
+				} else {
 					event.target.style.color = 'rgb(100, 100, 255)'
 					event.target.style.borderColor = 'rgb(100, 100, 255)'
 				}
@@ -78,16 +75,15 @@ export const Table = (props) => {
 
 		useEffect(() => {
 			setValue(initialValue)
-			if (index == 0, id == 'theme')
-				console.log('useEffect value: ', initialValue, value)
-		}, [props.data])
+			// if (index == 0, id == 'theme')
+			// console.log('useEffect value: ', initialValue, value)
+		}, [initialValue])
 
 		for (let column of editableColumns) {
 			if (column.column == id) {
 				if (Array.isArray(column.type)) {
 					return <Select onChange={onChange} name={column.column} items={column.type} defaultValue={value} pop={true} theme={currentUser.theme} />
-				}
-				else {
+				} else {
 					return <form.input
 						type={
 							column.type == 'int' || column.type == 'number'
@@ -164,6 +160,7 @@ export const Table = (props) => {
 			if (rowIndex == 0)
 				console.log('before row check: ', initialRow.theme, row.theme)
 			if (row != initialRow) {
+				console.log('after row check: ')
 				for (let columnIndex in row) {
 					let column = row[columnIndex]
 					let initialColumn = initialRow[columnIndex]
@@ -174,7 +171,7 @@ export const Table = (props) => {
 						console.log('after column check/before column change: ', initialColumn, column)
 						initialColumn = column
 						console.log('after column change: ', initialColumn, column)
-						if (window !== undefined) {
+						if (window !== 'undefined') {
 							fetch(`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`)
 								.then(response => response.json())
 								.then(data => {
@@ -186,9 +183,6 @@ export const Table = (props) => {
 			}
 		}
 		updateData()
-		setTimeout(() => {
-			getData()
-		}, 16)
 	}
 
 	return (

@@ -27,7 +27,6 @@ export default function Login() {
 			permissions: currentUser.permissions,
 			theme: currentUser.theme,
 			isAuthenticated: currentUser.isAuthenticated,
-			transactions: currentUser.transactions
 		})
 	}
 
@@ -49,10 +48,15 @@ export default function Login() {
 					setTimeout(() => {
 						errorElement.style.visibility = 'hidden'
 					}, 2000)
-				}
-				else {
-					currentUser = data
-					updateCurrentUser()
+				} else {
+					setCurrentUser({
+						id: data.id,
+						username: data.username,
+						balance: data.balance,
+						permissions: data.permissions,
+						theme: data.theme,
+						isAuthenticated: data.isAuthenticated,
+					})
 				}
 			})
 	}
@@ -69,8 +73,7 @@ export default function Login() {
 					setTimeout(() => {
 						errorElement.style.visibility = 'hidden'
 					}, 2000)
-				}
-				else {
+				} else {
 					currentUser = data
 					updateCurrentUser()
 				}

@@ -31,14 +31,13 @@ export default function MakeTransaction() {
 			.then(response => response.json())
 			.then(data => {
 				if (data) {
-					console.log(data);
+					console.log(data)
 					errorElement.style.visibility = ''
 					if (data.error !== 'none') {
 						errorElement.className = 'error'
 						p.innerHTML = data.error
-					}
-					else {
-						console.log('hi');
+					} else {
+						console.log('hi')
 						errorElement.className = 'success'
 						p.innerHTML = 'Transaction successful!'
 					}
@@ -69,7 +68,36 @@ export default function MakeTransaction() {
 					id='amount'
 					min='1'
 					theme={currentUser.theme}
-					onChange={(event) => amount = event.target.value} />
+					onChange={(event) => amount = event.target.value}
+					onKeyDown={(event) => {
+						console.log(
+							'event: ', event,
+							'\nkeyCode: ', event.keyCode,
+							'\nkey: ', event.key,
+							'\ncode: ', event.code,
+							'\ncode: ', event.type,
+							'\nshift: ', event.shiftKey,
+							'\nctrl: ', event.ctrlKey,
+						)
+						if (
+							!isNaN(event.key) ||
+							event.key.startsWith('Arrow') ||
+							event.key === 'End' ||
+							event.key === 'Home' ||
+							event.key === 'Backspace' ||
+							event.key === 'Delete' ||
+							(
+								event.ctrlKey &&
+								(
+									event.key === 'a' ||
+									event.key === 'c' ||
+									event.key === 'v'
+								)
+							)
+						) return event
+						else return false
+					}}
+				/>
 				<form.input type='submit' theme={currentUser.theme} />
 			</form.root>
 			<div id='error'>

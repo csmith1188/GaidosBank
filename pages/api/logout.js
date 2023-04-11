@@ -2,8 +2,12 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		delete request.session.username
-		response.send({ error: 'none', username: request.session.username })
+		try {
+			delete request.session.username
+			response.send({ error: 'none' })
+		} catch (error) {
+			throw error
+		}
 	},
 	{
 		cookieName: "session",

@@ -5,19 +5,14 @@ const bcrypt = require('bcrypt')
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let username, password;
-		if (request.query.username) username = request.query.username
-		else username = null
-		if (request.query.password) password = request.query.password
-		else password = null
+		let { username, password } = request.query
 
 		if (
-			username !== null && username !== 'undefined' &&
-			password !== null && password !== 'undefined'
+			typeof username !== 'undefined' &&
+			typeof password !== 'undefined'
 		) {
 			database.get(
-				'SELECT * FROM users WHERE username = ?',
-				[username],
+				`SELECT * FROM users WHERE username='${username}'`,
 				(error, results) => {
 					if (error) throw error
 					if (results) {
@@ -25,22 +20,19 @@ export default withIronSessionApiRoute(
 						bcrypt.compare(
 							password,
 							databasePassword,
-							(error, isMatch) => {
+							async (error, isMatch) => {
 								if (error) throw error
 								if (isMatch) {
 									request.session.username = username
-									request.session.save()
-									setTimeout(() => {
-										response.send({
-											balance: results.balance,
-											username: results.username,
-											id: results.id,
-											permissions: results.permissions,
-											theme: results.theme,
-											isAuthenticated: true,
-											session: request.session
-										})
-									}, 10)
+									await request.session.save()
+									response.send({
+										id: results.id,
+										username: results.username,
+										balance: results.balance,
+										permissions: results.permissions,
+										theme: results.theme,
+										isAuthenticated: true,
+									})
 								} else response.send({ error: 'That is not the users password.' })
 							}
 						)
@@ -57,3 +49,7 @@ export default withIronSessionApiRoute(
 		}
 	}
 )
+
+process.on('exit', () => {
+	database.close()
+})

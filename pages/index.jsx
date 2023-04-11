@@ -10,8 +10,8 @@ import { Select } from '../components/select'
 
 export default function Home() {
 	const mounted = useIsMounted()
-	var currentUser = useAtomValue(currentUserAtom)
-	var [leaderBoard, setLeaderBoard] = useState([])
+	const currentUser = useAtomValue(currentUserAtom)
+	const [leaderBoard, setLeaderBoard] = useState([])
 
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
@@ -19,23 +19,28 @@ export default function Home() {
 		}
 	}, [currentUser.isAuthenticated])
 
-	function getLeaderBoard() {
-		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
-			.then(response => response.json())
-			.then(data => {
-				for (let user of data) {
-					user.rank = data.indexOf(user) + 1
-				}
-				setLeaderBoard(data)
-			})
-	}
 
 	useEffect(() => {
-		getLeaderBoard()
-		setInterval(() => {
-			getLeaderBoard()
-		}, 1000)
+		const fetchLeaderBoard = async (leaderBoard) => {
+			try {
+				const response = await fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
+				const data = await response.json()
+
+				leaderBoard = data.map((user, index) => ({
+					...user,
+					rank: index + 1
+				}))
+
+				setLeaderBoard(leaderBoard)
+			} catch (error) {
+				throw error
+			}
+		}
+		fetchLeaderBoard()
+		const intervalId = setInterval(fetchLeaderBoard, 1000)
+		return () => clearInterval(intervalId)
 	}, [])
+
 
 	const columns = [
 		{

@@ -4,21 +4,17 @@ const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let user, username, id
-		let query = 'SELECT * FROM users WHERE '
-		if (request.query.user) user = request.query.user
-		else user = null
+		let user = request.query.user
 
-		if (user) {
+		if (typeof user !== 'undefined') {
 			if (isNaN(user)) {
-				database.get(query + 'username="' + user + '"', (error, results) => {
+				database.get(`SELECT id, username, balance, permissions, theme FROM users WHERE username="${user}"`, (error, results) => {
 					if (error) throw error
 					if (results) response.send(results)
 					else response.send({ error: 'no results' })
 				})
-			}
-			else if (!isNaN(user) && Number.isInteger(parseFloat(user))) {
-				database.get(query + 'id=' + parseInt(user), (error, results) => {
+			} else if (!isNaN(user) && Number.isInteger(parseFloat(user))) {
+				database.get(`SELECT id, username, balance, permissions, theme FROM users WHERE id=${parseInt(user)}`, (error, results) => {
 					if (error) throw error
 					if (results) response.send(results)
 					else response.send({ error: 'no results' })

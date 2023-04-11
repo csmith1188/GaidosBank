@@ -8,6 +8,11 @@ export const currentUserAtom = atomWithStorage('currentUser',
 		transactions: [],
 		balance: 0
 	}
+	// (
+	// 	typeof window !== 'undefined' ?
+	// 		{ storage: sessionStorage }
+	// 		: {}
+	// )
 )
 currentUserAtom.debugLabel = 'currentUserAtom'
 
@@ -15,6 +20,6 @@ export const leaderBoardAtom = atomWithStorage('leaderBoard', [])
 leaderBoardAtom.debugLabel = 'leaderBoardAtom'
 
 export const DebugAtoms = (({ children }) => {
-	useAtomsDevtools("atoms");
-	return children;
+	useAtomsDevtools("atoms")
+	return children
 })

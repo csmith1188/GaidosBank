@@ -4,22 +4,58 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 const bcrypt = require('bcrypt')
 
 export default withIronSessionApiRoute(
-	async function handler(request, response) {
-		let username = request.session.username
-		database.exec(
-			'DELETE FROM users WHERE username = ?',
-			[username],
-			(error, results) => {
-				if (error) throw error
-				if (results) response.send({ error: 'none' })
-				else response.send({ error: 'server no user' })
-			}
-		)
+	function handler(request, response) {
+		let currentUser = request.session.username
+		let { username, password } = request.query
+
+		if (typeof currentUser !== 'undefined') {
+			database.get(
+				'SELECT permissions FROM users WHERE username = ?',
+				currentUser,
+				(error, results) => {
+					if (error) throw error
+					if (results) {
+						if (results.permissions === 'admin') {
+							if (
+								typeof username !== 'undefined' &&
+								typeof password !== 'undefined'
+							) {
+								database.get(`SELECT password FROM users WHERE username='${username}'`, (error, results) => {
+									if (error) throw error
+									if (results) {
+										let databasePassword = results.password
+										console.log(databasePassword.password)
+										bcrypt.compare(
+											password,
+											databasePassword,
+											(error, isMatch) => {
+												if (error) throw error
+												if (isMatch) {
+													database.exec(
+														'DELETE FROM users WHERE username = ?',
+														[username],
+														(error, results) => {
+															if (error) throw error
+															if (results) response.send({ error: 'none' })
+															else response.send({ error: 'server no user' })
+														}
+													)
+												} else response.send({ error: 'That is not the users password.' })
+											}
+										)
+									}
+								})
+							} else response.send({ error: 'missing username or password' })
+						}
+						else response.send({ error: 'not admin' })
+					} else response.send({ error: 'not admin' })
+				}
+			)
+		} else response.send({ error: 'not logged in' })
 	},
 	{
 		cookieName: "session",
 		password: "wNKp0tI)2\"b/L/K[IG'jqeK;wA$3*X*g",
-		// secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
 		cookieOptions: {
 			secure: process.env.NODE_ENV === "production",
 		}

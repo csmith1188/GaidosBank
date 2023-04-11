@@ -4,17 +4,12 @@ const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	function handler(request, response) {
-		let currentUser, user, property, value
-		if (request.query.user) user = request.query.user
-		else user = null
-		if (request.query.property) property = request.query.property
-		else property = null
-		if (request.query.value) value = request.query.value
-		else value = null
+		let currentUser = request.session.username
+		let { user, property, value } = request.query
 
 		if (user) {
-			if (request.session.username) {
-				database.get(`SELECT * FROM users WHERE username='${request.session.username}'`, (error, results) => {
+			if (currentUser) {
+				database.get(`SELECT * FROM users WHERE username='${currentUser}'`, (error, results) => {
 					if (error) throw error
 					if (results) currentUser = results
 					if (currentUser.permissions == 'admin') {
@@ -22,19 +17,18 @@ export default withIronSessionApiRoute(
 							database.get(`SELECT * FROM users where username='${user}'`, (error, results) => {
 								if (error) throw error
 								if (results) user = results
-								if (user[property] !== undefined) {
+								if (user[property] !== 'undefined') {
 									database.run(`UPDATE users set ${property}='${value}' WHERE username='${user.username}'`, (error, results) => {
 										if (error) throw error
 										response.json({ error: null })
 									})
 								} else response.json({ error: 'property does not exist' })
 							})
-						}
-						else if (!isNaN(user) && Number.isInteger(parseFloat(user))) {
+						} else if (!isNaN(user) && Number.isInteger(parseFloat(user))) {
 							database.get(`SELECT * FROM users where id='${user}'`, (error, results) => {
 								if (error) throw error
 								if (results) user = result
-								if (user[property] !== undefined) {
+								if (user[property] !== 'undefined') {
 									database.run(`UPDATE users set ${property}='${value}' WHERE username='${user.username}'`, (error, results) => {
 										if (error) throw error
 										response.json({ error: null })

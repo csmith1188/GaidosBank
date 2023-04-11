@@ -5,45 +5,20 @@ const bcrypt = require('bcrypt')
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let id, username, password, confirmPassword, theme;
-		if (request.query.id) id = request.query.id
-		else id = null
-		if (request.query.username) username = request.query.username
-		else username = null
-		if (request.query.password) password = request.query.password
-		else password = null
-		if (request.query.confirmPassword) confirmPassword = request.query.confirmPassword
-		else confirmPassword = null
-		if (request.query.theme) theme = request.query.theme
-		else theme = 'light'
+		let {
+			id,
+			username,
+			password,
+			confirmPassword,
+			theme
+		} = request.query
 
-		console.log({
-			id: id,
-			username: username,
-			password: password,
-			confirmPassword: confirmPassword,
-			theme: theme,
-			if: {
-				id: id !== null && id !== 'undefined',
-				username: username !== null && username !== 'undefined',
-				password: password !== null && password !== 'undefined',
-				confirmPassword: confirmPassword !== null && confirmPassword !== 'undefined',
-				theme: theme !== null && theme !== 'undefined',
-				all: (
-					id !== null && id !== 'undefined' &&
-					username !== null && username !== 'undefined' &&
-					password !== null && password !== 'undefined' &&
-					confirmPassword !== null && confirmPassword !== 'undefined' &&
-					theme !== null && theme !== 'undefined'
-				)
-			}
-		})
 		if (
-			id !== null && id !== 'undefined' &&
-			username !== null && username !== 'undefined' &&
-			password !== null && password !== 'undefined' &&
-			confirmPassword !== null && confirmPassword !== 'undefined' &&
-			theme !== null && theme !== 'undefined'
+			typeof id !== 'undefined' &&
+			typeof username !== 'undefined' &&
+			typeof password !== 'undefined' &&
+			typeof confirmPassword !== 'undefined' &&
+			typeof theme !== 'undefined'
 		) {
 			if (password == confirmPassword) {
 				bcrypt.hash(
@@ -57,24 +32,32 @@ export default withIronSessionApiRoute(
 							(error, results) => {
 								if (error) throw error
 								if (!results) {
+									console.log(1)
 									database.get(
 										'INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ? , ?, ?)',
 										[id, username, hashedPassword, 0, 'user', theme],
 										(error, results) => {
+											console.log(2)
 											if (error) throw error
-											database.get('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
-												if (error) throw error
-												if (results) {
-													request.session.username = username
-													// fetch('/api/login?username=' + username + '&password=' + password)
-													// 	.then(loginResponse => loginResponse.json())
-													// 	.then(data => {
-													// 		console.log(3);
-													// 		console.log(data);
-													// 	})
-													response.send(results)
+											database.get(
+												'SELECT * FROM users WHERE username = ?',
+												[username],
+												async (error, results) => {
+													console.log(3)
+													if (error) throw error
+													if (results) {
+														request.session.username = username
+														response.send({
+															id: id,
+															username: username,
+															balance: 0,
+															permissions: 'user',
+															theme: theme,
+															isAuthenticated: true,
+														})
+													}
 												}
-											})
+											)
 										}
 									)
 								} else response.send({ error: 'A User already has that Username or Id.' })

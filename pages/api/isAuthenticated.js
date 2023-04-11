@@ -2,7 +2,9 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		if (request.session.username) response.send(true)
+		let currentUser = request.session.username
+
+		if (currentUser) response.send(true)
 		else response.send(false)
 	},
 	{
