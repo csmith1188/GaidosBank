@@ -15,8 +15,6 @@ export default function NavBar() {
 			setCurrentUser({
 				theme: currentUser.theme,
 				isAuthenticated: false,
-				transactions: [],
-				balance: 0
 			})
 		} catch (error) {
 			throw error

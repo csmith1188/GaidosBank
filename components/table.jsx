@@ -19,6 +19,7 @@ export const Table = (props) => {
 	const updateData = props.updateData
 	const sortBy = props.sortBy
 	const getData = props.getData
+	const limit = props.limit
 	const sortable = props.sortable
 	const canFilter = props.canFilter
 	const editableColumns = props.editableColumns
@@ -128,7 +129,7 @@ export const Table = (props) => {
 		return initialValue
 	}
 
-	const {
+	let {
 		getTableProps,
 		getTableBodyProps,
 		headerGroups,
@@ -148,6 +149,8 @@ export const Table = (props) => {
 		useGlobalFilter,
 		(sortable ? useSortBy : ''),
 	)
+	if (limit)
+		rows = rows.slice(0, limit)
 
 	const { globalFilter } = state
 

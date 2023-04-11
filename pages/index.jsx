@@ -23,13 +23,14 @@ export default function Home() {
 	useEffect(() => {
 		const fetchLeaderBoard = async (leaderBoard) => {
 			try {
-				const response = await fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
+				const response = await fetch('/api/getUsers')
 				const data = await response.json()
-
+				let leaderBoard = data.sort((a, b) => { return b.balance - a.balance })
 				leaderBoard = data.map((user, index) => ({
 					...user,
 					rank: index + 1
 				}))
+				console.log(leaderBoard)
 
 				setLeaderBoard(leaderBoard)
 			} catch (error) {
@@ -37,8 +38,8 @@ export default function Home() {
 			}
 		}
 		fetchLeaderBoard()
-		const intervalId = setInterval(fetchLeaderBoard, 1000)
-		return () => clearInterval(intervalId)
+		const interval = setInterval(fetchLeaderBoard, 1000)
+		return () => clearInterval(interval)
 	}, [])
 
 
@@ -68,7 +69,7 @@ export default function Home() {
 					You have ${currentUser ? currentUser.balance : ''} in your Balance
 				</text.p>
 			) : ''}
-			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' />
+			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' limit={10} />
 		</div >
 	)
 }

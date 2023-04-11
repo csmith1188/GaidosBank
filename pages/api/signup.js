@@ -12,7 +12,8 @@ export default withIronSessionApiRoute(
 			confirmPassword,
 			theme
 		} = request.query
-
+		if (typeof theme === 'undefined') theme = 'light'
+		console.log(id, username, password, confirmPassword, theme)
 		if (
 			typeof id !== 'undefined' &&
 			typeof username !== 'undefined' &&
@@ -32,21 +33,20 @@ export default withIronSessionApiRoute(
 							(error, results) => {
 								if (error) throw error
 								if (!results) {
-									console.log(1)
+									console.log(id, username, hashedPassword, theme)
 									database.get(
 										'INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ? , ?, ?)',
 										[id, username, hashedPassword, 0, 'user', theme],
 										(error, results) => {
-											console.log(2)
 											if (error) throw error
 											database.get(
 												'SELECT * FROM users WHERE username = ?',
 												[username],
 												async (error, results) => {
-													console.log(3)
 													if (error) throw error
 													if (results) {
 														request.session.username = username
+														console.log(id, username, theme)
 														response.send({
 															id: id,
 															username: username,
@@ -66,7 +66,7 @@ export default withIronSessionApiRoute(
 					}
 				)
 			} else response.send({ error: 'Passwords do not match.' })
-		} else response.send({ error: 'missing ID, Username, Password or Confirm Password.' })
+		} else response.send({ error: 'missing ID, Username, Password, Confirm Password, and/or theme.' })
 	},
 	{
 		cookieName: "session",

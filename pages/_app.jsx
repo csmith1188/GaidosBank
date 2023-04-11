@@ -12,21 +12,33 @@ export default function App({ Component, pageProps }) {
       try {
         const response = await fetch('/api/isAuthenticated')
         const data = await response.json()
-        console.log(data)
-        setCurrentUser(prevUser => ({
-          ...prevUser,
-          isAuthenticated: data === true
-        }))
+        if (data) {
+          setCurrentUser(prevUser => ({
+            ...prevUser,
+            isAuthenticated: data === true
+          }))
+        } else {
+          const response = await fetch('/api/logout')
+          const data = await response.json()
+          try {
+            setCurrentUser({
+              theme: currentUser.theme,
+              isAuthenticated: false,
+            })
+          } catch (error) {
+            throw error
+          }
+        }
       } catch (error) {
         throw error
       }
     }
-    const intervalId = setInterval(checkAuthentication, 1000)
-    return () => clearInterval(intervalId)
+    const interval = setInterval(checkAuthentication, 1000)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
-    const getCurrentUser = async () => {
+    async function getCurrentUser() {
       try {
         const response = await fetch('/api/getCurrentUser')
         const data = await response.json()
@@ -48,8 +60,8 @@ export default function App({ Component, pageProps }) {
         throw error
       }
     }
-    const intervalId = setInterval(getCurrentUser, 1000)
-    return () => clearInterval(intervalId)
+    // const interval = setInterval(getCurrentUser, 1000)
+    // return () => clearInterval(interval)
   }, [])
 
   function changeTheme() {

@@ -12,6 +12,7 @@ import { Separator } from '../components/styled/separator'
 export default function Login() {
 	const mounted = useIsMounted()
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+	let username, password, confirmPassword, id
 
 	useEffect(() => {
 		if (currentUser.isAuthenticated) {
@@ -19,65 +20,44 @@ export default function Login() {
 		}
 	}, [currentUser.isAuthenticated])
 
-	function updateCurrentUser() {
-		setCurrentUser({
-			balance: currentUser.balance,
-			username: currentUser.username,
-			id: currentUser.id,
-			permissions: currentUser.permissions,
-			theme: currentUser.theme,
-			isAuthenticated: currentUser.isAuthenticated,
-		})
-	}
-
-	let username, password, confirmPassword, id
-
 	useEffect(() => {
 		document.getElementById('error').style.visibility = 'hidden'
 	}, [])
 
-	function handleSubmitLogin(event) {
+	async function handleSubmitLogin(event) {
 		let errorElement = document.getElementById('error')
 		event.preventDefault()
-		fetch('/api/login?username=' + username + '&password=' + password)
-			.then(response => response.json())
-			.then(data => {
-				if (data.error) {
-					errorElement.getElementsByTagName('p')[0].innerHTML = data.error
-					errorElement.style.visibility = ''
-					setTimeout(() => {
-						errorElement.style.visibility = 'hidden'
-					}, 2000)
-				} else {
-					setCurrentUser({
-						id: data.id,
-						username: data.username,
-						balance: data.balance,
-						permissions: data.permissions,
-						theme: data.theme,
-						isAuthenticated: data.isAuthenticated,
-					})
-				}
-			})
+		console.log(username, password, event)
+		const response = await fetch(`/api/login?username=${username}&password=${password}`)
+		const data = await response.json()
+		if (data.error) {
+			errorElement.getElementsByTagName('p')[0].innerHTML = data.error
+			errorElement.style.visibility = ''
+			setTimeout(() => {
+				errorElement.style.visibility = 'hidden'
+			}, 2000)
+		} else {
+			console.log(data)
+			setCurrentUser(data)
+		}
 	}
 
-	function handleSubmitSignup(event) {
+	async function handleSubmitSignup(event) {
 		let errorElement = document.getElementById('error')
 		event.preventDefault()
-		fetch('/api/signup?id=' + id + '&username=' + username + '&password=' + password + '&confirmPassword=' + confirmPassword + '&theme=' + currentUser.theme)
-			.then(response => response.json())
-			.then(data => {
-				if (data.error) {
-					errorElement.getElementsByTagName('p')[0].innerHTML = data.error
-					errorElement.style.visibility = ''
-					setTimeout(() => {
-						errorElement.style.visibility = 'hidden'
-					}, 2000)
-				} else {
-					currentUser = data
-					updateCurrentUser()
-				}
-			})
+		const response = await fetch(`/api/signup?id=${id}&username=${username}&password=${password}&confirmPassword=${confirmPassword}&theme=${currentUser.theme}`)
+		const data = await response.json()
+		if (data.error) {
+			errorElement.getElementsByTagName('p')[0].innerHTML = data.error
+			errorElement.style.visibility = ''
+			setTimeout(() => {
+				errorElement.style.visibility = 'hidden'
+			}, 2000)
+		} else {
+			console.log(data)
+			currentUser = data
+			setCurrentUser(data)
+		}
 	}
 
 
@@ -104,7 +84,10 @@ export default function Login() {
 							autoComplete='username'
 							placeholder='Username'
 							value={username}
-							onChange={(event) => username = event.target.value}
+							onChange={(event) => {
+								username = event.target.value
+								console.log(username)
+							}}
 							theme={mounted && currentUser.theme}
 						/>
 						<form.input
