@@ -3,7 +3,7 @@ import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 import * as form from '../components/styled/form'
 import * as text from '../components/styled/text'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useIsMounted } from '../hooks/useIsMounted'
 import * as tabs from '../components/styled/tabs'
@@ -11,8 +11,11 @@ import { Separator } from '../components/styled/separator'
 
 export default function Login() {
 	const mounted = useIsMounted()
-	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
-	let username, password, confirmPassword, id
+	const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
+	const [id, setId] = useState('')
 
 	useEffect(() => {
 		if (currentUser.isAuthenticated) {
@@ -20,22 +23,13 @@ export default function Login() {
 		}
 	}, [currentUser.isAuthenticated])
 
-	useEffect(() => {
-		document.getElementById('error').style.visibility = 'hidden'
-	}, [])
-
 	async function handleSubmitLogin(event) {
-		let errorElement = document.getElementById('error')
 		event.preventDefault()
 		console.log(username, password, event)
 		const response = await fetch(`/api/login?username=${username}&password=${password}`)
 		const data = await response.json()
 		if (data.error) {
-			errorElement.getElementsByTagName('p')[0].innerHTML = data.error
-			errorElement.style.visibility = ''
-			setTimeout(() => {
-				errorElement.style.visibility = 'hidden'
-			}, 2000)
+			setError(data.error)
 		} else {
 			console.log(data)
 			setCurrentUser(data)
@@ -43,23 +37,25 @@ export default function Login() {
 	}
 
 	async function handleSubmitSignup(event) {
-		let errorElement = document.getElementById('error')
 		event.preventDefault()
 		const response = await fetch(`/api/signup?id=${id}&username=${username}&password=${password}&confirmPassword=${confirmPassword}&theme=${currentUser.theme}`)
 		const data = await response.json()
 		if (data.error) {
-			errorElement.getElementsByTagName('p')[0].innerHTML = data.error
-			errorElement.style.visibility = ''
-			setTimeout(() => {
-				errorElement.style.visibility = 'hidden'
-			}, 2000)
+			setError(data.error)
 		} else {
 			console.log(data)
-			currentUser = data
 			setCurrentUser(data)
 		}
 	}
 
+	function setError(error) {
+		const errorElement = document.getElementById('error')
+		errorElement.getElementsByTagName('p')[0].innerHTML = error
+		errorElement.style.visibility = ''
+		setTimeout(() => {
+			errorElement.style.visibility = 'hidden'
+		}, 2000)
+	}
 
 	return (
 		<div id='login'>
@@ -84,10 +80,7 @@ export default function Login() {
 							autoComplete='username'
 							placeholder='Username'
 							value={username}
-							onChange={(event) => {
-								username = event.target.value
-								console.log(username)
-							}}
+							onChange={(event) => setUsername(event.target.value)}
 							theme={mounted && currentUser.theme}
 						/>
 						<form.input
@@ -96,7 +89,7 @@ export default function Login() {
 							autoComplete='password'
 							placeholder='Password'
 							value={password}
-							onChange={(event) => password = event.target.value}
+							onChange={(event) => setPassword(event.target.value)}
 							theme={mounted && currentUser.theme} />
 						<form.input type='submit' theme={mounted && currentUser.theme} value="Login" />
 					</form.root>
@@ -116,7 +109,7 @@ export default function Login() {
 							autoComplete='off'
 							placeholder='Id'
 							value={id}
-							onChange={(event) => id = event.target.value}
+							onChange={(event) => setId(event.target.value)}
 							theme={currentUser.theme}
 						/>
 						<form.input
@@ -125,7 +118,7 @@ export default function Login() {
 							autoComplete='username'
 							placeholder='Username'
 							value={username}
-							onChange={(event) => username = event.target.value}
+							onChange={(event) => setUsername(event.target.value)}
 							theme={currentUser.theme}
 						/>
 						<form.input
@@ -134,7 +127,7 @@ export default function Login() {
 							autoComplete='password'
 							placeholder='Password'
 							value={password}
-							onChange={(event) => password = event.target.value}
+							onChange={(event) => setPassword(event.target.value)}
 							theme={currentUser.theme} />
 						<form.input
 							type='password'
@@ -142,13 +135,13 @@ export default function Login() {
 							autoComplete='password'
 							placeholder='Confirm Password'
 							value={confirmPassword}
-							onChange={(event) => confirmPassword = event.target.value}
+							onChange={(event) => setConfirmPassword(event.target.value)}
 							theme={currentUser.theme} />
 						<form.input type='submit' theme={currentUser.theme} value="Signup" />
 					</form.root>
 				</tabs.content>
 			</tabs.root>
-			<div id='error'>
+			<div id='error' style={{ visibility: 'hidden' }}>
 				<text.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
 				</text.button>

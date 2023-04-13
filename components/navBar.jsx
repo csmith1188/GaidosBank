@@ -11,13 +11,18 @@ export default function NavBar() {
 	const logout = async () => {
 		const response = await fetch('/api/logout')
 		const data = await response.json()
-		try {
-			setCurrentUser({
-				theme: currentUser.theme,
-				isAuthenticated: false,
-			})
-		} catch (error) {
-			throw error
+		if (!data.error) throw data.error
+		else {
+			try {
+				console.log(currentUser)
+				setCurrentUser({
+					theme: currentUser.theme,
+					isAuthenticated: false,
+				})
+				console.log(currentUser)
+			} catch (error) {
+				throw error
+			}
 		}
 	}
 

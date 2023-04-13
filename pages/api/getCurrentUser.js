@@ -7,7 +7,6 @@ export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		let currentUser = request.session.username
 
-		console.log(currentUser)
 		database.get(
 			'SELECT * FROM users WHERE username = ?',
 			currentUser,

@@ -4,6 +4,7 @@ export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		try {
 			delete request.session.username
+			await request.session.save()
 			response.send({ error: 'none' })
 		} catch (error) {
 			throw error

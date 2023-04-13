@@ -30,7 +30,6 @@ export default function Home() {
 					...user,
 					rank: index + 1
 				}))
-				console.log(leaderBoard)
 
 				setLeaderBoard(leaderBoard)
 			} catch (error) {

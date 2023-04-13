@@ -46,7 +46,7 @@ export default withIronSessionApiRoute(
 													if (error) throw error
 													if (results) {
 														request.session.username = username
-														console.log(id, username, theme)
+														await request.session.save()
 														response.send({
 															id: id,
 															username: username,

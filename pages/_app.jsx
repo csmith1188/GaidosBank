@@ -47,7 +47,7 @@ export default function App({ Component, pageProps }) {
             delete data[key]
           }
         }
-        if (data)
+        if (data) {
           setCurrentUser((prevCurrentUserData) => ({
             ...prevCurrentUserData,
             id: data.id ?? currentUser.id,
@@ -56,12 +56,14 @@ export default function App({ Component, pageProps }) {
             permissions: data.permissions ?? currentUser.permissions,
             theme: data.theme ?? currentUser.theme,
           }))
+        }
       } catch (error) {
         throw error
       }
     }
-    // const interval = setInterval(getCurrentUser, 1000)
-    // return () => clearInterval(interval)
+
+    const interval = setInterval(getCurrentUser, 1000)
+    return () => clearInterval(interval)
   }, [])
 
   function changeTheme() {
