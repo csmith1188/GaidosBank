@@ -5,37 +5,40 @@ const bcrypt = require('bcrypt')
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
+		let currentUser = request.session.username
 		let { username, password } = request.query
 
-		if (
-			typeof username !== 'undefined' &&
-			typeof password !== 'undefined'
-		) {
-			database.get(
-				`SELECT * FROM users WHERE username='${username}'`,
-				(error, results) => {
-					if (error) throw error
-					if (results) {
-						let databasePassword = results.password
-						bcrypt.compare(
-							password,
-							databasePassword,
-							async (error, isMatch) => {
-								if (error) throw error
-								if (isMatch) {
-									request.session.username = username
-									await request.session.save()
-									response.json({
-										...results,
-										isAuthenticated: true,
-									})
-								} else response.json({ error: 'That is not the users password.' })
-							}
-						)
-					} else response.json({ error: 'User does not exist.' })
-				}
-			)
-		} else response.json({ error: 'Missing username or password.' })
+		if (!currentUser) {
+			if (
+				typeof username !== 'undefined' &&
+				typeof password !== 'undefined'
+			) {
+				database.get(
+					`SELECT password FROM users WHERE username = ${username}`,
+					(error, results) => {
+						if (error) throw error
+						if (results) {
+							let databasePassword = results.password
+							bcrypt.compare(
+								password,
+								databasePassword,
+								async (error, isMatch) => {
+									if (error) throw error
+									if (isMatch) {
+										currentUser = username
+										await request.session.save()
+										response.json({
+											...results,
+											isAuthenticated: true,
+										})
+									} else response.json({ error: 'That is not the users password.' })
+								}
+							)
+						} else response.json({ error: 'User does not exist.' })
+					}
+				)
+			} else response.json({ error: 'Missing username or password.' })
+		} else response.json({ error: 'Already logged in' })
 	},
 	{
 		cookieName: "session",

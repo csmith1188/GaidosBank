@@ -11,8 +11,8 @@ export const GlobalFilter = ({ filter, setFilter }) => {
 			Search:{' '}
 			<form.input
 				value={filter || ''}
-				onChange={e => {
-					setFilter(e.target.value)
+				onChange={event => {
+					setFilter(event.target.value)
 				}}
 				theme={currentUser.theme}
 			/>

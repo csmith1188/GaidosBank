@@ -120,6 +120,7 @@ export default function Admin() {
 	useEffect(() => {
 		getUsers()
 	}, [])
+
 	const [originalUsers] = useState(users)
 
 	let userColumns = [

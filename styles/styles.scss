@@ -79,7 +79,6 @@ $scrollbarSize: 0.5vw;
 	touch-action: none;
 	padding: 0.1vw;
 	border-radius: calc($scrollbarSize + (0.1vw * 2));
-	// transition: background-color 160ms ease-out;
 
 	&[data-orientation=vertical] {
 		width: $scrollbarSize;

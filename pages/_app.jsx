@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }) {
   var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
   useEffect(() => {
-    const checkAuthentication = async () => {
+    async function checkAuthentication() {
       try {
         const response = await fetch('/api/isAuthenticated')
         const data = await response.json()
@@ -73,7 +73,7 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     window.addEventListener('load', changeTheme())
-  })
+  }, [])
 
   return (
     <>

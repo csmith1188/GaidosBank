@@ -8,7 +8,7 @@ export default function NavBar() {
 	const mounted = useIsMounted()
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
-	const logout = async () => {
+	async function logout() {
 		const response = await fetch('/api/logout')
 		const data = await response.json()
 		if (!data.error) throw data.error

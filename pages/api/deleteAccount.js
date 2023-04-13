@@ -20,7 +20,8 @@ export default withIronSessionApiRoute(
 								typeof username !== 'undefined' &&
 								typeof password !== 'undefined'
 							) {
-								database.get(`SELECT password FROM users WHERE username='${username}'`, (error, results) => {
+								database.get(`SELECT password FROM users WHERE username = ${username}`,
+									(error, results) => {
 									if (error) throw error
 									if (results) {
 										let databasePassword = results.password

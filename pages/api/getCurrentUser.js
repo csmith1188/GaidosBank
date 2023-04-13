@@ -8,7 +8,7 @@ export default withIronSessionApiRoute(
 		let currentUser = request.session.username
 
 		database.get(
-			'SELECT * FROM users WHERE username = ?',
+			'SELECT id, username, balance, permissions, theme FROM users WHERE username = ?',
 			currentUser,
 			(error, results) => {
 				if (error) throw error

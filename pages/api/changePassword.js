@@ -7,9 +7,10 @@ export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		let username = request.session.username
 		username = 'Rev'
-		let currentPassword = request.query.currentPassword
-		let newPassword = request.query.newPassword
-		let confirmNewPassword = request.query.confirmNewPassword
+		let {
+			currentPassword,
+			newPassword,
+			confirmNewPassword } = request.query.confirmNewPassword
 
 		if (
 			typeof currentPassword !== 'undefined' &&
@@ -18,8 +19,7 @@ export default withIronSessionApiRoute(
 		) {
 			if (newPassword == confirmNewPassword) {
 				database.get(
-					'SELECT password FROM users WHERE username = ?',
-					[username],
+					`SELECT password FROM users WHERE username = ${username}`,
 					(error, results) => {
 						if (error) throw error
 						if (results) {
@@ -32,8 +32,7 @@ export default withIronSessionApiRoute(
 										bcrypt.hash(newPassword, 10, (error, hashedPassword) => {
 											if (error) throw error
 											database.get(
-												'UPDATE users SET password = ? WHERE username = ?',
-												[hashedPassword, username],
+												`UPDATE users SET password = ${hashedPassword} WHERE username = ${username}`,
 												(error, results) => {
 													if (error) throw error
 													if (results) response.json({ error: 'none' })
