@@ -47,7 +47,7 @@ export default withIronSessionApiRoute(
 													if (results) {
 														request.session.username = username
 														await request.session.save()
-														response.send({
+														response.json({
 															id: id,
 															username: username,
 															balance: 0,
@@ -60,18 +60,17 @@ export default withIronSessionApiRoute(
 											)
 										}
 									)
-								} else response.send({ error: 'A User already has that Username or Id.' })
+								} else response.json({ error: 'A User already has that Username or Id.' })
 							}
 						)
 					}
 				)
-			} else response.send({ error: 'Passwords do not match.' })
-		} else response.send({ error: 'missing ID, Username, Password, Confirm Password, and/or theme.' })
+			} else response.json({ error: 'Passwords do not match.' })
+		} else response.json({ error: 'missing ID, Username, Password, Confirm Password, and/or theme.' })
 	},
 	{
 		cookieName: "session",
 		password: "wNKp0tI)2\"b/L/K[IG'jqeK;wA$3*X*g",
-		// secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
 		cookieOptions: {
 			secure: process.env.NODE_ENV === "production",
 		}

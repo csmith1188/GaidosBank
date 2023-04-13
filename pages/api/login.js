@@ -25,21 +25,17 @@ export default withIronSessionApiRoute(
 								if (isMatch) {
 									request.session.username = username
 									await request.session.save()
-									response.send({
-										id: results.id,
-										username: results.username,
-										balance: results.balance,
-										permissions: results.permissions,
-										theme: results.theme,
+									response.json({
+										...results,
 										isAuthenticated: true,
 									})
-								} else response.send({ error: 'That is not the users password.' })
+								} else response.json({ error: 'That is not the users password.' })
 							}
 						)
-					} else response.send({ error: 'User does not exist.' })
+					} else response.json({ error: 'User does not exist.' })
 				}
 			)
-		} else response.send({ error: 'Missing username or password.' })
+		} else response.json({ error: 'Missing username or password.' })
 	},
 	{
 		cookieName: "session",

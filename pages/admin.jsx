@@ -22,22 +22,24 @@ export default function Admin() {
 		}
 	}, [currentUser.isAuthenticated])
 
-	function getTransactions() {
-		fetch('/api/getTransactions')
-			.then(response => response.json())
-			.then(data => {
-				for (let transaction of data) {
-					transaction.timestamp = JSON.parse(transaction.timestamp)
-					const monthNames = ["January", "February", "March", "April", "May", "June",
-						"July", "August", "September", "October", "November", "December"
-					]
-					transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
-					if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
-					else transaction.timestamp.hours = transaction.timestamp.hours
-					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
-				}
-				setTransactions(data)
-			})
+	async function getTransactions() {
+		const response = await fetch('/api/getTransactions')
+		const data = await response.json()
+		try {
+			for (let transaction of data) {
+				transaction.timestamp = JSON.parse(transaction.timestamp)
+				const monthNames = ["January", "February", "March", "April", "May", "June",
+					"July", "August", "September", "October", "November", "December"
+				]
+				transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
+				if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
+				else transaction.timestamp.hours = transaction.timestamp.hours
+				transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
+			}
+			setTransactions(data)
+		} catch (error) {
+			throw error
+		}
 	}
 
 	useEffect(() => {
@@ -105,13 +107,14 @@ export default function Admin() {
 		}
 	]
 
-	function getUsers() {
-		fetch('/api/getUsers')
-			.then(response => response.json())
-			.then(data => {
-				console.log('getUsers: ', data)
-				setUsers(data)
-			})
+	async function getUsers() {
+		const response = await fetch('/api/getUsers')
+		const data = await response.json()
+		try {
+			setUsers(data)
+		} catch (error) {
+			throw error
+		}
 	}
 
 	useEffect(() => {
@@ -161,21 +164,17 @@ export default function Admin() {
 		if (rowIndex && columnId && value) {
 			console.log('updateUsers: ', rowIndex, columnId, value)
 			setUsers(old =>
-				old.map((row, index) => {
+				old.map(async (row, index) => {
 					if (index === rowIndex) {
 						return {
 							...old[rowIndex],
 							[columnId]: value,
 						}
 					}
-					// return row
 					if (window !== 'undefined') {
 						console.log(rowIndex, columnId, value)
-						fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
-							.then(response => response.json())
-							.then(data => {
-								console.log('fetch: ', data)
-							})
+						const response = await fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
+						const data = await response.json()
 						return row
 					}
 				})

@@ -18,23 +18,25 @@ export default function ViewTransactions() {
 	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {
-		fetch('/api/getTransactions?user=' + currentUser.username)
-			.then(response => response.json())
-			.then(data => {
-				for (let transaction of data) {
-					transaction.timestamp = JSON.parse(transaction.timestamp)
-					const monthNames = ["January", "February", "March", "April", "May", "June",
-						"July", "August", "September", "October", "November", "December"
-					]
-					transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
-					if (transaction.timestamp.hours > 12)
-						transaction.timestamp.hours = transaction.timestamp.hours - 12
-					else transaction.timestamp.hours = transaction.timestamp.hours
-					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
-				}
-				setTransactions(data)
-			})
-	})
+		async function getTransactions() {
+			const response = await fetch('/api/getTransactions?user=' + currentUser.username)
+			const data = await response.json()
+			for (let transaction of data) {
+				transaction.timestamp = JSON.parse(transaction.timestamp)
+				const monthNames = ["January", "February", "March", "April", "May", "June",
+					"July", "August", "September", "October", "November", "December"
+				]
+				transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
+				if (transaction.timestamp.hours > 12)
+					transaction.timestamp.hours = transaction.timestamp.hours - 12
+				else transaction.timestamp.hours = transaction.timestamp.hours
+				transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
+			}
+			setTransactions(data)
+		}
+		const interval = setInterval(getTransactions, 1000)
+		return () => clearInterval(interval)
+	}, [])
 
 	let columns = [
 		{

@@ -46,23 +46,22 @@ export default withIronSessionApiRoute(
 											database.run('INSERT INTO transactions (senderId, receiverId, amount, timestamp) VALUES (?, ?, ?, ?)', [sender.id, receiver.id, amount, JSON.stringify(date)], (error, results) => {
 												if (error) throw error
 											})
-											response.send({ error: 'none' })
+											response.json({ error: 'none' })
 										} else {
 											console.log('You don\'t have enough money')
-											response.send({ error: 'You don\'t have enough money' })
+											response.json({ error: 'You don\'t have enough money' })
 										}
-									} else response.send({ error: 'You can\'t send money to yourself.' })
-								} else response.send({ error: 'Receiver does not exist.' })
+									} else response.json({ error: 'You can\'t send money to yourself.' })
+								} else response.json({ error: 'Receiver does not exist.' })
 							})
-						} else response.send({ error: 'Account logged into doesn\'t exist somehow.' })
+						} else response.json({ error: 'Account logged into doesn\'t exist somehow.' })
 					})
-			} else response.send({ error: 'Missing account and/or amount.' })
-		} else response.send({ error: 'Not logged in.' })
+			} else response.json({ error: 'Missing account and/or amount.' })
+		} else response.json({ error: 'Not logged in.' })
 	},
 	{
 		cookieName: "session",
 		password: "wNKp0tI)2\"b/L/K[IG'jqeK;wA$3*X*g",
-		// secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
 		cookieOptions: {
 			secure: process.env.NODE_ENV === "production",
 		}

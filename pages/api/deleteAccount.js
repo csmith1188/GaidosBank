@@ -36,22 +36,22 @@ export default withIronSessionApiRoute(
 														[username],
 														(error, results) => {
 															if (error) throw error
-															if (results) response.send({ error: 'none' })
-															else response.send({ error: 'server no user' })
+															if (results) response.json({ error: 'none' })
+															else response.json({ error: 'server no user' })
 														}
 													)
-												} else response.send({ error: 'That is not the users password.' })
+												} else response.json({ error: 'That is not the users password.' })
 											}
 										)
 									}
 								})
-							} else response.send({ error: 'missing username or password' })
+							} else response.json({ error: 'missing username or password' })
 						}
-						else response.send({ error: 'not admin' })
-					} else response.send({ error: 'not admin' })
+						else response.json({ error: 'not admin' })
+					} else response.json({ error: 'not admin' })
 				}
 			)
-		} else response.send({ error: 'not logged in' })
+		} else response.json({ error: 'not logged in' })
 	},
 	{
 		cookieName: "session",

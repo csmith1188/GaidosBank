@@ -8,8 +8,8 @@ export default withIronSessionApiRoute(
 			'SELECT id, username, balance, permissions, theme FROM users',
 			(error, results) => {
 				if (error) throw error
-				if (results) response.send(results)
-				else response.send({ error: 'no results' })
+				if (results) response.json(results)
+				else response.json({ error: 'no results' })
 			}
 		)
 	},

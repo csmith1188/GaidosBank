@@ -21,27 +21,29 @@ export default function MakeTransaction() {
 		document.getElementById('error').style.visibility = 'hidden'
 	}, [])
 
-	function handleSubmit(event) {
+	async function handleSubmit(event) {
 		event.preventDefault()
 		let errorElement = document.getElementById('error')
 		let p = errorElement.getElementsByTagName('p')[0]
-		fetch(`/api/makeTransaction?account=${account}&amount=${amount}`)
-			.then(response => response.json())
-			.then(data => {
-				if (data) {
-					errorElement.style.visibility = ''
-					if (data.error !== 'none') {
-						errorElement.className = 'error'
-						p.innerHTML = data.error
-					} else {
-						errorElement.className = 'success'
-						p.innerHTML = 'Transaction successful!'
-					}
-					setTimeout(() => {
-						errorElement.style.visibility = 'hidden'
-					}, 2000)
+		const response = await fetch(`/api/makeTransaction?account=${account}&amount=${amount}`)
+		const data = await response.json()
+		try {
+			if (data) {
+				errorElement.style.visibility = ''
+				if (data.error !== 'none') {
+					errorElement.className = 'error'
+					p.innerHTML = data.error
+				} else {
+					errorElement.className = 'success'
+					p.innerHTML = 'Transaction successful!'
 				}
-			})
+				setTimeout(() => {
+					errorElement.style.visibility = 'hidden'
+				}, 2000)
+			}
+		} catch (error) {
+			throw error
+		}
 	}
 
 	return (

@@ -10,17 +10,17 @@ export default withIronSessionApiRoute(
 			if (isNaN(user)) {
 				database.get(`SELECT id, username, balance, permissions, theme FROM users WHERE username="${user}"`, (error, results) => {
 					if (error) throw error
-					if (results) response.send(results)
-					else response.send({ error: 'no results' })
+					if (results) response.json(results)
+					else response.json({ error: 'no results' })
 				})
 			} else if (!isNaN(user) && Number.isInteger(parseFloat(user))) {
 				database.get(`SELECT id, username, balance, permissions, theme FROM users WHERE id=${parseInt(user)}`, (error, results) => {
 					if (error) throw error
-					if (results) response.send(results)
-					else response.send({ error: 'no results' })
+					if (results) response.json(results)
+					else response.json({ error: 'no results' })
 				})
-			} else response.send({ error: 'id has to be integer' })
-		} else response.send({ error: 'no user requested' })
+			} else response.json({ error: 'id has to be integer' })
+		} else response.json({ error: 'no user requested' })
 
 	},
 	{

@@ -36,24 +36,23 @@ export default withIronSessionApiRoute(
 												[hashedPassword, username],
 												(error, results) => {
 													if (error) throw error
-													if (results) response.send({ error: 'none' })
-													else response.send({ error: 'couldn\'t change password' })
+													if (results) response.json({ error: 'none' })
+													else response.json({ error: 'couldn\'t change password' })
 												}
 											)
 										})
-									} else response.send({ error: 'password not found' })
+									} else response.json({ error: 'password not found' })
 								}
 							)
-						} else response.send({ error: 'user not found' })
+						} else response.json({ error: 'user not found' })
 					}
 				)
-			} else response.send({ error: 'newPassword and confirmNewPassword don\'t match' })
-		} else response.send({ error: 'missing currentPassword and/or newPassword and/or confirmNewPassword' })
+			} else response.json({ error: 'newPassword and confirmNewPassword don\'t match' })
+		} else response.json({ error: 'missing currentPassword and/or newPassword and/or confirmNewPassword' })
 	},
 	{
 		cookieName: "session",
 		password: "wNKp0tI)2\"b/L/K[IG'jqeK;wA$3*X*g",
-		// secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
 		cookieOptions: {
 			secure: process.env.NODE_ENV === "production",
 		}

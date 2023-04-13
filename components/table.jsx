@@ -27,7 +27,6 @@ export const Table = (props) => {
 
 	useEffect(() => {
 		setData(props.data)
-		// console.log('useEffect data: ', initialData, data)
 	}, [props.data])
 
 	function resetData() {
@@ -76,8 +75,6 @@ export const Table = (props) => {
 
 		useEffect(() => {
 			setValue(initialValue)
-			// if (index == 0, id == 'theme')
-			// console.log('useEffect value: ', initialValue, value)
 		}, [initialValue])
 
 		for (let column of editableColumns) {
@@ -107,10 +104,8 @@ export const Table = (props) => {
 										event.key === 'End' ||
 										(event.key >= 0 && event.key <= 9)
 									) {
-										// Allow input
 										return true
 									} else {
-										// Prevent input
 										event.preventDefault()
 										return false
 									}
@@ -154,7 +149,7 @@ export const Table = (props) => {
 
 	const { globalFilter } = state
 
-	function saveData() {
+	async function saveData() {
 		console.log('save')
 		for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
 			let row = data[rowIndex]
@@ -175,11 +170,13 @@ export const Table = (props) => {
 						initialColumn = column
 						console.log('after column change: ', initialColumn, column)
 						if (window !== 'undefined') {
-							fetch(`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`)
-								.then(response => response.json())
-								.then(data => {
-									console.log('fetch: ', data)
-								})
+							const response = await fetch(`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`)
+							const data = await response.json()
+							try {
+								if (data.error) throw data.error
+							} catch (error) {
+								throw error
+							}
 						}
 					}
 				}

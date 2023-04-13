@@ -5,7 +5,7 @@ export default withIronSessionApiRoute(
 		try {
 			delete request.session.username
 			await request.session.save()
-			response.send({ error: 'none' })
+			response.json({ error: 'none' })
 		} catch (error) {
 			throw error
 		}

@@ -13,9 +13,9 @@ export default withIronSessionApiRoute(
 			(error, results) => {
 				if (error) throw error
 				if (results) {
-					response.send(results)
+					response.json(results)
 				} else {
-					response.send({ error: 'no user' })
+					response.json({ error: 'no user' })
 				}
 			}
 		)
