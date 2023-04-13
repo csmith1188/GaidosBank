@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
@@ -7,8 +7,9 @@ import * as text from '../components/styled/text'
 import Head from 'next/head'
 
 export default function MakeTransaction() {
-	var currentUser = useAtomValue(currentUserAtom)
-	var account, amount
+	const currentUser = useAtomValue(currentUserAtom)
+	const [account, setAccount] = useState('')
+	const [amount, setAmount] = useState('')
 
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
@@ -21,23 +22,18 @@ export default function MakeTransaction() {
 	}, [])
 
 	function handleSubmit(event) {
-		console.log(account, amount)
+		event.preventDefault()
 		let errorElement = document.getElementById('error')
 		let p = errorElement.getElementsByTagName('p')[0]
-		let button = errorElement.getElementsByTagName('button')[0]
-		// event.preventDefault()
-		console.log(`/api/makeTransaction?account=${account}&amount=${amount}`)
 		fetch(`/api/makeTransaction?account=${account}&amount=${amount}`)
 			.then(response => response.json())
 			.then(data => {
 				if (data) {
-					console.log(data)
 					errorElement.style.visibility = ''
 					if (data.error !== 'none') {
 						errorElement.className = 'error'
 						p.innerHTML = data.error
 					} else {
-						console.log('hi')
 						errorElement.className = 'success'
 						p.innerHTML = 'Transaction successful!'
 					}
@@ -60,7 +56,8 @@ export default function MakeTransaction() {
 					placeholder='Username / ID'
 					id='account'
 					theme={currentUser.theme}
-					onChange={(event) => account = event.target.value} />
+					value={account}
+					onChange={(event) => setAccount(event.target.value)} />
 				<form.label htmlFor='amount' theme={currentUser.theme}>Amount</form.label>
 				<form.input
 					type='number'
@@ -68,17 +65,9 @@ export default function MakeTransaction() {
 					id='amount'
 					min='1'
 					theme={currentUser.theme}
-					onChange={(event) => amount = event.target.value}
+					value={amount}
+					onChange={(event) => setAmount(event.target.value)}
 					onKeyDown={(event) => {
-						console.log(
-							'event: ', event,
-							'\nkeyCode: ', event.keyCode,
-							'\nkey: ', event.key,
-							'\ncode: ', event.code,
-							'\ncode: ', event.type,
-							'\nshift: ', event.shiftKey,
-							'\nctrl: ', event.ctrlKey,
-						)
 						if (
 							!isNaN(event.key) ||
 							event.key.startsWith('Arrow') ||
