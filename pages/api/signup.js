@@ -28,16 +28,26 @@ export default withIronSessionApiRoute(
 					(error, hashedPassword) => {
 						if (error) throw error
 						database.get(
-							`SELECT * FROM users WHERE username = ${username} OR id = ${id}`,
+							`SELECT * FROM users WHERE username = ? OR id = ?`,
+							[username, id],
 							(error, results) => {
 								if (error) throw error
 								if (!results) {
 									database.get(
-										`INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (${id}, ${username}, ${hashedPassword}, 0, user, ${theme})`,
+										`INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ?, ?, ?)`,
+										[
+											id,
+											username,
+											hashedPassword,
+											0,
+											'user',
+											theme
+										],
 										(error, results) => {
 											if (error) throw error
 											database.get(
-												`SELECT id, username, balance, permissions, theme FROM users WHERE username = ${username}`,
+												`SELECT id, username, balance, permissions, theme FROM users WHERE username = ?`,
+												[username],
 												async (error, results) => {
 													if (error) throw error
 													if (results) {

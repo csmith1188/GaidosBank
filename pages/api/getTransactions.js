@@ -4,7 +4,8 @@ const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		database.all('SELECT t.*, s.username AS senderUsername, r.username AS receiverUsername FROM transactions t LEFT JOIN users s ON s.id = t.senderId LEFT JOIN users r ON r.id = t.receiverId',
+		database.all(
+			'SELECT t.*, s.username AS senderUsername, r.username AS receiverUsername FROM transactions t LEFT JOIN users s ON s.id = t.senderId LEFT JOIN users r ON r.id = t.receiverId',
 			(error, results) => {
 			if (error) throw error
 			if (results) {

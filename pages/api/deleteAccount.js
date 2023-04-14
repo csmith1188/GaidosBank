@@ -10,8 +10,8 @@ export default withIronSessionApiRoute(
 
 		if (typeof currentUser !== 'undefined') {
 			database.get(
-				'SELECT permissions FROM users WHERE username = ?',
-				currentUser,
+				`SELECT permissions FROM users WHERE username = ?`,
+				[currentUser],
 				(error, results) => {
 					if (error) throw error
 					if (results) {
@@ -20,32 +20,34 @@ export default withIronSessionApiRoute(
 								typeof username !== 'undefined' &&
 								typeof password !== 'undefined'
 							) {
-								database.get(`SELECT password FROM users WHERE username = ${username}`,
+								database.get(
+									`SELECT password FROM users WHERE username = ?`,
+									[username],
 									(error, results) => {
-									if (error) throw error
-									if (results) {
-										let databasePassword = results.password
-										console.log(databasePassword.password)
-										bcrypt.compare(
-											password,
-											databasePassword,
-											(error, isMatch) => {
-												if (error) throw error
-												if (isMatch) {
-													database.exec(
-														'DELETE FROM users WHERE username = ?',
-														[username],
-														(error, results) => {
-															if (error) throw error
-															if (results) response.json({ error: 'none' })
-															else response.json({ error: 'server no user' })
-														}
-													)
-												} else response.json({ error: 'That is not the users password.' })
-											}
-										)
-									}
-								})
+										if (error) throw error
+										if (results) {
+											let databasePassword = results.password
+											console.log(databasePassword.password)
+											bcrypt.compare(
+												password,
+												databasePassword,
+												(error, isMatch) => {
+													if (error) throw error
+													if (isMatch) {
+														database.exec(
+															'DELETE FROM users WHERE username = ?',
+															[username],
+															(error, results) => {
+																if (error) throw error
+																if (results) response.json({ error: 'none' })
+																else response.json({ error: 'server no user' })
+															}
+														)
+													} else response.json({ error: 'That is not the users password.' })
+												}
+											)
+										}
+									})
 							} else response.json({ error: 'missing username or password' })
 						}
 						else response.json({ error: 'not admin' })
@@ -62,3 +64,7 @@ export default withIronSessionApiRoute(
 		}
 	}
 )
+
+process.on('exit', () => {
+	database.close()
+})

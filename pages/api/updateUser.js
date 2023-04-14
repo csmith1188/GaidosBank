@@ -9,18 +9,23 @@ export default withIronSessionApiRoute(
 
 		if (user) {
 			if (currentUser) {
-				database.get(`SELECT * FROM users WHERE username = ${currentUser}`,
+				database.get(
+					`SELECT * FROM users WHERE username = ?`,
+					[currentUser],
 					(error, results) => {
 						if (error) throw error
 						if (results) currentUser = results
 						if (currentUser.permissions == 'admin') {
 							if (isNaN(user)) {
-								database.get(`SELECT * FROM users where username = ${user}`,
+								database.get(
+									`SELECT * FROM users where username = ?`,
+									[user],
 									(error, results) => {
 										if (error) throw error
 										if (results) user = results
 										if (user[property] !== 'undefined') {
-											database.run(`UPDATE users set ${property} = ${value} WHERE username = ${user.username}`,
+											database.run(`UPDATE users set ? = ? WHERE username = ?`,
+												[property, value, user.username],
 												(error, results) => {
 													if (error) throw error
 													response.json({ error: null })
@@ -28,18 +33,21 @@ export default withIronSessionApiRoute(
 										} else response.json({ error: 'property does not exist' })
 									})
 							} else if (!isNaN(user) && Number.isInteger(parseFloat(user))) {
-								database.get(`SELECT * FROM users where id = ${user}`,
+								database.get(
+									`SELECT * FROM users where id = ?`,
+									[user],
 									(error, results) => {
-									if (error) throw error
-									if (results) user = result
-									if (user[property] !== 'undefined') {
-										database.run(`UPDATE users set ${property} = ${value} WHERE username = ${user.username}`,
-											(error, results) => {
-												if (error) throw error
-												response.json({ error: null })
-											})
-									} else response.json({ error: 'property does not exist', })
-								})
+										if (error) throw error
+										if (results) user = result
+										if (user[property] !== 'undefined') {
+											database.run(`UPDATE users set ? = ? WHERE username = ?`,
+												[property, value, user.username],
+												(error, results) => {
+													if (error) throw error
+													response.json({ error: null })
+												})
+										} else response.json({ error: 'property does not exist', })
+									})
 							} else response.json({ error: 'id has to be integer' })
 						} else response.json({ error: 'not admin' })
 					})

@@ -9,7 +9,8 @@ export default withIronSessionApiRoute(
 
 		if (currentUser) {
 			database.get(
-				`SELECT permissions FROM users WHERE currentUser = ${currentUser}`,
+				`SELECT permissions FROM users WHERE currentUser = ?`,
+				[currentUser],
 				(error, results) => {
 					if (error) throw error
 					if (results) {

@@ -14,7 +14,8 @@ export default withIronSessionApiRoute(
 				typeof password !== 'undefined'
 			) {
 				database.get(
-					`SELECT password FROM users WHERE username = ${username}`,
+					`SELECT password FROM users WHERE username = ?`,
+					[username],
 					(error, results) => {
 						if (error) throw error
 						if (results) {
@@ -25,7 +26,8 @@ export default withIronSessionApiRoute(
 								async (error, isMatch) => {
 									if (error) throw error
 									if (isMatch) {
-										currentUser = username
+										request.session.username = username
+										console.log(request.session)
 										await request.session.save()
 										response.json({
 											...results,

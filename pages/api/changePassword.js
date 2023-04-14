@@ -19,7 +19,8 @@ export default withIronSessionApiRoute(
 		) {
 			if (newPassword == confirmNewPassword) {
 				database.get(
-					`SELECT password FROM users WHERE username = ${username}`,
+					`SELECT password FROM users WHERE username = ?`,
+					[username],
 					(error, results) => {
 						if (error) throw error
 						if (results) {
@@ -32,7 +33,8 @@ export default withIronSessionApiRoute(
 										bcrypt.hash(newPassword, 10, (error, hashedPassword) => {
 											if (error) throw error
 											database.get(
-												`UPDATE users SET password = ${hashedPassword} WHERE username = ${username}`,
+												`UPDATE users SET password = ? WHERE username = ?`,
+												[hashedPassword, username],
 												(error, results) => {
 													if (error) throw error
 													if (results) response.json({ error: 'none' })
@@ -57,3 +59,7 @@ export default withIronSessionApiRoute(
 		}
 	}
 )
+
+process.on('exit', () => {
+	database.close()
+})
