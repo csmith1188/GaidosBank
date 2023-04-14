@@ -7,7 +7,6 @@ import { GlobalFilter } from './GlobalFilter'
 import * as scrollArea from './styled/scrollArea'
 import { useIsMounted } from '../hooks/useIsMounted'
 import * as form from '../components/styled/form'
-import * as text from '../components/styled/text'
 import { Select } from '../components/select'
 
 export const Table = (props) => {
@@ -24,6 +23,16 @@ export const Table = (props) => {
 	const canFilter = props.canFilter
 	const editableColumns = props.editableColumns
 	const currentUser = useAtomValue(currentUserAtom)
+
+	const newColumns = useMemo(() => [
+		...columns,
+		{
+			Header: row.Header,
+			Cell: ({ row }) => (
+				row.HTML
+			),
+		},
+	], [columns])
 
 	useEffect(() => {
 		setData(props.data)
@@ -203,12 +212,12 @@ export const Table = (props) => {
 				<scrollArea.viewport className='scrollAreaViewport' theme={currentUser.theme}>
 					<div id='table'>
 						<div id='input'>
-							{updateData ? <text.button theme={currentUser.theme} onClick={resetData} className='editButton'> Reset</text.button> : ''}
+							{updateData ? <form.button theme={currentUser.theme} onClick={resetData} className='editButton'> Reset</form.button> : ''}
 							{canFilter ?
 								<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 								: ''
 							}
-							{updateData ? <text.button theme={currentUser.theme} onClick={saveData} className='editButton'>Save</text.button> : ''}
+							{updateData ? <form.button theme={currentUser.theme} onClick={saveData} className='editButton'>Save</form.button> : ''}
 						</div>
 						<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
 							<styledTable.thead theme={currentUser.theme}>
@@ -241,6 +250,7 @@ export const Table = (props) => {
 													</styledTable.td>
 												)
 											})}
+											{props.children}
 										</styledTable.tr>
 									)
 								})}

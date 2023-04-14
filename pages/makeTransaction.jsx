@@ -92,9 +92,9 @@ export default function MakeTransaction() {
 				<form.input type='submit' theme={currentUser.theme} />
 			</form.root>
 			<div id='error'>
-				<text.button theme={currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
+				<form.button theme={currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
-				</text.button>
+				</form.button>
 				<text.p theme={currentUser.theme}></text.p>
 			</div>
 		</div>

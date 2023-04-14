@@ -1,14 +1,13 @@
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
-import { useDebugValue, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
-import * as text from '../components/styled/text'
+import * as form from '../components/styled/form'
 import { useIsMounted } from '../hooks/useIsMounted'
 import Head from 'next/head'
 import * as tabs from '../components/styled/tabs'
 import { Separator } from '../components/styled/separator'
-import * as React from 'react'
 
 export default function Admin() {
 	const mounted = useIsMounted()
@@ -104,6 +103,9 @@ export default function Admin() {
 
 				return 0
 			}
+		},
+		{
+			Header: 'Reverse Payments'
 		}
 	]
 
@@ -263,7 +265,9 @@ export default function Admin() {
 							sortBy={[{ id: 'readableTimestamp', desc: false }]}
 							canFilter={true}
 							getData={getTransactions}
-						/>
+						>
+							<form.button theme={currentUser.theme}>Reverse Payments</form.button>
+						</Table>
 					</tabs.content>
 				</tabs.root >
 				: ''}

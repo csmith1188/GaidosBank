@@ -142,7 +142,7 @@ export default function Login() {
 				</tabs.content>
 			</tabs.root>
 			<div id='error' style={{ visibility: 'hidden' }}>
-				<text.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
+				<form.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
 				</text.button>
 				<text.p theme={mounted && currentUser.theme}></text.p>

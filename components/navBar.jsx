@@ -1,4 +1,5 @@
 import * as nav from './styled/nav'
+import * as form from './styled/form'
 import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import { useIsMounted } from '../hooks/useIsMounted'
@@ -85,16 +86,16 @@ export default function NavBar() {
 						</nav.link>
 				</nav.item> */}
 				<nav.item>
-					<nav.button
+					<form.button
 						theme={mounted && currentUser.theme}
 						onClick={logout}
 						id='logout'
 					>
 						Logout
-					</nav.button>
+					</form.button>
 				</nav.item>
 			</nav.list>
-			<nav.button
+			<form.button
 				theme={mounted && currentUser.theme}
 				onClick={toggleTheme}
 				id='theme'
@@ -107,7 +108,7 @@ export default function NavBar() {
 							: <IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
 					)
 				}
-			</nav.button>
+			</form.button>
 		</nav.root >
 	)
 }
