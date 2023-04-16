@@ -19,19 +19,20 @@ export default function Home() {
 		}
 	}, [currentUser.isAuthenticated])
 
-
 	useEffect(() => {
-		const fetchLeaderBoard = async (leaderBoard) => {
+		const fetchLeaderBoard = async () => {
 			try {
 				const response = await fetch('/api/getUsers')
 				const data = await response.json()
-				let leaderBoard = data.sort((a, b) => { return b.balance - a.balance })
-				leaderBoard = data.map((user, index) => ({
+				let tempLeaderBoard = data.sort((a, b) => {
+					return b.balance - a.balance
+				})
+				tempLeaderBoard = data.map((user, index) => ({
 					...user,
 					rank: index + 1
 				}))
-
-				setLeaderBoard(leaderBoard)
+				if (leaderBoard !== tempLeaderBoard)
+					setLeaderBoard(tempLeaderBoard)
 			} catch (error) {
 				throw error
 			}
@@ -40,7 +41,6 @@ export default function Home() {
 		const interval = setInterval(fetchLeaderBoard, 1000)
 		return () => clearInterval(interval)
 	}, [])
-
 
 	const columns = [
 		{

@@ -94,7 +94,7 @@ export default function Login() {
 						<form.input type='submit' theme={mounted && currentUser.theme} value="Login" />
 					</form.root>
 				</tabs.content>
-				<tabs.content value="signup" theme={mounted && currentUser.theme}>
+				<tabs.content value="signup" theme={currentUser.theme}>
 					<Head>
 						<title>Signup</title>
 					</Head>
@@ -144,7 +144,7 @@ export default function Login() {
 			<div id='error' style={{ visibility: 'hidden' }}>
 				<form.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
-				</text.button>
+				</form.button>
 				<text.p theme={mounted && currentUser.theme}></text.p>
 			</div>
 		</div >

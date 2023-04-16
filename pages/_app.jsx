@@ -8,63 +8,73 @@ export default function App({ Component, pageProps }) {
   var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
   useEffect(() => {
-    async function checkAuthentication() {
+    async function updateUser() {
       try {
-        const response = await fetch('/api/isAuthenticated')
-        const data = await response.json()
-        if (data) {
+        let response = await fetch('/api/isAuthenticated')
+        let data = await response.json()
+        if (currentUser.isAuthenticated !== data) {
           setCurrentUser(prevUser => ({
             ...prevUser,
-            isAuthenticated: data === true
+            isAuthenticated: data
           }))
-        } else {
-          const response = await fetch('/api/logout')
-          const data = await response.json()
-          try {
-            setCurrentUser({
-              theme: currentUser.theme,
-              isAuthenticated: false,
-            })
-          } catch (error) {
-            throw error
-          }
         }
-      } catch (error) {
-        throw error
-      }
-    }
-    const interval = setInterval(checkAuthentication, 1000)
-    return () => clearInterval(interval)
-  }, [])
 
-  useEffect(() => {
-    async function getCurrentUser() {
-      try {
-        const response = await fetch('/api/getCurrentUser')
-        const data = await response.json()
+        response = await fetch('/api/getCurrentUser')
+        data = await response.json()
         for (let key of Object.keys(data)) {
           if (currentUser[key] === data[key] || key === 'password') {
             delete data[key]
           }
         }
-        if (data) {
-          setCurrentUser((prevCurrentUserData) => ({
-            ...prevCurrentUserData,
-            id: data.id ?? currentUser.id,
-            username: data.username ?? currentUser.username,
-            balance: data.balance ?? currentUser.balance,
-            permissions: data.permissions ?? currentUser.permissions,
-            theme: data.theme ?? currentUser.theme,
-          }))
+        if (Object.keys(data).length !== 0) {
+          if (!data.error) {
+            setCurrentUser((prevCurrentUserData) => ({
+              ...prevCurrentUserData,
+              id: data.id ?? currentUser.id,
+              username: data.username ?? currentUser.username,
+              balance: data.balance ?? currentUser.balance,
+              permissions: data.permissions ?? currentUser.permissions,
+              theme: data.theme ?? currentUser.theme,
+            }))
+          }
         }
       } catch (error) {
         throw error
       }
     }
-
-    const interval = setInterval(getCurrentUser, 1000)
+    updateUser()
+    const interval = setInterval(updateUser, 1000)
     return () => clearInterval(interval)
   }, [])
+
+  // useEffect(() => {
+  //   async function getCurrentUser() {
+  //     try {
+  //       const response = await fetch('/api/getCurrentUser')
+  //       const data = await response.json()
+  //       for (let key of Object.keys(data)) {
+  //         if (currentUser[key] === data[key] || key === 'password') {
+  //           delete data[key]
+  //         }
+  //       }
+  //       if (data) {
+  //         setCurrentUser((prevCurrentUserData) => ({
+  //           ...prevCurrentUserData,
+  //           id: data.id ?? currentUser.id,
+  //           username: data.username ?? currentUser.username,
+  //           balance: data.balance ?? currentUser.balance,
+  //           permissions: data.permissions ?? currentUser.permissions,
+  //           theme: data.theme ?? currentUser.theme,
+  //         }))
+  //       }
+  //     } catch (error) {
+  //       throw error
+  //     }
+  //   }
+
+  //   const interval = setInterval(getCurrentUser, 1000)
+  //   return () => clearInterval(interval)
+  // }, [])
 
   function changeTheme() {
     if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'

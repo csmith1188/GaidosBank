@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
@@ -12,6 +13,6 @@ export default function boilerplate() {
 	}, [currentUser.isAuthenticated])
 
 	return (
-		//html
-	)
+        //html
+    )
 }

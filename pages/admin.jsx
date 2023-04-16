@@ -105,7 +105,15 @@ export default function Admin() {
 			}
 		},
 		{
-			Header: 'Reverse Payments'
+			Header: 'Reverse Transaction',
+			Cell: ({ row }) => (
+				<form.button
+					theme={currentUser.theme}
+					onClick={() => { console.log(row.original) }}
+				>
+					Reverse Transaction
+				</form.button>
+			),
 		}
 	]
 
@@ -155,6 +163,17 @@ export default function Admin() {
 			accessor: 'theme',
 			sortType: 'alphanumeric',
 			sortInverted: true
+		},
+		{
+			Header: 'Delete User',
+			Cell: ({ row }) => (
+				<form.button
+					theme={currentUser.theme}
+					onClick={() => { console.log(row.original) }}
+				>
+					Delete User
+				</form.button>
+			),
 		}
 	]
 
@@ -265,9 +284,7 @@ export default function Admin() {
 							sortBy={[{ id: 'readableTimestamp', desc: false }]}
 							canFilter={true}
 							getData={getTransactions}
-						>
-							<form.button theme={currentUser.theme}>Reverse Payments</form.button>
-						</Table>
+						/>
 					</tabs.content>
 				</tabs.root >
 				: ''}

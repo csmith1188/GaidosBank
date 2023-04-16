@@ -24,16 +24,6 @@ export const Table = (props) => {
 	const editableColumns = props.editableColumns
 	const currentUser = useAtomValue(currentUserAtom)
 
-	const newColumns = useMemo(() => [
-		...columns,
-		{
-			Header: row.Header,
-			Cell: ({ row }) => (
-				row.HTML
-			),
-		},
-	], [columns])
-
 	useEffect(() => {
 		setData(props.data)
 	}, [props.data])
@@ -250,7 +240,6 @@ export const Table = (props) => {
 													</styledTable.td>
 												)
 											})}
-											{props.children}
 										</styledTable.tr>
 									)
 								})}

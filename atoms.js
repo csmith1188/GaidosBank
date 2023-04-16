@@ -8,11 +8,6 @@ export const currentUserAtom = atomWithStorage('currentUser',
 		transactions: [],
 		balance: 0
 	}
-	// (
-	// 	typeof window !== 'undefined' ?
-	// 		{ storage: sessionStorage }
-	// 		: {}
-	// )
 )
 currentUserAtom.debugLabel = 'currentUserAtom'
 
