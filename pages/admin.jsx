@@ -110,10 +110,12 @@ export default function Admin() {
 			Cell: ({ row }) => (
 				<form.button
 					theme={currentUser.theme}
-					onClick={() => { console.log(row.original) }}
+					id={row.index}
+					onClick={() => { console.log(row.original) }
+					}
 				>
 					Reverse Transaction
-				</form.button>
+				</form.button >
 			),
 		}
 	]
@@ -168,6 +170,7 @@ export default function Admin() {
 			Cell: ({ row }) => (
 				<form.button
 					theme={currentUser.theme}
+					id={row.index}
 					onClick={() => { console.log(row.original) }}
 				>
 					Delete User

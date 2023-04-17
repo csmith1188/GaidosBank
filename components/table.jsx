@@ -34,6 +34,11 @@ export const Table = (props) => {
 		setData(initialData)
 	}
 
+	useEffect(() => {
+		console.log(changedData)
+	}, [changedData])
+
+
 	function EditableCell({
 		value: initialValue,
 		row: { index },
@@ -43,19 +48,20 @@ export const Table = (props) => {
 		let [value, setValue] = useState(initialValue)
 		let row = data[index]
 
-		async function onChange(event) {
+		function onChange(event) {
 			value = Number(event.target.value)
 				? Number(event.target.value)
 				: event.target.value
 			if (value !== initialValue) {
+				console.log('1')
 				console.log({
 					data: row,
 					index: index,
 					property: id,
 					value: value
 				})
-				await setChangedData([
-					changedData,
+				setChangedData(previousChangedData => [
+					...previousChangedData,
 					{
 						data: row,
 						index: index,
@@ -63,8 +69,6 @@ export const Table = (props) => {
 						value: value
 					}
 				])
-				console.log(changedData)
-				// updateData(changedData)
 
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'
@@ -74,15 +78,13 @@ export const Table = (props) => {
 					event.target.style.borderColor = 'rgb(255,255,255)'
 				}
 			} else {
-				// let hasProperty = changedData.some(changedRow => {
-				// 	changedRow.index === index &&
-				// 		changedRow.property === id
-				// })
-				// if (hasProperty) {
-				// 	console.log(hasProperty)
-				// 	setChangedData(changedData.splice(index, 1))
-				// }
+				console.log('2')
+				console.log(changedData, index, id)
 
+				let hasProperty = changedData.some(changedRow => {
+					changedRow.index === index && changedRow.property === id
+				})
+				console.log(hasProperty)
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(130, 0, 255)'
 					event.target.style.borderColor = 'rgb(130, 0, 255)'
@@ -93,6 +95,7 @@ export const Table = (props) => {
 			}
 			setValue(value)
 			row[id] = value
+			console.log('_________________________________________________________________')
 		}
 
 		useEffect(() => {
