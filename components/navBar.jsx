@@ -15,12 +15,10 @@ export default function NavBar() {
 		if (!data.error) throw data.error
 		else {
 			try {
-				console.log(currentUser)
 				setCurrentUser({
 					theme: currentUser.theme,
 					isAuthenticated: false,
 				})
-				console.log(currentUser)
 			} catch (error) {
 				throw error
 			}
@@ -36,10 +34,10 @@ export default function NavBar() {
 
 	function toggleTheme() {
 		try {
-			setCurrentUser(prevUser => ({
-				...prevUser,
+			setCurrentUser({
+				...currentUser,
 				theme: currentUser.theme === 'dark' ? currentUser.theme === 'light' : currentUser.theme === 'dark'
-			}))
+			})
 			changeTheme()
 		} catch (error) {
 			throw error

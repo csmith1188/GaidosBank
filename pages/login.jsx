@@ -25,13 +25,11 @@ export default function Login() {
 
 	async function handleSubmitLogin(event) {
 		event.preventDefault()
-		console.log(username, password, event)
 		const response = await fetch(`/api/login?username=${username}&password=${password}`)
 		const data = await response.json()
 		if (data.error) {
 			setError(data.error)
 		} else {
-			console.log(data)
 			setCurrentUser(data)
 		}
 	}
@@ -43,7 +41,6 @@ export default function Login() {
 		if (data.error) {
 			setError(data.error)
 		} else {
-			console.log(data)
 			setCurrentUser(data)
 		}
 	}

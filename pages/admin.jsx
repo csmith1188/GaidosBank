@@ -15,6 +15,7 @@ export default function Admin() {
 	const [transactions, setTransactions] = useState([])
 	const [users, setUsers] = useState([])
 	const [skipPageReset, setSkipPageReset] = useState(false)
+
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
@@ -131,8 +132,6 @@ export default function Admin() {
 		getUsers()
 	}, [])
 
-	const [originalUsers] = useState(users)
-
 	let userColumns = [
 		{
 			Header: 'ID',
@@ -181,27 +180,28 @@ export default function Admin() {
 		setSkipPageReset(false)
 	}, [])
 
-	function updateUsers(rowIndex, columnId, value) {
+	function updateUsers(changedUsers) {
 		setSkipPageReset(true)
-		if (rowIndex && columnId && value) {
-			console.log('updateUsers: ', rowIndex, columnId, value)
-			setUsers(old =>
-				old.map(async (row, index) => {
-					if (index === rowIndex) {
-						return {
-							...old[rowIndex],
-							[columnId]: value,
-						}
-					}
-					if (window !== 'undefined') {
-						console.log(rowIndex, columnId, value)
-						const response = await fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
-						const data = await response.json()
-						return row
-					}
-				})
-			)
-		} else return
+		console.log(changedUsers)
+		// if (rowIndex && columnId && value) {
+		// 	console.log('updateUsers: ', rowIndex, columnId, value)
+		// 	setUsers(old =>
+		// 		old.map(async (row, index) => {
+		// 			if (index === rowIndex) {
+		// 				return {
+		// 					...old[rowIndex],
+		// 					[columnId]: value,
+		// 				}
+		// 			}
+		// 			if (window !== 'undefined') {
+		// 				console.log(rowIndex, columnId, value)
+		// 				const response = await fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
+		// 				const data = await response.json()
+		// 				return row
+		// 			}
+		// 		})
+		// 	)
+		// }
 	}
 
 	return (
@@ -209,7 +209,7 @@ export default function Admin() {
 			<Head>
 				<title>Admin</title>
 			</Head>
-			{users.length && transactions.length ?
+			{users && transactions ?
 				<tabs.root id='tabRoot' defaultValue="users" orientation="vertical" theme={currentUser.theme}>
 					<tabs.list aria-label="tabs example" theme={currentUser.theme}>
 						<tabs.trigger value="users" theme={currentUser.theme}>
@@ -240,7 +240,7 @@ export default function Admin() {
 							columns={userColumns}
 							data={users}
 							sortable={true}
-							sortBy={[{ id: 'readableTimestamp', desc: false }]}
+							sortBy={[{ id: 'balance', desc: false }]}
 							canFilter={true}
 							updateData={updateUsers}
 							skipPageReset={skipPageReset}

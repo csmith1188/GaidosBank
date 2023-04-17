@@ -13,7 +13,6 @@ export default withIronSessionApiRoute(
 			theme
 		} = request.query
 		if (typeof theme === 'undefined') theme = 'light'
-		console.log(id, username, password, confirmPassword, theme)
 		if (
 			typeof id !== 'undefined' &&
 			typeof username !== 'undefined' &&

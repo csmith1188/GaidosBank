@@ -27,7 +27,6 @@ export default withIronSessionApiRoute(
 									if (error) throw error
 									if (isMatch) {
 										request.session.username = username
-										console.log(request.session)
 										await request.session.save()
 										response.json({
 											...results,

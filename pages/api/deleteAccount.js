@@ -27,7 +27,6 @@ export default withIronSessionApiRoute(
 										if (error) throw error
 										if (results) {
 											let databasePassword = results.password
-											console.log(databasePassword.password)
 											bcrypt.compare(
 												password,
 												databasePassword,

@@ -13,29 +13,29 @@ export default function App({ Component, pageProps }) {
         let response = await fetch('/api/isAuthenticated')
         let data = await response.json()
         if (currentUser.isAuthenticated !== data) {
-          setCurrentUser(prevUser => ({
-            ...prevUser,
+          setCurrentUser({
+            ...currentUser,
             isAuthenticated: data
-          }))
+          })
         }
 
         response = await fetch('/api/getCurrentUser')
         data = await response.json()
         for (let key of Object.keys(data)) {
-          if (currentUser[key] === data[key] || key === 'password') {
+          if (currentUser[key] === data[key]) {
             delete data[key]
           }
         }
         if (Object.keys(data).length !== 0) {
           if (!data.error) {
-            setCurrentUser((prevCurrentUserData) => ({
-              ...prevCurrentUserData,
+            setCurrentUser({
+              ...currentUser,
               id: data.id ?? currentUser.id,
               username: data.username ?? currentUser.username,
               balance: data.balance ?? currentUser.balance,
               permissions: data.permissions ?? currentUser.permissions,
               theme: data.theme ?? currentUser.theme,
-            }))
+            })
           }
         }
       } catch (error) {
@@ -58,8 +58,8 @@ export default function App({ Component, pageProps }) {
   //         }
   //       }
   //       if (data) {
-  //         setCurrentUser((prevCurrentUserData) => ({
-  //           ...prevCurrentUserData,
+  //         setCurrentUser({
+  //           ...currentUser,
   //           id: data.id ?? currentUser.id,
   //           username: data.username ?? currentUser.username,
   //           balance: data.balance ?? currentUser.balance,

@@ -59,7 +59,6 @@ export default withIronSessionApiRoute(async function handler(request, response)
 											)
 										})
 									} else {
-										console.log("You don't have enough money")
 										response.json({ error: "You don't have enough money" })
 									}
 								} else {

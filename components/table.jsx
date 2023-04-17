@@ -12,12 +12,12 @@ import { Select } from '../components/select'
 export const Table = (props) => {
 	const mounted = useIsMounted()
 	const columns = useMemo(() => props.columns, [props.columns])
-	const [initialData] = useState(props.data)
+	const [initialData, setInitialData] = useState(props.data)
 	const [data, setData] = useState(props.data)
+	const [changedData, setChangedData] = useState([])
 	const skipPageReset = props.skipPageReset
 	const updateData = props.updateData
 	const sortBy = props.sortBy
-	const getData = props.getData
 	const limit = props.limit
 	const sortable = props.sortable
 	const canFilter = props.canFilter
@@ -25,12 +25,13 @@ export const Table = (props) => {
 	const currentUser = useAtomValue(currentUserAtom)
 
 	useEffect(() => {
+		setInitialData(props.data)
 		setData(props.data)
 	}, [props.data])
 
 	function resetData() {
+		console.log(initialData)
 		setData(initialData)
-		updateData()
 	}
 
 	function EditableCell({
@@ -40,20 +41,31 @@ export const Table = (props) => {
 		data,
 	}) {
 		let [value, setValue] = useState(initialValue)
+		let row = data[index]
 
-		function onChange(event) {
-			console.log('onChange 1: ', initialData[index][id], data[index][id])
+		async function onChange(event) {
 			value = Number(event.target.value)
 				? Number(event.target.value)
 				: event.target.value
-			setValue(
-				value
-			)
-			data[index][id] = value
-			setData(data)
-			console.log('onChange 2: ', initialData[index][id], data[index][id], initialValue, value)
-			console.log('onChange ___________________________')
-			if (value != initialValue) {
+			if (value !== initialValue) {
+				console.log({
+					data: row,
+					index: index,
+					property: id,
+					value: value
+				})
+				await setChangedData([
+					changedData,
+					{
+						data: row,
+						index: index,
+						property: id,
+						value: value
+					}
+				])
+				console.log(changedData)
+				// updateData(changedData)
+
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'
 					event.target.style.borderColor = 'rgb(0,0,255)'
@@ -62,6 +74,15 @@ export const Table = (props) => {
 					event.target.style.borderColor = 'rgb(255,255,255)'
 				}
 			} else {
+				// let hasProperty = changedData.some(changedRow => {
+				// 	changedRow.index === index &&
+				// 		changedRow.property === id
+				// })
+				// if (hasProperty) {
+				// 	console.log(hasProperty)
+				// 	setChangedData(changedData.splice(index, 1))
+				// }
+
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(130, 0, 255)'
 					event.target.style.borderColor = 'rgb(130, 0, 255)'
@@ -70,6 +91,8 @@ export const Table = (props) => {
 					event.target.style.borderColor = 'rgb(100, 100, 255)'
 				}
 			}
+			setValue(value)
+			row[id] = value
 		}
 
 		useEffect(() => {
@@ -136,51 +159,50 @@ export const Table = (props) => {
 			columns,
 			data,
 			defaultColumn: (updateData ? { Cell: EditableCell } : {}),
-			initialState: (sortBy ? { sortBy: sortBy } : ''),
+			initialState: (sortable && sortBy ? { sortBy: sortBy } : ''),
 			autoResetPage: (updateData ? !skipPageReset : ''),
 			updateData: (updateData ? updateData : '')
 		},
 		useGlobalFilter,
 		(sortable ? useSortBy : ''),
 	)
-	if (limit)
-		rows = rows.slice(0, limit)
+	if (limit) rows = rows.slice(0, limit)
 
 	const { globalFilter } = state
 
 	async function saveData() {
-		console.log('save')
-		for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
-			let row = data[rowIndex]
-			let initialRow = initialData[rowIndex]
+		// for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+		// 	let row = data[rowIndex]
+		// 	let initialRow = initialData[rowIndex]
 
-			if (rowIndex == 0)
-				console.log('before row check: ', initialRow.theme, row.theme)
-			if (row != initialRow) {
-				console.log('after row check: ')
-				for (let columnIndex in row) {
-					let column = row[columnIndex]
-					let initialColumn = initialRow[columnIndex]
+		// 	if (rowIndex == 0)
+		// 		if (row != initialRow) {
+		// 			for (let columnIndex in row) {
+		// 				let column = row[columnIndex]
+		// 				let initialColumn = initialRow[columnIndex]
 
-					if (rowIndex == 0 && columnIndex == 'theme')
-						console.log('after row check: ', initialColumn, column)
-					if (column !== initialColumn) {
-						console.log('after column check/before column change: ', initialColumn, column)
-						initialColumn = column
-						console.log('after column change: ', initialColumn, column)
-						if (window !== 'undefined') {
-							const response = await fetch(`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`)
-							const data = await response.json()
-							try {
-								if (data.error) throw data.error
-							} catch (error) {
-								throw error
-							}
-						}
-					}
-				}
-			}
-		}
+		// 				if (rowIndex == 0 && columnIndex == 'theme')
+		// 					if (column !== initialColumn) {
+		// 						initialColumn = column
+		// 						if (window !== 'undefined') {
+		// 							 console.log(
+		// 							 	row.username,
+		// 							 	columnIndex,
+		// 							 	column,
+		// 							 	`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`
+		// 							 )
+		// 							 const response = await fetch(`/api/updateUser?user=${row.username}&property=${columnIndex}&value=${column}`)
+		// 							 const data = await response.json()
+		// 							 try {
+		// 							 	if (data.error) throw data.error
+		// 							 } catch (error) {
+		// 							 	throw error
+		// 							 }
+		// 						}
+		// 					}
+		// 			}
+		// 		}
+		// }
 		updateData()
 	}
 

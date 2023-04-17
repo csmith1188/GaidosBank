@@ -27,7 +27,11 @@ export default function Home() {
 				let tempLeaderBoard = data.sort((a, b) => {
 					return b.balance - a.balance
 				})
-				tempLeaderBoard = data.map((user, index) => ({
+				for (let userIndex in tempLeaderBoard) {
+					let user = tempLeaderBoard[userIndex]
+					if (user.permissions === 'admin') tempLeaderBoard.splice(userIndex, 1)
+				}
+				tempLeaderBoard = tempLeaderBoard.map((user, index) => ({
 					...user,
 					rank: index + 1
 				}))

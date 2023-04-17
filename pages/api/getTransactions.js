@@ -7,14 +7,11 @@ export default withIronSessionApiRoute(
 		database.all(
 			'SELECT t.*, s.username AS senderUsername, r.username AS receiverUsername FROM transactions t LEFT JOIN users s ON s.id = t.senderId LEFT JOIN users r ON r.id = t.receiverId',
 			(error, results) => {
-			if (error) throw error
-			if (results) {
-				response.json(results)
-				database.close((error) => {
-					if (error) console.error(error)
-				})
-			} else response.json({ error: 'no results' })
-		})
+				if (error) throw error
+				if (results) {
+					response.json(results)
+				} else response.json({ error: 'no results' })
+			})
 	},
 	{
 		cookieName: "session",
@@ -24,3 +21,7 @@ export default withIronSessionApiRoute(
 		}
 	}
 )
+
+process.on('exit', () => {
+	database.close()
+})
