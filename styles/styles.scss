@@ -396,16 +396,21 @@ div[role=tabpanel] {
 }
 
 #login {
-	margin-top: 8vh;
+	margin-top: 4vh;
 	display: grid;
 	justify-content: center;
 
 	form {
-		font-size: 8vh !important;
+		font-size: 6.5vh;
 		display: grid;
 
+		.select {
+			font-size: 6.5vh;
+			margin-bottom: 2vh;
+		}
+
 		input {
-			font-size: 8vh !important;
+			font-size: 6.5vh;
 
 			&[type=number],
 			&[type=text],

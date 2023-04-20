@@ -1,8 +1,16 @@
 import React from 'react'
 import * as form from './styled/form'
 
-export const Select = ({ name, items, defaultValue, pop, onChange, theme }) => {
-	return <form.select onChange={onChange} pop={pop} theme={theme} value={defaultValue}>
+export const Select = ({ id, className, name, items, defaultValue, pop, onChange, theme }) => {
+	onChange = onChange ?? ''
+	return <form.select
+		id={id ?? ''}
+		className={className ?? ''}
+		onChange={onChange ?? ''}
+		pop={pop ?? ''}
+		theme={theme ?? ''}
+		value={defaultValue ?? ''}
+	>
 		{!defaultValue ? <form.option value="" pop={pop} theme={theme}>{name}</form.option> : ''}
 		{items ?
 			items.map((item) => {

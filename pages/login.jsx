@@ -5,6 +5,7 @@ import * as form from '../components/styled/form'
 import * as text from '../components/styled/text'
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { Select } from '../components/select'
 import { useIsMounted } from '../hooks/useIsMounted'
 import * as tabs from '../components/styled/tabs'
 import { Separator } from '../components/styled/separator'
@@ -53,6 +54,7 @@ export default function Login() {
 			errorElement.style.visibility = 'hidden'
 		}, 2000)
 	}
+	let approvedClasses = ['Classes', 'A1', 'A2', 'A4', 'B1', 'B2', 'B4']
 
 	return (
 		<div id='login'>
@@ -119,6 +121,21 @@ export default function Login() {
 							theme={currentUser.theme}
 						/>
 						<form.input
+							type='text'
+							id='class'
+							autoComplete='class'
+							placeholder='Class'
+							// value={username}
+							// onChange={(event) => setUsername(event.target.value)}
+							theme={currentUser.theme}
+						/>
+						<Select
+							className='select'
+							items={approvedClasses}
+							defaultValue={'Classes'}
+							theme={currentUser.theme}
+						/>
+						<form.input
 							type='password'
 							id='password'
 							autoComplete='password'
@@ -138,7 +155,7 @@ export default function Login() {
 					</form.root>
 				</tabs.content>
 			</tabs.root>
-			<div id='error' style={{ visibility: 'hidden' }}>
+			<div id='error' style={{visibility: 'hidden'}}>
 				<form.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
 				</form.button>
