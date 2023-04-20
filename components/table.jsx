@@ -60,15 +60,17 @@ export const Table = (props) => {
 					property: id,
 					value: value
 				})
-				setChangedData(previousChangedData => [
-					...previousChangedData,
-					{
-						data: row,
-						index: index,
-						property: id,
-						value: value
-					}
-				])
+				setChangedData(previousChangedData => {
+					return [
+						...previousChangedData,
+						{
+							data: row,
+							index: index,
+							property: id,
+							value: value
+						}
+					]
+				})
 
 				if (currentUser.theme == 'dark') {
 					event.target.style.color = 'rgb(0,0,255)'

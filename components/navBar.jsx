@@ -34,10 +34,11 @@ export default function NavBar() {
 
 	function toggleTheme() {
 		try {
-			setCurrentUser({
-				...currentUser,
+			setCurrentUser(previousCurrentUser =>{
+				return {
+					...previousCurrentUser,
 				theme: currentUser.theme === 'dark' ? currentUser.theme === 'light' : currentUser.theme === 'dark'
-			})
+			}})
 			changeTheme()
 		} catch (error) {
 			throw error

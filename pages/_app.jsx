@@ -13,9 +13,11 @@ export default function App({ Component, pageProps }) {
         let response = await fetch('/api/isAuthenticated')
         let data = await response.json()
         if (currentUser.isAuthenticated !== data) {
-          setCurrentUser({
-            ...currentUser,
-            isAuthenticated: data
+          setCurrentUser(previousCurrentUser => {
+            return {
+              ...previousCurrentUser,
+              isAuthenticated: data
+            }
           })
         }
 
@@ -28,13 +30,15 @@ export default function App({ Component, pageProps }) {
         }
         if (Object.keys(data).length !== 0) {
           if (!data.error) {
-            setCurrentUser({
-              ...currentUser,
-              id: data.id ?? currentUser.id,
-              username: data.username ?? currentUser.username,
-              balance: data.balance ?? currentUser.balance,
-              permissions: data.permissions ?? currentUser.permissions,
-              theme: data.theme ?? currentUser.theme,
+            setCurrentUser(previousCurrentUser => {
+              return {
+                ...previousCurrentUser,
+                id: data.id ?? currentUser.id,
+                username: data.username ?? currentUser.username,
+                balance: data.balance ?? currentUser.balance,
+                permissions: data.permissions ?? currentUser.permissions,
+                theme: data.theme ?? currentUser.theme,
+              }
             })
           }
         }
@@ -58,14 +62,16 @@ export default function App({ Component, pageProps }) {
   //         }
   //       }
   //       if (data) {
-  //         setCurrentUser({
-  //           ...currentUser,
-  //           id: data.id ?? currentUser.id,
-  //           username: data.username ?? currentUser.username,
-  //           balance: data.balance ?? currentUser.balance,
-  //           permissions: data.permissions ?? currentUser.permissions,
-  //           theme: data.theme ?? currentUser.theme,
-  //         }))
+  // setCurrentUser(previousCurrentUser => {
+  //   return {
+  //     ...previousCurrentUser,
+  //     id: data.id ?? currentUser.id,
+  //     username: data.username ?? currentUser.username,
+  //     balance: data.balance ?? currentUser.balance,
+  //     permissions: data.permissions ?? currentUser.permissions,
+  //     theme: data.theme ?? currentUser.theme,
+  //   }
+  // })
   //       }
   //     } catch (error) {
   //       throw error
