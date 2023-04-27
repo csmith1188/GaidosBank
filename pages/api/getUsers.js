@@ -5,7 +5,7 @@ const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		database.all(
-			'SELECT id, username, balance, permissions, theme FROM users',
+			'SELECT id, username, balance, permissions, theme, class FROM users',
 			(error, results) => {
 				if (error) throw error
 				if (results) response.json(results)

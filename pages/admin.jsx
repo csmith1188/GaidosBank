@@ -124,6 +124,10 @@ export default function Admin() {
 		const response = await fetch('/api/getUsers')
 		const data = await response.json()
 		try {
+			for (let user of data) {
+				if (!user.class)
+					user.class = 'Not Assigned'
+			}
 			setUsers(data)
 		} catch (error) {
 			throw error
@@ -158,6 +162,12 @@ export default function Admin() {
 			accessor: 'permissions',
 			sortType: 'alphanumeric',
 			sortInverted: true
+		},
+		{
+			Header: 'Class',
+			accessor: 'class'
+			// sortType: 'alphanumeric',
+			// sortInverted: true
 		},
 		{
 			Header: 'Theme',

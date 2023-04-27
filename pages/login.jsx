@@ -54,7 +54,21 @@ export default function Login() {
 			errorElement.style.visibility = 'hidden'
 		}, 2000)
 	}
-	let approvedClasses = ['Classes', 'A1', 'A2', 'A4', 'B1', 'B2', 'B4']
+	let approvedClasses = []
+	fetch(`/api/getSetting?name=approvedClasses`)
+		.then(response => response.json())
+		.then(data => console.log( data))
+
+	// async function getApprovedClasses() {
+	// 	const response = await fetch(`/api/getSetting?name=approvedClasses`)
+	// 	const data = JSON.parse(await response.json())
+	// 	console.log(approvedClasses)
+	// 	approvedClasses = data
+	// 	// approvedClasses = approvedClasses.unshift('Classes')
+	// 	console.log(approvedClasses)
+	// }
+	// getApprovedClasses()
+	approvedClasses = ['Classes', 'A1', 'A2', 'A4', 'B1', 'B2', 'B4']
 
 	return (
 		<div id='login'>
@@ -155,7 +169,7 @@ export default function Login() {
 					</form.root>
 				</tabs.content>
 			</tabs.root>
-			<div id='error' style={{visibility: 'hidden'}}>
+			<div id='error' style={{ visibility: 'hidden' }}>
 				<form.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
 				</form.button>

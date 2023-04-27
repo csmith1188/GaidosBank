@@ -4,19 +4,14 @@ const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let { user } = request.query
-
-		if (typeof user !== 'undefined') {
-			database.get(
-				`SELECT id, username, balance, permissions, theme FROM users WHERE username = ? or id = ?`,
-				[user, user],
-				(error, results) => {
-					if (error) throw error
-					if (results) response.json(results)
-					else response.json({ error: 'no results' })
-				})
-		} else response.json({ error: 'no user requested' })
-
+		database.all(
+			'SELECT value FROM settings',
+			(error, results) => {
+				if (error) throw error
+				if (results) response.json(results.value)
+				else response.json({ error: 'no results' })
+			}
+		)
 	},
 	{
 		cookieName: "session",
@@ -26,3 +21,7 @@ export default withIronSessionApiRoute(
 		}
 	}
 )
+
+process.on('exit', () => {
+	database.close()
+})
