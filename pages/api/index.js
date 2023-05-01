@@ -1,17 +1,8 @@
 import { withIronSessionApiRoute } from 'iron-session/next'
-const sqlite3 = require('sqlite3').verbose()
-const database = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		database.all(
-			'SELECT value FROM settings',
-			(error, results) => {
-				if (error) throw error
-				if (results) response.json(results.value)
-				else response.json({ error: 'no results' })
-			}
-		)
+		response.send('This will be a page to show how to use the api')
 	},
 	{
 		cookieName: "session",

@@ -17,6 +17,7 @@ export default function Login() {
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [id, setId] = useState('')
+	const [classes, setClasses] = useState([])
 
 	useEffect(() => {
 		if (currentUser.isAuthenticated) {
@@ -54,21 +55,21 @@ export default function Login() {
 			errorElement.style.visibility = 'hidden'
 		}, 2000)
 	}
-	let approvedClasses = []
-	fetch(`/api/getSetting?name=approvedClasses`)
-		.then(response => response.json())
-		.then(data => console.log( data))
 
-	// async function getApprovedClasses() {
-	// 	const response = await fetch(`/api/getSetting?name=approvedClasses`)
-	// 	const data = JSON.parse(await response.json())
-	// 	console.log(approvedClasses)
-	// 	approvedClasses = data
-	// 	// approvedClasses = approvedClasses.unshift('Classes')
-	// 	console.log(approvedClasses)
-	// }
-	// getApprovedClasses()
-	approvedClasses = ['Classes', 'A1', 'A2', 'A4', 'B1', 'B2', 'B4']
+	useEffect(() => {
+		async function getClasses() {
+			const response = await fetch(`/api/getClasses`)
+			const data = await response.json()
+			setClasses([
+				'Classes',
+				...data
+			])
+		}
+		getClasses()
+		const interval = setInterval(getClasses, 1000)
+		return () => clearInterval(interval)
+	}, [])
+	// classes = ['Classes', 'A1', 'A2', 'A4', 'B1', 'B2', 'B4']
 
 	return (
 		<div id='login'>
@@ -107,7 +108,7 @@ export default function Login() {
 						<form.input type='submit' theme={mounted && currentUser.theme} value="Login" />
 					</form.root>
 				</tabs.content>
-				<tabs.content value="signup" theme={currentUser.theme}>
+				<tabs.content value="signup" theme={mounted && currentUser.theme}>
 					<Head>
 						<title>Signup</title>
 					</Head>
@@ -134,7 +135,7 @@ export default function Login() {
 							onChange={(event) => setUsername(event.target.value)}
 							theme={currentUser.theme}
 						/>
-						<form.input
+						{/* <form.input
 							type='text'
 							id='class'
 							autoComplete='class'
@@ -142,10 +143,10 @@ export default function Login() {
 							// value={username}
 							// onChange={(event) => setUsername(event.target.value)}
 							theme={currentUser.theme}
-						/>
+						/> */}
 						<Select
 							className='select'
-							items={approvedClasses}
+							items={classes}
 							defaultValue={'Classes'}
 							theme={currentUser.theme}
 						/>

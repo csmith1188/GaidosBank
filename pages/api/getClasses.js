@@ -4,15 +4,11 @@ const database = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let { name } = request.query
-		console.log(name)
-
-		database.get(
-			'SELECT value FROM settings WHERE name = ?',
-			[name],
+		database.all(
+			'SELECT * FROM classes',
 			(error, results) => {
 				if (error) throw error
-				if (results) response.json(results.value)
+				if (results) response.json(results.map(result => result.class))
 				else response.json({ error: 'no results' })
 			}
 		)
