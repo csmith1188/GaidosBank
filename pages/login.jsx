@@ -13,10 +13,11 @@ import { Separator } from '../components/styled/separator'
 export default function Login() {
 	const mounted = useIsMounted()
 	const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+	const [id, setId] = useState('')
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
-	const [id, setId] = useState('')
+	const [className, setClassName] = useState('')
 	const [classes, setClasses] = useState([])
 
 	useEffect(() => {
@@ -69,7 +70,6 @@ export default function Login() {
 		const interval = setInterval(getClasses, 1000)
 		return () => clearInterval(interval)
 	}, [])
-	// classes = ['Classes', 'A1', 'A2', 'A4', 'B1', 'B2', 'B4']
 
 	return (
 		<div id='login'>
@@ -135,19 +135,11 @@ export default function Login() {
 							onChange={(event) => setUsername(event.target.value)}
 							theme={currentUser.theme}
 						/>
-						{/* <form.input
-							type='text'
-							id='class'
-							autoComplete='class'
-							placeholder='Class'
-							// value={username}
-							// onChange={(event) => setUsername(event.target.value)}
-							theme={currentUser.theme}
-						/> */}
 						<Select
 							className='select'
 							items={classes}
 							defaultValue={'Classes'}
+							onChange={(event) => setClassName(event.target.value)}
 							theme={currentUser.theme}
 						/>
 						<form.input
