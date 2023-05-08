@@ -33,7 +33,7 @@ export default withIronSessionApiRoute(
 												(error, isMatch) => {
 													if (error) throw error
 													if (isMatch) {
-														database.exec(
+														database.run(
 															'DELETE FROM users WHERE username = ?',
 															[username],
 															(error, results) => {

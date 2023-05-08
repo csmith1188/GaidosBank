@@ -16,14 +16,12 @@ export default withIronSessionApiRoute(
 		let permissions = 'user'
 
 		function sendResult() {
-			console.log(username)
 			database.get(
 				`SELECT username FROM users WHERE username = ?`,
 				[username],
 				async (error, results) => {
 					if (error) throw error
 					if (results) {
-						console.log(results)
 						request.session.username = username
 						await request.session.save()
 						response.json({
@@ -67,31 +65,33 @@ export default withIronSessionApiRoute(
 												(error, results) => {
 													if (error) throw error
 													if (!results) permissions = 'admin'
+													console.log(permissions)
 													if (className) {
 														database.all(
 															'SELECT * FROM classes',
 															(error, classes) => {
 																if (error) throw error
-																console.log(classes)
-																database.exec(
-																	`INSERT INTO users (id, username, password, balance, permissions, class, theme) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-																	[
-																		id,
-																		username,
-																		hashedPassword,
-																		0,
-																		permissions,
-																		className,
-																		theme
-																	],
-																	(error, results) => {
-																		if (error) throw error
-																	}
-																)
+																if (classes.map(className => className.class).includes(className)) {
+																	database.run(
+																		`INSERT INTO users (id, username, password, balance, permissions, class, theme) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+																		[
+																			id,
+																			username,
+																			hashedPassword,
+																			0,
+																			permissions,
+																			className,
+																			theme
+																		],
+																		(error, results) => {
+																			if (error) throw error
+																		}
+																	)
+																} else response.json({ error: 'That Class does not exist.' })
 															}
 														)
 													} else {
-														database.exec(
+														database.run(
 															`INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ?, ?, ?)`,
 															[
 																id,
