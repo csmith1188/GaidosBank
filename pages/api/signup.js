@@ -14,6 +14,31 @@ export default withIronSessionApiRoute(
 			theme
 		} = request.query
 		let permissions = 'user'
+
+		function sendResult() {
+			console.log(username)
+			database.get(
+				`SELECT username FROM users WHERE username = ?`,
+				[username],
+				async (error, results) => {
+					if (error) throw error
+					if (results) {
+						console.log(results)
+						request.session.username = username
+						await request.session.save()
+						response.json({
+							id: id,
+							username: username,
+							balance: 0,
+							permissions: permissions,
+							theme: theme,
+							isAuthenticated: true,
+						})
+					}
+				}
+			)
+		}
+
 		if (typeof theme === 'undefined') theme = 'light'
 		if (
 			typeof id !== 'undefined' &&
@@ -22,71 +47,75 @@ export default withIronSessionApiRoute(
 			typeof confirmPassword !== 'undefined' &&
 			typeof theme !== 'undefined'
 		) {
-			if (password == confirmPassword) {
-				console.log('hi1')
-				bcrypt.hash(
-					password,
-					10,
-					(error, hashedPassword) => {
-						console.log('hi2')
-						if (error) throw error
-						if (hashedPassword) {
-							console.log('hi3')
-							database.get(
-								`SELECT * FROM users WHERE username = ? OR id = ?`,
-								[username, id],
-								(error, results) => {
-									if (error) throw error
-									if (!results) {
-										console.log('hi4')
-										database.all('SELECT * FROM users', (error, results) => {
-											if (error) throw error
-											if (!results) permissions = 'admin'
-											console.log('hi5')
-											console.log(`INSERT INTO users(id, username, password, balance, permissions, ${className ? 'class, ' : ''}theme) VALUES(${id}, " ${className ? '"' + className + '", ' : ''}"${theme}")`)
-											database.exec(
-												`INSERT INTO users (id, username, password, balance, permissions, ${className ? 'class, ' : ''}theme) VALUES (?, ?, ?, ?, ?, ${className ? '"' + className + '", ' : ''}, ?)`,
-												[
-													id,
-													username,
-													hashedPassword,
-													0,
-													permissions,
-													className,
-													theme
-												],
+			if (Number.isInteger(Number(id))) {
+				id = Number(id)
+				if (password == confirmPassword) {
+					bcrypt.hash(
+						password,
+						10,
+						(error, hashedPassword) => {
+							if (error) throw error
+							if (hashedPassword) {
+								database.get(
+									`SELECT * FROM users WHERE username = ? OR id = ?`,
+									[username, id],
+									(error, results) => {
+										if (error) throw error
+										if (!results) {
+											database.all(
+												'SELECT * FROM users',
 												(error, results) => {
-													console.log('hi6')
 													if (error) throw error
-													database.get(
-														`SELECT id, username, balance, permissions, theme FROM users WHERE username = ?`,
-														[username],
-														async (error, results) => {
-															if (error) throw error
-															if (results) {
-																request.session.username = username
-																await request.session.save()
-																response.json({
-																	id: id,
-																	username: username,
-																	balance: 0,
-																	permissions: 'user',
-																	theme: theme,
-																	isAuthenticated: true,
-																})
+													if (!results) permissions = 'admin'
+													if (className) {
+														database.all(
+															'SELECT * FROM classes',
+															(error, classes) => {
+																if (error) throw error
+																console.log(classes)
+																database.exec(
+																	`INSERT INTO users (id, username, password, balance, permissions, class, theme) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+																	[
+																		id,
+																		username,
+																		hashedPassword,
+																		0,
+																		permissions,
+																		className,
+																		theme
+																	],
+																	(error, results) => {
+																		if (error) throw error
+																	}
+																)
 															}
-														}
-													)
-												}
-											)
-										})
-									} else response.json({ error: 'A User already has that Username or Id.' })
-								}
-							)
+														)
+													} else {
+														database.exec(
+															`INSERT INTO users (id, username, password, balance, permissions, theme) VALUES (?, ?, ?, ?, ?, ?)`,
+															[
+																id,
+																username,
+																hashedPassword,
+																0,
+																permissions,
+																theme
+															],
+															(error, results) => {
+																if (error) throw error
+															}
+														)
+													}
+													sendResult()
+												})
+										} else response.json({ error: 'A User already has that Username or Id.' })
+									}
+								)
+							}
 						}
-					}
-				)
-			} else response.json({ error: 'Passwords do not match.' })
+					)
+				} else response.json({ error: 'Passwords do not match.' })
+			} else response.json({ error: 'id is not number' })
 		} else response.json({ error: 'missing ID, Username, Password, Confirm Password, and/or theme.' })
 	},
 	{
