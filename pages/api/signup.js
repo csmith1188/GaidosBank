@@ -64,7 +64,9 @@ export default withIronSessionApiRoute(
 												'SELECT * FROM users',
 												(error, results) => {
 													if (error) throw error
-													if (!results) permissions = 'admin'
+													if (results.length == 0) {
+														permissions = 'admin'
+													}
 													console.log(permissions)
 													if (className) {
 														database.all(

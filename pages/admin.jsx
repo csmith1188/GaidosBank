@@ -105,19 +105,19 @@ export default function Admin() {
 				return 0
 			}
 		},
-		{
-			Header: 'Reverse Transaction',
-			Cell: ({ row }) => (
-				<form.button
-					theme={currentUser.theme}
-					id={row.index}
-					onClick={() => { console.log(row.original) }
-					}
-				>
-					Reverse Transaction
-				</form.button >
-			),
-		}
+		// {
+		// 	Header: 'Reverse Transaction',
+		// 	Cell: ({ row }) => (
+		// 		<form.button
+		// 			theme={currentUser.theme}
+		// 			id={row.index}
+		// 			onClick={() => { console.log(row.original) }
+		// 			}
+		// 		>
+		// 			Reverse Transaction
+		// 		</form.button >
+		// 	),
+		// }
 	]
 
 	async function getUsers() {
@@ -175,18 +175,18 @@ export default function Admin() {
 			sortType: 'alphanumeric',
 			sortInverted: true
 		},
-		{
-			Header: 'Delete User',
-			Cell: ({ row }) => (
-				<form.button
-					theme={currentUser.theme}
-					id={row.index}
-					onClick={() => { console.log(row.original) }}
-				>
-					Delete User
-				</form.button>
-			),
-		}
+		// {
+		// 	Header: 'Delete User',
+		// 	Cell: ({ row }) => (
+		// 		<form.button
+		// 			theme={currentUser.theme}
+		// 			id={row.index}
+		// 			onClick={() => { console.log(row.original) }}
+		// 		>
+		// 			Delete User
+		// 		</form.button>
+		// 	),
+		// }
 	]
 
 	useEffect(() => {
@@ -255,23 +255,23 @@ export default function Admin() {
 							sortable={true}
 							sortBy={[{ id: 'balance', desc: false }]}
 							canFilter={true}
-							updateData={updateUsers}
+							// updateData={updateUsers}
 							skipPageReset={skipPageReset}
 							getData={getUsers}
-							editableColumns={[
-								{
-									column: 'balance',
-									type: 'int'
-								},
-								{
-									column: 'permissions',
-									type: ['user', 'admin']
-								},
-								{
-									column: 'theme',
-									type: ['dark', 'light']
-								}
-							]}
+						// editableColumns={[
+						// 	{
+						// 		column: 'balance',
+						// 		type: 'int'
+						// 	},
+						// 	{
+						// 		column: 'permissions',
+						// 		type: ['user', 'admin']
+						// 	},
+						// 	{
+						// 		column: 'theme',
+						// 		type: ['dark', 'light']
+						// 	}
+						// ]}
 						/>
 					</tabs.content>
 					<tabs.content

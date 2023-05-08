@@ -104,47 +104,49 @@ export const Table = (props) => {
 			setValue(initialValue)
 		}, [initialValue])
 
-		for (let column of editableColumns) {
-			if (column.column == id) {
-				if (Array.isArray(column.type)) {
-					return <Select onChange={onChange} name={column.column} items={column.type} defaultValue={value} pop={true} theme={currentUser.theme} />
-				} else {
-					return <form.input
-						type={
-							column.type == 'int' || column.type == 'number'
-								? 'number'
-								: ''
-						}
-						min={column.type == 'int' ? 0 : ''}
-						step={column.type == 'int' ? 1 : ''}
-						onKeyDown={
-							column.type == 'int' ?
-								(event) => {
-									if (
-										event.key === "Backspace" ||
-										event.key === "Delete" ||
-										event.key === "ArrowUp" ||
-										event.key === "ArrowDown" ||
-										event.key === "ArrowLeft" ||
-										event.key === "ArrowRight" ||
-										event.key === 'Home' ||
-										event.key === 'End' ||
-										(event.key >= 0 && event.key <= 9)
-									) {
-										return true
-									} else {
-										event.preventDefault()
-										return false
+		if (editableColumns) {
+			for (let column of editableColumns) {
+				if (column.column == id) {
+					if (Array.isArray(column.type)) {
+						return <Select onChange={onChange} name={column.column} items={column.type} defaultValue={value} pop={true} theme={currentUser.theme} />
+					} else {
+						return <form.input
+							type={
+								column.type == 'int' || column.type == 'number'
+									? 'number'
+									: ''
+							}
+							min={column.type == 'int' ? 0 : ''}
+							step={column.type == 'int' ? 1 : ''}
+							onKeyDown={
+								column.type == 'int' ?
+									(event) => {
+										if (
+											event.key === "Backspace" ||
+											event.key === "Delete" ||
+											event.key === "ArrowUp" ||
+											event.key === "ArrowDown" ||
+											event.key === "ArrowLeft" ||
+											event.key === "ArrowRight" ||
+											event.key === 'Home' ||
+											event.key === 'End' ||
+											(event.key >= 0 && event.key <= 9)
+										) {
+											return true
+										} else {
+											event.preventDefault()
+											return false
+										}
 									}
-								}
-								: ''
-						}
-						border={false}
-						theme={currentUser.theme}
-						pop={true}
-						value={value}
-						onChange={onChange}
-					/>
+									: ''
+							}
+							border={false}
+							theme={currentUser.theme}
+							pop={true}
+							value={value}
+							onChange={onChange}
+						/>
+					}
 				}
 			}
 		}
