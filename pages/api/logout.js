@@ -3,8 +3,7 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		try {
-			delete request.session.username
-			await request.session.save()
+			request.session.destroy()
 			response.json({ error: 'none' })
 		} catch (error) {
 			throw error

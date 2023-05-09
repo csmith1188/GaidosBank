@@ -6,6 +6,7 @@ export default withIronSessionApiRoute(
 	function handler(request, response) {
 		let currentUser = request.session.username
 		let { user, property, value } = request.query
+
 		if (user) {
 			if (currentUser) {
 				database.get(

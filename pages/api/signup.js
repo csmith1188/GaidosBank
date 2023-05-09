@@ -10,9 +10,10 @@ export default withIronSessionApiRoute(
 			username,
 			password,
 			confirmPassword,
-			className,
 			theme
 		} = request.query
+		let className = request.query.class
+
 		let permissions = 'user'
 
 		function sendResult() {
@@ -87,6 +88,7 @@ export default withIronSessionApiRoute(
 																		],
 																		(error, results) => {
 																			if (error) throw error
+																			sendResult()
 																		}
 																	)
 																} else response.json({ error: 'That Class does not exist.' })
@@ -105,10 +107,10 @@ export default withIronSessionApiRoute(
 															],
 															(error, results) => {
 																if (error) throw error
+																sendResult()
 															}
 														)
 													}
-													sendResult()
 												})
 										} else response.json({ error: 'A User already has that Username or Id.' })
 									}
