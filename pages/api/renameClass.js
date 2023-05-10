@@ -22,24 +22,18 @@ export default withIronSessionApiRoute(
 							'SELECT * FROM classes',
 							(error, results) => {
 								if (error) throw error
-								console.log('hi-1')
 								let classes = results.map(result => result.class)
-								console.log(classes)
 								if (classes.includes(currentClass)) {
-									console.log('hi0')
 									if (!classes.includes(newClass)) {
-										console.log('hi1')
 										database.run('UPDATE classes SET class = ? WHERE class = ?',
 											[newClass, currentClass],
 											(error, results) => {
 												if (error) throw error
-												console.log('hi2')
 												database.run(
 													'UPDATE users SET class = ? WHERE class = ?',
 													[newClass, currentClass],
 													(error, results) => {
 														if (error) throw error
-														console.log('hi3')
 														response.json({ error: 'none' })
 													}
 												)
@@ -49,9 +43,9 @@ export default withIronSessionApiRoute(
 								} else response.json({ error: 'current class does not exist' })
 							}
 						)
-					}
+					} else response.json({ error: 'not admin' })
 				})
-		}
+		} else response.json({ error: 'not logged in' })
 	},
 	{
 		cookieName: "session",

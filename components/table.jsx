@@ -21,6 +21,7 @@ export const Table = (props) => {
 	const limit = props.limit
 	const sortable = props.sortable
 	const canFilter = props.canFilter
+	const leaderboard = props.leaderboard
 	const editableColumns = props.editableColumns
 	const currentUser = useAtomValue(currentUserAtom)
 
@@ -30,13 +31,13 @@ export const Table = (props) => {
 	}, [props.data])
 
 	function resetData() {
-		console.log(initialData)
+		// console.log(initialData)
 		setData(initialData)
 	}
 
-	useEffect(() => {
-		console.log(changedData)
-	}, [changedData])
+	// useEffect(() => {
+	// 	console.log(changedData)
+	// }, [changedData])
 
 
 	function EditableCell({
@@ -241,7 +242,7 @@ export const Table = (props) => {
 						<styledTable.root {...getTableProps()} theme={currentUser.theme} border={!props.canFilter} id={props.id}>
 							<styledTable.thead theme={currentUser.theme}>
 								{headerGroups.map(headerGroup => (
-									<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme}>
+									<styledTable.tr key={headerGroup.index} {...headerGroup.getHeaderGroupProps()} theme={currentUser.theme} leaderboard={leaderboard}>
 										{headerGroup.headers.map(column => (
 											<styledTable.th key={column.id} {...column.getHeaderProps(sortable ? column.getSortByToggleProps() : '')} theme={currentUser.theme}>
 												{column.render('Header')}
@@ -261,7 +262,7 @@ export const Table = (props) => {
 								{rows.map(row => {
 									prepareRow(row)
 									return (
-										<styledTable.tr key={row.index} {...row.getRowProps()} theme={currentUser.theme}>
+										<styledTable.tr key={row.index} {...row.getRowProps()} theme={currentUser.theme} leaderboard={leaderboard}>
 											{row.cells.map(cell => {
 												return (
 													<styledTable.td key={cell.column.id} {...cell.getCellProps()} theme={currentUser.theme}>

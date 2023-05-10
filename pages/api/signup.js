@@ -68,7 +68,6 @@ export default withIronSessionApiRoute(
 													if (results.length == 0) {
 														permissions = 'admin'
 													}
-													console.log(permissions)
 													if (className) {
 														database.all(
 															'SELECT * FROM classes',

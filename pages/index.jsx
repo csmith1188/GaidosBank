@@ -72,7 +72,7 @@ export default function Home() {
 					You have ${currentUser ? currentUser.balance : ''} in your Balance
 				</text.p>
 			) : ''}
-			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' limit={10} />
+			<Table leaderboard={true} columns={columns} data={leaderBoard} id='leaderBoardTable' limit={10} />
 		</div >
 	)
 }
