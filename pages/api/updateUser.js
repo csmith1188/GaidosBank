@@ -7,8 +7,8 @@ export default withIronSessionApiRoute(
 		let currentUser = request.session.username
 		let { user, property, value } = request.query
 
-		if (user) {
-			if (currentUser) {
+		if (currentUser) {
+			if (user, property, value) {
 				database.get(
 					`SELECT * FROM users WHERE username = ?`,
 					[currentUser],
@@ -24,8 +24,8 @@ export default withIronSessionApiRoute(
 										if (error) throw error
 										if (results) user = results
 										if (user[property] !== 'undefined') {
-											database.run(`UPDATE users set ? = ? WHERE username = ?`,
-												[property, value, user.username],
+											database.run(`UPDATE users set ${property} = ? WHERE username = ?`,
+												[value, user.username],
 												(error, results) => {
 													if (error) throw error
 													response.json({ error: null })
@@ -35,8 +35,8 @@ export default withIronSessionApiRoute(
 							}
 						} else response.json({ error: 'not admin' })
 					})
-			} else response.json({ error: 'not logged in' })
-		} else response.json({ error: 'no user requested' })
+			} else response.json({ error: 'missing user, property or value' })
+		} else response.json({ error: 'not logged in' })
 	},
 	{
 		cookieName: "session",

@@ -25,21 +25,21 @@ export default function NavBar() {
 		}
 	}
 
-	function changeTheme() {
-		if (typeof window !== 'undefined') {
-			if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
-			else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
-		}
-	}
-
 	function toggleTheme() {
 		try {
-			setCurrentUser(previousCurrentUser =>{
+			setCurrentUser(previousCurrentUser => {
+				let newTheme
+				if (previousCurrentUser.theme === 'dark') newTheme = 'light'
+				else newTheme = 'dark'
 				return {
 					...previousCurrentUser,
-				theme: currentUser.theme === 'dark' ? currentUser.theme === 'light' : currentUser.theme === 'dark'
-			}})
-			changeTheme()
+					theme: newTheme
+				}
+			})
+			// if (typeof window !== 'undefined') {
+			// 	if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+			// 	else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+			// }
 		} catch (error) {
 			throw error
 		}

@@ -6,71 +6,65 @@ export default withIronSessionApiRoute(async function handler(request, response)
 	let sender = request.session.username
 	let receiver = request.query.account
 	let amount
-	if (receiver && Number.isInteger(Number(receiver)) && Number(receiver) > 0) {
-		amount = Number.parseInt(receiver)
+	if (amount && Number.isInteger(Number(amount)) && Number(receiver) > 0) {
+		amount = Number(amount)
 	} else {
 		amount = null
 	}
 
 	if (typeof sender !== 'undefined') {
-		if (typeof receiver !== 'undefined' && typeof amount !== 'undefined') {
+		if (typeof confirmationData !== 'undefined' && typeof amount !== 'undefined') {
 			database.serialize(() => {
-				database.get('SELECT * FROM users WHERE username = ? OR id = ?', [sender, sender], (error, sender) => {
+				database.get('SELECT * FROM users WHERE username = ? OR id = ?', [sender, sender], (error, senderData) => {
 					if (error) throw error
-					if (sender) {
-						database.get('SELECT * FROM users WHERE username = ? OR id = ?', [receiver, receiver], (error, receiver) => {
-							if (error) throw error
-							if (receiver) {
-								if (sender.username !== receiver.username) {
-									if (sender.balance >= amount) {
-										database.run('BEGIN TRANSACTION', () => {
-											database.run('UPDATE users SET balance = ? WHERE id = ?', [sender.balance - amount, sender.id], (error, results) => {
-												if (error) {
-													database.run('ROLLBACK')
-													throw error
-												}
-											})
-											database.run('UPDATE users SET balance = ? WHERE id = ?', [receiver.balance + amount, receiver.id], (error, results) => {
-												if (error) {
-													database.run('ROLLBACK')
-													throw error
-												}
-											})
-											let date = new Date()
-											date = {
-												year: date.getFullYear(),
-												month: date.getMonth() + 1,
-												day: date.getDate(),
-												hours: date.getHours(),
-												minutes: date.getMinutes(),
-												seconds: date.getSeconds(),
-											}
-											database.run(
-												'INSERT INTO transactions (senderId, receiverId, amount, timestamp) VALUES (?, ?, ?, ?)',
-												[sender.id, receiver.id, amount, JSON.stringify(date)],
-												(error, results) => {
+					if (senderData) {
+						if (senderData.class) {
+							database.get('SELECT * FROM users WHERE username = ? OR id = ?', [receiver, receiver], (error, receiverData) => {
+								if (error) throw error
+								if (receiverData) {
+									if (senderData.username !== receiverData.username) {
+										if (senderData.balance >= amount) {
+											database.run('BEGIN TRANSACTION', () => {
+												database.run('UPDATE users SET balance = ? WHERE id = ?', [senderData.balance - amount, senderData.id], (error, results) => {
 													if (error) {
 														database.run('ROLLBACK')
 														throw error
 													}
-													database.run('COMMIT')
-													response.json({ error: 'none' })
+												})
+												database.run('UPDATE users SET balance = ? WHERE id = ?', [receiverData.balance + amount, receiverData.id], (error, results) => {
+													if (error) {
+														database.run('ROLLBACK')
+														throw error
+													}
+												})
+												let date = new Date()
+												date = {
+													year: date.getFullYear(),
+													month: date.getMonth() + 1,
+													day: date.getDate(),
+													hours: date.getHours(),
+													minutes: date.getMinutes(),
+													seconds: date.getSeconds(),
 												}
-											)
-										})
-									} else {
-										response.json({ error: "You don't have enough money" })
-									}
-								} else {
-									response.json({ error: "You can't send money to yourself." })
-								}
-							} else {
-								response.json({ error: 'Receiver does not exist.' })
-							}
-						})
-					} else {
-						response.json({ error: "Account logged into doesn't exist somehow." })
-					}
+												database.run(
+													'INSERT INTO transactions (senderDataId, receiverDataId, amount, timestamp) VALUES (?, ?, ?, ?)',
+													[senderData.id, receiverData.id, amount, JSON.stringify(date)],
+													(error, results) => {
+														if (error) {
+															database.run('ROLLBACK')
+															throw error
+														}
+														database.run('COMMIT')
+														response.json({ error: 'none' })
+													}
+												)
+											})
+										} else response.json({ error: "You don't have enough money" })
+									} else response.json({ error: "You can't send money to yourself." })
+								} else response.json({ error: 'receiverData does not exist.' })
+							})
+						} else response.json({ error: "You are not in a class." })
+					} else response.json({ error: "Account logged into doesn't exist somehow." })
 				})
 			})
 		} else {

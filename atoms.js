@@ -3,10 +3,11 @@ import { useAtomsDevtools } from 'jotai/devtools'
 
 export const currentUserAtom = atomWithStorage('currentUser',
 	{
-		theme: 'dark',
+		theme: "dark",
 		isAuthenticated: false,
 		transactions: [],
-		balance: 0
+		balance: 0,
+		class: null
 	}
 )
 currentUserAtom.debugLabel = 'currentUserAtom'

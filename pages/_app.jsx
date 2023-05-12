@@ -5,7 +5,7 @@ import { currentUserAtom, DebugAtoms } from '../atoms'
 import { useEffect } from 'react'
 
 export default function App({ Component, pageProps }) {
-  var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+  const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
   useEffect(() => {
     async function updateUser() {
@@ -23,21 +23,17 @@ export default function App({ Component, pageProps }) {
 
         response = await fetch('/api/getCurrentUser')
         data = await response.json()
-        for (let key of Object.keys(data)) {
-          if (currentUser[key] === data[key]) {
-            delete data[key]
+        if (!data.error) {
+          for (let key of Object.keys(data)) {
+            if (currentUser[key] === data[key] || key === 'theme') {
+              delete data[key]
+            }
           }
-        }
-        if (Object.keys(data).length !== 0) {
-          if (!data.error) {
+          if (Object.keys(data).length !== 0) {
             setCurrentUser(previousCurrentUser => {
               return {
                 ...previousCurrentUser,
-                id: data.id ?? currentUser.id,
-                username: data.username ?? currentUser.username,
-                balance: data.balance ?? currentUser.balance,
-                permissions: data.permissions ?? currentUser.permissions,
-                theme: data.theme ?? currentUser.theme,
+                ...data
               }
             })
           }
@@ -47,49 +43,14 @@ export default function App({ Component, pageProps }) {
       }
     }
     updateUser()
-    const interval = setInterval(updateUser, 1000)
-    return () => clearInterval(interval)
+    // const interval = setInterval(updateUser, 1000)
+    // return () => clearInterval(interval)
   }, [])
-
-  // useEffect(() => {
-  //   async function getCurrentUser() {
-  //     try {
-  //       const response = await fetch('/api/getCurrentUser')
-  //       const data = await response.json()
-  //       for (let key of Object.keys(data)) {
-  //         if (currentUser[key] === data[key] || key === 'password') {
-  //           delete data[key]
-  //         }
-  //       }
-  //       if (data) {
-  // setCurrentUser(previousCurrentUser => {
-  //   return {
-  //     ...previousCurrentUser,
-  //     id: data.id ?? currentUser.id,
-  //     username: data.username ?? currentUser.username,
-  //     balance: data.balance ?? currentUser.balance,
-  //     permissions: data.permissions ?? currentUser.permissions,
-  //     theme: data.theme ?? currentUser.theme,
-  //   }
-  // })
-  //       }
-  //     } catch (error) {
-  //       throw error
-  //     }
-  //   }
-
-  //   const interval = setInterval(getCurrentUser, 1000)
-  //   return () => clearInterval(interval)
-  // }, [])
-
-  function changeTheme() {
-    if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
-    else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
-  }
 
   useEffect(() => {
-    window.addEventListener('load', changeTheme())
-  }, [])
+    if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+    else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+  }, [currentUser.theme])
 
   return (
     <>

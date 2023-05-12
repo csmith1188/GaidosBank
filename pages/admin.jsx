@@ -12,8 +12,10 @@ import { Separator } from '../components/styled/separator'
 export default function Admin() {
 	const mounted = useIsMounted()
 	const currentUser = useAtomValue(currentUserAtom)
-	const [transactions, setTransactions] = useState([])
 	const [users, setUsers] = useState([])
+	const [transactions, setTransactions] = useState([])
+	const [classes, setClasses] = useState([])
+	const [newClass, setNewClass] = useState([])
 	const [skipPageReset, setSkipPageReset] = useState(false)
 
 	useEffect(() => {
@@ -23,20 +25,22 @@ export default function Admin() {
 	}, [currentUser.isAuthenticated])
 
 	async function getTransactions() {
-		const response = await fetch('/api/getTransactions')
-		const data = await response.json()
 		try {
-			for (let transaction of data) {
-				transaction.timestamp = JSON.parse(transaction.timestamp)
-				const monthNames = ["January", "February", "March", "April", "May", "June",
-					"July", "August", "September", "October", "November", "December"
-				]
-				transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
-				if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
-				else transaction.timestamp.hours = transaction.timestamp.hours
-				transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
-			}
-			setTransactions(data)
+			const response = await fetch('/api/getTransactions')
+			const data = await response.json()
+			if (!data.error) {
+				for (let transaction of data) {
+					transaction.timestamp = JSON.parse(transaction.timestamp)
+					const monthNames = ["January", "February", "March", "April", "May", "June",
+						"July", "August", "September", "October", "November", "December"
+					]
+					transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
+					if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
+					else transaction.timestamp.hours = transaction.timestamp.hours
+					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
+				}
+				if (JSON.stringify(data) !== JSON.stringify(transactions)) setTransactions(data)
+			} else console.log(data.error)
 		} catch (error) {
 			throw error
 		}
@@ -44,6 +48,8 @@ export default function Admin() {
 
 	useEffect(() => {
 		getTransactions()
+		const interval = setInterval(getTransactions, 1000)
+		return () => clearInterval(interval)
 	}, [])
 
 	let transactionsColumns = [
@@ -121,14 +127,16 @@ export default function Admin() {
 	]
 
 	async function getUsers() {
-		const response = await fetch('/api/getUsers')
-		const data = await response.json()
 		try {
-			for (let user of data) {
-				if (!user.class)
-					user.class = 'Not Assigned'
-			}
-			setUsers(data)
+			const response = await fetch('/api/getUsers')
+			const data = await response.json()
+			if (!data.error) {
+				for (let user of data) {
+					if (!user.class)
+						user.class = 'Not Assigned'
+				}
+				if (JSON.stringify(data) !== JSON.stringify(users)) setUsers(data)
+			} else console.log(data.error)
 		} catch (error) {
 			throw error
 		}
@@ -136,7 +144,33 @@ export default function Admin() {
 
 	useEffect(() => {
 		getUsers()
+		const interval = setInterval(getUsers, 1000)
+		return () => clearInterval(interval)
 	}, [])
+
+	function updateUsers(changedUsers) {
+		setSkipPageReset(true)
+		console.log(changedUsers)
+		// if (rowIndex && columnId && value) {
+		// 	console.log('updateUsers: ', rowIndex, columnId, value)
+		// 	setUsers(old =>
+		// 		old.map(async (row, index) => {
+		// 			if (index === rowIndex) {
+		// 				return {
+		// 					...old[rowIndex],
+		// 					[columnId]: value,
+		// 				}
+		// 			}
+		// 			if (window !== 'undefined') {
+		// 				console.log(rowIndex, columnId, value)
+		// 				const response = await fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
+		// 				const data = await response.json()
+		// 				return row
+		// 			}
+		// 		})
+		// 	)
+		// }
+	}
 
 	let userColumns = [
 		{
@@ -189,33 +223,55 @@ export default function Admin() {
 		// }
 	]
 
+	async function getClasses() {
+		try {
+			const response = await fetch('/api/getClasses')
+			let data = await response.json()
+			data = data.map(className => { return { 'class': className } })
+			if (data.error) console.log(data.error)
+			else if (JSON.stringify(data) !== JSON.stringify(classes)) setClasses(data)
+		} catch (error) {
+			throw error
+		}
+	}
+
+	useEffect(() => {
+		getClasses()
+		const interval = setInterval(getClasses, 1000)
+		return () => clearInterval(interval)
+	}, [])
+
+	let classesColumns = [
+		{
+			Header: 'Class',
+			accessor: 'class',
+			sortType: 'alphanumeric',
+			sortInverted: true
+		},
+		{
+			Header: 'Delete Class',
+			Cell: ({ row }) => (
+				<form.button
+					theme={currentUser.theme}
+					id={row.index}
+					onClick={async () => {
+						let confirmation = confirm(`Are you sure you want to delete class ${row.original.class}`)
+						if (confirmation) {
+							let response = await fetch(`/api/removeClass?class=${row.original.class}`)
+							let data = await response.json()
+							if (data.error) console.log(data.error)
+						}
+					}}
+				>
+					Delete Class
+				</form.button>
+			),
+		}
+	]
+
 	useEffect(() => {
 		setSkipPageReset(false)
 	}, [])
-
-	function updateUsers(changedUsers) {
-		setSkipPageReset(true)
-		console.log(changedUsers)
-		// if (rowIndex && columnId && value) {
-		// 	console.log('updateUsers: ', rowIndex, columnId, value)
-		// 	setUsers(old =>
-		// 		old.map(async (row, index) => {
-		// 			if (index === rowIndex) {
-		// 				return {
-		// 					...old[rowIndex],
-		// 					[columnId]: value,
-		// 				}
-		// 			}
-		// 			if (window !== 'undefined') {
-		// 				console.log(rowIndex, columnId, value)
-		// 				const response = await fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
-		// 				const data = await response.json()
-		// 				return row
-		// 			}
-		// 		})
-		// 	)
-		// }
-	}
 
 	return (
 		<div id='admin'>
@@ -228,26 +284,19 @@ export default function Admin() {
 						<tabs.trigger value="users" theme={currentUser.theme}>
 							Users
 						</tabs.trigger>
-						<Separator className='separator' decorative orientation="vertical" theme={mounted && currentUser.theme} />
+						<Separator className='separator' decorative orientation="vertical" theme={currentUser.theme} />
 						<tabs.trigger value="transactions" theme={currentUser.theme}>
 							Transactions
+						</tabs.trigger>
+						<Separator className='separator' decorative orientation="vertical" theme={currentUser.theme} />
+						<tabs.trigger value="classes" theme={currentUser.theme}>
+							Classes
 						</tabs.trigger>
 					</tabs.list>
 					<tabs.content
 						id='users'
 						value="users"
 						theme={currentUser.theme}
-						style={
-							mounted ?
-								currentUser.theme === 'dark' ? {
-									backgroundColor: 'rgb(0, 0, 0)',
-									borderColor: 'rgb(75, 75, 75)'
-								}
-									: {
-										borderColor: 'rgb(0, 0, 0)'
-									}
-								: {}
-						}
 					>
 						<Table
 							columns={userColumns}
@@ -257,7 +306,6 @@ export default function Admin() {
 							canFilter={true}
 							// updateData={updateUsers}
 							skipPageReset={skipPageReset}
-							getData={getUsers}
 						// editableColumns={[
 						// 	{
 						// 		column: 'balance',
@@ -278,17 +326,6 @@ export default function Admin() {
 						id='transactions'
 						value="transactions"
 						theme={currentUser.theme}
-						style={
-							mounted ?
-								currentUser.theme === 'dark' ? {
-									backgroundColor: 'rgb(0, 0, 0)',
-									borderColor: 'rgb(75, 75, 75)'
-								}
-									: {
-										borderColor: 'rgb(0, 0, 0)'
-									}
-								: {}
-						}
 					>
 						<Table
 							columns={transactionsColumns}
@@ -296,8 +333,49 @@ export default function Admin() {
 							sortable={true}
 							sortBy={[{ id: 'readableTimestamp', desc: false }]}
 							canFilter={true}
-							getData={getTransactions}
 						/>
+					</tabs.content>
+					<tabs.content
+						id='classes'
+						value="classes"
+						theme={currentUser.theme}
+					>
+						<Table
+							columns={classesColumns}
+							data={classes}
+							sortable={true}
+							sortBy={[{ id: 'class', desc: true }]}
+							canFilter={true}
+						/>
+						<div>
+
+							<form.button
+								theme={currentUser.theme}
+								id={'newClass'}
+								onClick={async () => {
+									if (newClass) {
+										let confirmation = confirm(`Are you sure you want to add class ${newClass}`)
+										if (confirmation) {
+											let response = await fetch(`/api/makeClass?class=${newClass}`)
+											let data = await response.json()
+											if (data.error) console.log(data.error)
+										}
+									}
+								}
+								}
+							>
+								Add Class
+							</form.button>
+							<form.input
+								type='text'
+								id='newClass'
+								autoComplete='off'
+								placeholder='New Class'
+								value={newClass}
+								onChange={(event) => setNewClass(event.target.value)}
+								theme={currentUser.theme}
+							/>
+						</div>
 					</tabs.content>
 				</tabs.root >
 				: ''}

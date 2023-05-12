@@ -19,8 +19,9 @@ body {
 
 * {
 	box-sizing: border-box;
-	transition-property: color, background-color, border-color, filter;
-	transition-duration: 0.5s;
+	transition-property: color, background-color, border-color;
+	transition-duration: 0.75s;
+	transition-timing-function: linear;
 }
 
 button {
@@ -171,6 +172,7 @@ div[role=tabpanel] {
 	align-content: center;
 	margin: 2vh 0;
 	justify-self: center;
+	font-size: 4vh;
 
 
 	#tableContainer {

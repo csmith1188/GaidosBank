@@ -62,6 +62,7 @@ export const content = styled(tabs.Content, {
 				borderColor: 'rgb(0, 0, 0)'
 			},
 			dark: {
+				backgroundColor: 'rgb(0, 0, 0)',
 				borderColor: 'rgb(75, 75, 75)'
 			}
 		}
