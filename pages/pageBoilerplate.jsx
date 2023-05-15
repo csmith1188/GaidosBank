@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import Router from 'next/router'
 
-export default function boilerplate() {
+export default function Boilerplate() {
 	var currentUser = useAtomValue(currentUserAtom)
 
 	useEffect(() => {
@@ -13,6 +13,6 @@ export default function boilerplate() {
 	}, [currentUser.isAuthenticated])
 
 	return (
-        //html
-    )
+		<></>
+	)
 }
