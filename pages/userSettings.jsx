@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import * as ToggleGroup from '../components/toggleGroup'
+import * as ToggleGroup from '../components/styled/toggleGroup'
 import { IconSun, IconMoonStars } from '@tabler/icons'
 import Router from 'next/router'
 import { useEffect } from 'react'
