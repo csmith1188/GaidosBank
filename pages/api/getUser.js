@@ -1,37 +1,21 @@
 import { withIronSessionApiRoute } from 'iron-session/next'
 const sqlite3 = require('sqlite3').verbose()
-const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
+const database = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let user, username, id
-		let query = 'SELECT * FROM users WHERE '
-		if (request.query.user) user = request.query.user
-		else user = null
-		if (parseInt(user) == NaN)
-			username = user
-		else id = user
+		let { user } = request.query
 
-		if (user) {
-			if (isNaN(user)) {
-				database.get(query + 'username="' + user + '"', (error, results) => {
+		if (typeof user !== 'undefined') {
+			database.get(
+				`SELECT id, username, balance, permissions, theme FROM users WHERE username = ? or id = ?`,
+				[user, user],
+				(error, results) => {
 					if (error) throw error
-					if (results)
-						response.send(results)
-					else response.send({ error: 'no results' })
+					if (results) response.json(results)
+					else response.json({ error: 'no results' })
 				})
-			}
-			else if (Number.isInteger(parseFloat(user))) {
-				database.get(query + 'id=' + parseInt(user), (error, results) => {
-					if (error) throw error
-					if (results)
-						response.send(results)
-					else response.send({ error: 'no results' })
-				})
-			}
-			else response.send({ error: 'not int' })
-		}
-		else response.send({ error: 'no user' })
+		} else response.json({ error: 'no user requested' })
 
 	},
 	{

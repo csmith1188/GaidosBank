@@ -1,49 +1,45 @@
 const sqlite3 = require('sqlite3').verbose()
-const database = new sqlite3.Database('gaidosBank.db', sqlite3.OPEN_READWRITE)
+const database = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
 import { withIronSessionApiRoute } from 'iron-session/next'
 const bcrypt = require('bcrypt')
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		let username, password;
-		if (request.query.username) username = request.query.username
-		else username = null
-		if (request.query.password) password = request.query.password
-		else password = null
-		if (username && password) {
-			database.get(
-				'SELECT * FROM users WHERE username = ?',
-				[username],
-				(error, results) => {
-					if (error) throw error
-					if (results) {
-						let databasePassword = results.password
-						bcrypt.compare(
-							password,
-							databasePassword,
-							(error, isMatch) => {
-								if (error) throw error
-								if (isMatch) {
-									request.session.username = username
-									request.session.save()
-									setTimeout(() => {
-										response.send({
-											balance: results.balance,
-											username: results.username,
-											id: results.id,
-											permissions: results.permissions,
-											theme: results.theme,
+		let currentUser = request.session.username
+		let { username, password } = request.query
+
+		if (!currentUser) {
+			if (
+				typeof username !== 'undefined' &&
+				typeof password !== 'undefined'
+			) {
+				database.get(
+					`SELECT password FROM users WHERE username = ?`,
+					[username],
+					(error, results) => {
+						if (error) throw error
+						if (results) {
+							let databasePassword = results.password
+							bcrypt.compare(
+								password,
+								databasePassword,
+								async (error, isMatch) => {
+									if (error) throw error
+									if (isMatch) {
+										request.session.username = username
+										await request.session.save()
+										response.json({
+											...results,
 											isAuthenticated: true,
-											session: request.session
 										})
-									}, 10)
-								} else response.send({ isAuthenticated: false })
-							}
-						)
-					} else response.send({ isAuthenticated: false })
-				}
-			)
-		} else response.send({ isAuthenticated: false })
+									} else response.json({ error: 'That is not the users password.' })
+								}
+							)
+						} else response.json({ error: 'User does not exist.' })
+					}
+				)
+			} else response.json({ error: 'Missing username or password.' })
+		} else response.json({ error: 'Already logged in' })
 	},
 	{
 		cookieName: "session",
@@ -53,3 +49,7 @@ export default withIronSessionApiRoute(
 		}
 	}
 )
+
+process.on('exit', () => {
+	database.close()
+})

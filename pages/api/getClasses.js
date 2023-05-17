@@ -5,13 +5,13 @@ const database = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		database.all(
-			'SELECT t.*, s.username AS senderUsername, r.username AS receiverUsername FROM transactions t LEFT JOIN users s ON s.id = t.senderId LEFT JOIN users r ON r.id = t.receiverId',
+			'SELECT * FROM classes',
 			(error, results) => {
 				if (error) throw error
-				if (results) {
-					response.json(results)
-				} else response.json({ error: 'no results' })
-			})
+				if (results) response.json(results.map(result => result.class))
+				else response.json({ error: 'no results' })
+			}
+		)
 	},
 	{
 		cookieName: "session",

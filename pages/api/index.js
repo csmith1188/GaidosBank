@@ -2,12 +2,7 @@ import { withIronSessionApiRoute } from 'iron-session/next'
 
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
-		try {
-			request.session.destroy()
-			response.json({ error: 'none' })
-		} catch (error) {
-			throw error
-		}
+		response.send('This will be a page to show how to use the api')
 	},
 	{
 		cookieName: "session",
@@ -17,3 +12,7 @@ export default withIronSessionApiRoute(
 		}
 	}
 )
+
+process.on('exit', () => {
+	database.close()
+})

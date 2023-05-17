@@ -6,36 +6,44 @@ import { Table } from '../components/table'
 import * as text from '../components/styled/text'
 import { useIsMounted } from '../hooks/useIsMounted'
 import Head from 'next/head'
-
+import { Select } from '../components/select'
 
 export default function Home() {
 	const mounted = useIsMounted()
-
-	var currentUser = useAtomValue(currentUserAtom)
-	var [leaderBoard, setLeaderBoard] = useState([])
+	const currentUser = useAtomValue(currentUserAtom)
+	const [leaderBoard, setLeaderBoard] = useState([])
 
 	useEffect(() => {
-		if (currentUser && !currentUser.isAuthenticated) {
+		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	})
-
-	function getLeaderBoard() {
-		fetch('/api/getUsers?filter={permissions=user}&sort={balance:DESC}&limit=10')
-			.then(response => response.json())
-			.then(data => {
-				for (let user of data) {
-					user.rank = data.indexOf(user) + 1
-				}
-				setLeaderBoard(data)
-			})
-	}
+	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {
-		getLeaderBoard()
-		setInterval(() => {
-			getLeaderBoard()
-		}, 1000)
+		const fetchLeaderBoard = async () => {
+			try {
+				const response = await fetch('/api/getUsers')
+				const data = await response.json()
+				let tempLeaderBoard = data.sort((a, b) => {
+					return b.balance - a.balance
+				})
+				for (let userIndex in tempLeaderBoard) {
+					let user = tempLeaderBoard[userIndex]
+					if (user.permissions === 'admin') tempLeaderBoard.splice(userIndex, 1)
+				}
+				tempLeaderBoard = tempLeaderBoard.map((user, index) => ({
+					...user,
+					rank: index + 1
+				}))
+				if (leaderBoard !== tempLeaderBoard)
+					setLeaderBoard(tempLeaderBoard)
+			} catch (error) {
+				throw error
+			}
+		}
+		fetchLeaderBoard()
+		const interval = setInterval(fetchLeaderBoard, 1000)
+		return () => clearInterval(interval)
 	}, [])
 
 	const columns = [
@@ -64,7 +72,7 @@ export default function Home() {
 					You have ${currentUser ? currentUser.balance : ''} in your Balance
 				</text.p>
 			) : ''}
-			<Table columns={columns} data={leaderBoard} id='leaderBoardTable' />
+			<Table leaderboard={true} columns={columns} data={leaderBoard} id='leaderBoardTable' limit={10} />
 		</div >
 	)
 }

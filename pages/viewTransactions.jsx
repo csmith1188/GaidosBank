@@ -8,7 +8,6 @@ import Head from 'next/head'
 
 export default function ViewTransactions() {
 	const mounted = useIsMounted()
-
 	var currentUser = useAtomValue(currentUserAtom)
 	var [transactions, setTransactions] = useState([])
 
@@ -16,25 +15,27 @@ export default function ViewTransactions() {
 		if (!currentUser.isAuthenticated) {
 			Router.push('/login')
 		}
-	}, [currentUser])
+	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {
-		fetch('/api/getTransactions?user=' + currentUser.username)
-			.then(response => response.json())
-			.then(data => {
-				for (let transaction of data) {
-					transaction.timestamp = JSON.parse(transaction.timestamp)
-					const monthNames = ["January", "February", "March", "April", "May", "June",
-						"July", "August", "September", "October", "November", "December"
-					]
-					transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
-					if (transaction.timestamp.hours > 12)
-						transaction.timestamp.hours = transaction.timestamp.hours - 12
-					else transaction.timestamp.hours = transaction.timestamp.hours
-					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
-				}
-				setTransactions(data)
-			})
+		async function getTransactions() {
+			const response = await fetch('/api/getTransactions?user=' + currentUser.username)
+			const data = await response.json()
+			for (let transaction of data) {
+				transaction.timestamp = JSON.parse(transaction.timestamp)
+				const monthNames = ["January", "February", "March", "April", "May", "June",
+					"July", "August", "September", "October", "November", "December"
+				]
+				transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
+				if (transaction.timestamp.hours > 12)
+					transaction.timestamp.hours = transaction.timestamp.hours - 12
+				else transaction.timestamp.hours = transaction.timestamp.hours
+				transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
+			}
+			setTransactions(data)
+		}
+		const interval = setInterval(getTransactions, 1000)
+		return () => clearInterval(interval)
 	}, [])
 
 	let columns = [
@@ -82,43 +83,35 @@ export default function ViewTransactions() {
 					['hours', timestampA.hours, timestampB.hours],
 					['minutes', timestampA.minutes, timestampB.minutes],
 					['seconds', timestampA.seconds, timestampB.seconds],
-				];
+				]
 
 				for (const [unit, a, b] of timestamps) {
 					if (a < b) {
-						return -1;
+						return -1
 					}
 					if (a > b) {
-						return 1;
+						return 1
 					}
 				}
 
-				return 0;
+				return 0
 			}
 		}
 	]
 
-	const [open, setOpen] = useState(false);
 
 	return (
-		<div
-			id='viewTransactionsTable'
-			style={
-				mounted ?
-					currentUser.theme === 'dark' ? {
-						backgroundColor: 'rgb(0, 0, 0)',
-						borderColor: 'rgb(75, 75, 75)'
-					}
-						: {
-							borderColor: 'rgb(0, 0, 0)'
-						}
-					: {}
-			}
-		>
+		<div id='viewTransactionsTable'>
 			<Head>
 				<title>View Transaction</title>
 			</Head>
-			<Table columns={columns} data={transactions} sortable={true} sortBy={[{ id: 'readableTimestamp', desc: false }]} canFilter={true} />
+			<Table
+				columns={columns}
+				data={transactions}
+				sortable={true}
+				sortBy={[{ id: 'readableTimestamp', desc: false }]}
+				canFilter={true}
+			/>
 		</div >
 	)
 }
