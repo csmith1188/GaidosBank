@@ -88,8 +88,5 @@ if [ "$gitUpdate" == true ] || [ "$npmUpdate" == true ]; then
 fi
 
 # Get the IP address and start the development server
-# Linux
-# ip=$(ifconfig eth0 | awk '\$1=="inet"{print \$2}' | cut -d: -f2)
-# Windows
-ip=$(ipconfig | grep "IPv4 Address" | awk '{print $NF}')
+ip=$(ifconfig eth0 | awk '\$1=="inet"{print \$2}' | cut -d: -f2)
 npx next start -H "$ip"
