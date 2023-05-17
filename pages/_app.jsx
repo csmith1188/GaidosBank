@@ -2,72 +2,60 @@ import NavBar from '../components/navBar'
 import '../styles/styles.scss'
 import { useAtom } from 'jotai'
 import { currentUserAtom, DebugAtoms } from '../atoms'
-import { useEffect, useState } from 'react'
-import * as scrollArea from '../components/styled/scrollArea'
+import { useEffect } from 'react'
 
 export default function App({ Component, pageProps }) {
-  var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+  const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
   useEffect(() => {
-    if (!window.location.hash) {
-      window.location = window.location + '#loaded';
-      fetch('/api/isAuthenticated')
-        .then(response => response.json())
-        .then(data => {
-          if (!data) {
-            fetch('/api/logout')
-              .then(response => response.json())
-              .then(data => {
-                setCurrentUser({
-                  theme: 'light',
-                  isAuthenticated: false,
-                  transactions: [],
-                  balance: 0
-                })
-                updateCurrentUser()
-              })
-              .catch(error => { throw error })
+    async function updateUser() {
+      try {
+        let response = await fetch('/api/isAuthenticated')
+        let data = await response.json()
+        if (currentUser.isAuthenticated !== data) {
+          setCurrentUser(previousCurrentUser => {
+            return {
+              ...previousCurrentUser,
+              isAuthenticated: data
+            }
+          })
+        }
+
+        response = await fetch('/api/getCurrentUser')
+        data = await response.json()
+        if (!data.error) {
+          for (let key of Object.keys(data)) {
+            if (currentUser[key] === data[key] || key === 'theme') {
+              delete data[key]
+            }
           }
-        })
-        .catch(error => { throw error })
+          if (Object.keys(data).length !== 0) {
+            setCurrentUser(previousCurrentUser => {
+              return {
+                ...previousCurrentUser,
+                ...data
+              }
+            })
+          }
+        }
+      } catch (error) {
+        throw error
+      }
     }
-  })
-
-  function updateCurrentUser() {
-    setCurrentUser({
-      balance: currentUser.balance,
-      username: currentUser.username,
-      id: currentUser.id,
-      permissions: currentUser.permissions,
-      theme: currentUser.theme,
-      isAuthenticated: currentUser.isAuthenticated,
-      transactions: currentUser.transactions
-    })
-  }
-
-  function changeTheme() {
-    if (currentUser.theme === 'dark') {
-      document.body.style.backgroundColor = 'rgb(20, 20, 20)'
-    } else {
-      document.body.style.backgroundColor = 'rgb(255, 255, 255)'
-    }
-  }
-
-  function toggleTheme() {
-    if (currentUser.theme === 'dark') currentUser.theme = 'light'
-    else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-    updateCurrentUser()
-    changeTheme()
-  }
+    updateUser()
+    // const interval = setInterval(updateUser, 1000)
+    // return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
-    window.addEventListener('load', changeTheme())
-  })
+    if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+    else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+  }, [currentUser.theme])
 
   return (
     <>
       <DebugAtoms>
-        <NavBar></NavBar >
+        <NavBar />
         <Component {...pageProps} />
       </DebugAtoms>
     </>

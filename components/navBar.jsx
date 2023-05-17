@@ -1,53 +1,48 @@
 import * as nav from './styled/nav'
-import { useAtom } from 'jotai';
+import * as form from './styled/form'
+import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import { useIsMounted } from '../hooks/useIsMounted';
+import { useIsMounted } from '../hooks/useIsMounted'
 import { IconSun, IconMoonStars } from '@tabler/icons'
 
 export default function NavBar() {
 	const mounted = useIsMounted()
-	var [currentUser, setCurrentUser] = useAtom(currentUserAtom);
+	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
-	function updateCurrentUser() {
-		setCurrentUser({
-			balance: currentUser.balance,
-			username: currentUser.username,
-			id: currentUser.id,
-			permissions: currentUser.permissions,
-			theme: currentUser.theme,
-			isAuthenticated: currentUser.isAuthenticated,
-			transactions: currentUser.transactions
-		})
-	}
-
-	const logout = () => {
-		fetch('/api/logout')
-			.then(response => response.json())
-			.then(data => {
-				currentUser = {
+	async function logout() {
+		const response = await fetch('/api/logout')
+		const data = await response.json()
+		if (!data.error) throw data.error
+		else {
+			try {
+				setCurrentUser({
 					theme: currentUser.theme,
 					isAuthenticated: false,
-					transactions: [],
-					balance: 0
-				}
-				updateCurrentUser()
-			})
-			.catch(error => { throw error })
-	}
-
-	function changeTheme() {
-		if (currentUser.theme === 'dark') {
-			document.body.style.backgroundColor = 'rgb(20, 20, 20)'
-		} else {
-			document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+				})
+			} catch (error) {
+				throw error
+			}
 		}
 	}
 
 	function toggleTheme() {
-		if (currentUser.theme === 'dark') currentUser.theme = 'light'
-		else if (currentUser.theme === 'light') currentUser.theme = 'dark'
-		updateCurrentUser()
-		changeTheme()
+		try {
+			setCurrentUser(previousCurrentUser => {
+				let newTheme
+				if (previousCurrentUser.theme === 'dark') newTheme = 'light'
+				else newTheme = 'dark'
+				return {
+					...previousCurrentUser,
+					theme: newTheme
+				}
+			})
+			// if (typeof window !== 'undefined') {
+			// 	if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
+			// 	else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
+			// }
+		} catch (error) {
+			throw error
+		}
 	}
 
 	return (
@@ -65,7 +60,7 @@ export default function NavBar() {
 				</nav.item>
 				{mounted && currentUser.permissions === 'admin' &&
 					<nav.item>
-						<nav.link theme={mounted && currentUser.theme} active='true' href='/Admin'>
+						<nav.link theme={mounted && currentUser.theme} active='true' href='/admin'>
 							Admin
 						</nav.link>
 					</nav.item>
@@ -90,16 +85,16 @@ export default function NavBar() {
 						</nav.link>
 				</nav.item> */}
 				<nav.item>
-					<nav.button
+					<form.button
 						theme={mounted && currentUser.theme}
 						onClick={logout}
 						id='logout'
 					>
-						logout
-					</nav.button>
+						Logout
+					</form.button>
 				</nav.item>
 			</nav.list>
-			<nav.button
+			<form.button
 				theme={mounted && currentUser.theme}
 				onClick={toggleTheme}
 				id='theme'
@@ -112,7 +107,7 @@ export default function NavBar() {
 							: <IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
 					)
 				}
-			</nav.button>
+			</form.button>
 		</nav.root >
 	)
 }

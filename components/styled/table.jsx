@@ -77,14 +77,30 @@ export const tr = styled('tr', {
 	variants: {
 		theme: {
 			light: {
+				color: 'rgb(0, 0, 0)'
+			},
+			dark: {
+				color: 'rgb(255, 255, 255)'
+			}
+		}
+	},
+	compoundVariants: [
+		{
+			leaderboard: false,
+			theme: 'light',
+			css: {
 				'&:nth-child(even)': {
 					backgroundColor: 'rgb(100, 100, 100)'
 				},
 				'&:nth-child(odd)': {
 					backgroundColor: 'rgb(150, 150, 150)'
 				}
-			},
-			dark: {
+			}
+		},
+		{
+			leaderboard: false,
+			theme: 'dark',
+			css: {
 				'&:nth-child(even)': {
 					backgroundColor: 'rgb(30, 30, 30)'
 				},
@@ -92,10 +108,59 @@ export const tr = styled('tr', {
 					backgroundColor: 'rgb(50, 50, 50)'
 				}
 			}
+		},
+		{
+			leaderboard: true,
+			theme: 'light',
+			css: {
+				'&:nth-child(even)': {
+					backgroundColor: 'rgb(150, 150, 150)'
+				},
+				'&:nth-child(odd)': {
+					backgroundColor: 'rgb(100, 100, 100)'
+				},
+				'&:nth-child(-n+3)': {
+					color: 'rgb(255, 255, 255)',
+				},
+				'&:nth-child(1)': {
+					backgroundColor: 'rgb(255, 215, 0)'
+				},
+				'&:nth-child(2)': {
+					backgroundColor: 'rgb(192, 192, 192)'
+				},
+				'&:nth-child(3)': {
+					backgroundColor: 'rgb(205, 127, 50)'
+				}
+			}
+		},
+		{
+			leaderboard: true,
+			theme: 'dark',
+			css: {
+				'&:nth-child(even)': {
+					backgroundColor: 'rgb(50, 50, 50)'
+				},
+				'&:nth-child(odd)': {
+					backgroundColor: 'rgb(30, 30, 30)'
+				},
+				'&:nth-child(-n+3)': {
+					color: 'rgb(0, 0, 0)',
+				},
+				'&:nth-child(1)': {
+					backgroundColor: 'rgb(255, 215, 0)'
+				},
+				'&:nth-child(2)': {
+					backgroundColor: 'rgb(192, 192, 192)'
+				},
+				'&:nth-child(3)': {
+					backgroundColor: 'rgb(205, 127, 50)'
+				}
+			}
 		}
-	},
+	],
 	defaultVariants: {
-		theme: 'light'
+		theme: 'light',
+		leaderboard: false
 	}
 })
 
@@ -122,12 +187,12 @@ export const th = styled('th', {
 export const td = styled('td', {
 	variants: {
 		theme: {
-			light: {
-				color: 'rgb(0, 0, 0)'
-			},
-			dark: {
-				color: 'rgb(255, 255, 255)'
-			}
+			// light: {
+			// 	color: 'rgb(0, 0, 0)'
+			// },
+			// dark: {
+			// 	color: 'rgb(255, 255, 255)'
+			// }
 		}
 	},
 	defaultVariants: {

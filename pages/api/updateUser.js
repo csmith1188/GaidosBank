@@ -1,0 +1,48 @@
+import { withIronSessionApiRoute } from 'iron-session/next'
+const sqlite3 = require('sqlite3').verbose()
+const database = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
+
+export default withIronSessionApiRoute(
+	function handler(request, response) {
+		let currentUser = request.session.username
+		let { user, property, value } = request.query
+
+		if (currentUser) {
+			if (user, property, value) {
+				database.get(
+					`SELECT * FROM users WHERE username = ?`,
+					[currentUser],
+					(error, results) => {
+						if (error) throw error
+						if (results) currentUser = results
+						if (currentUser.permissions == 'admin') {
+							if (user) {
+								database.get(
+									`SELECT * FROM users where username = ? OR id = ?`,
+									[user, user],
+									(error, results) => {
+										if (error) throw error
+										if (results) user = results
+										if (user[property] !== 'undefined') {
+											database.run(`UPDATE users set ${property} = ? WHERE username = ?`,
+												[value, user.username],
+												(error, results) => {
+													if (error) throw error
+													response.json({ error: null })
+												})
+										} else response.json({ error: 'property does not exist' })
+									})
+							}
+						} else response.json({ error: 'not admin' })
+					})
+			} else response.json({ error: 'missing user, property or value' })
+		} else response.json({ error: 'not logged in' })
+	},
+	{
+		cookieName: "session",
+		password: "wNKp0tI)2\"b/L/K[IG'jqeK;wA$3*X*g",
+		cookieOptions: {
+			secure: process.env.NODE_ENV === "production",
+		}
+	}
+)

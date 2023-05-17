@@ -1,9 +1,9 @@
-$navHeight: 6vh;
+$navHeight: 7vh;
 $navWidth: 100vw;
-$navBorder: 1.2vh;
-$titleHeight: calc($navHeight * 0.7);
+$navBorder: 1vh;
+$titleHeight: calc($navHeight - $navBorder);
 $titleWidth: calc($navWidth * 0.2);
-$listHeight: calc($navHeight * 0.5);
+$listHeight: calc($navHeight - $navBorder);
 $listWidth: calc($navWidth * 0.38);
 $themeButtonWidth: calc($listWidth* 0.1);
 $themeButtonMargin: calc($themeButtonWidth * 0.2);
@@ -11,11 +11,17 @@ $listWidth2: calc($listWidth - $themeButtonWidth - $themeButtonMargin);
 
 body {
 	margin: 0;
-	// overflow-x: hidden;
 }
 
 #__next {
 	display: grid;
+}
+
+* {
+	box-sizing: border-box;
+	transition-property: color, background-color, border-color;
+	transition-duration: 0.75s;
+	transition-timing-function: linear;
 }
 
 button {
@@ -27,12 +33,12 @@ button {
 		system-ui,
 		-apple-system,
 		BlinkMacSystemFont,
-		'Segoe UI',
+		Segoe UI,
 		Roboto,
 		Oxygen, Ubuntu,
 		Cantarell,
-		'Open Sans',
-		'Helvetica Neue',
+		Open Sans,
+		Helvetica Neue,
 		sans-serif;
 }
 
@@ -40,16 +46,16 @@ form {
 	justify-content: center;
 }
 
-input {
+input,
+.select {
 	padding: 0.5vh 1vh;
 	border-width: 0.4vh;
-	transition: 0.5s;
 	outline: none;
 	border-radius: 5vh;
 	width: fit-content;
 
 	&[type=text]:focus {
-		filter: invert(60%)
+		filter: invert(60%);
 	}
 
 	&[type=submit] {
@@ -74,25 +80,29 @@ $scrollbarSize: 0.5vw;
 	user-select: none;
 	touch-action: none;
 	padding: 0.1vw;
-	transition: background-color 160ms ease-out;
+	border-radius: calc($scrollbarSize + (0.1vw * 2));
 
-	&[data-orientation='vertical'] {
+	&[data-orientation=vertical] {
 		width: $scrollbarSize;
 	}
 
-	&[data-orientation='horizontal'] {
+	&[data-orientation=horizontal] {
 		flex-direction: column;
 		height: $scrollbarSize;
 	}
 }
 
 .scrollAreaThumb {
+	cursor: grab;
 	flex: 1;
 	border-radius: $scrollbarSize;
 	position: relative;
 
+	&:active {
+		cursor: grabbing;
+	}
+
 	&::before {
-		content: '';
 		position: absolute;
 		top: 50%;
 		left: 50%;
@@ -104,63 +114,221 @@ $scrollbarSize: 0.5vw;
 	}
 }
 
-.scrollAreaCorner {
-	// background: var(--blackA8);
+.separator {
+	border-radius: 2vh;
+
+	&[data-orientation=horizontal] {
+		height: 0.5vh;
+	}
+
+	&[data-orientation=vertical] {
+		width: 0.5vh;
+	}
 }
 
+div[role=tablist] {
+	height: fit-content;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2vh;
 
+	.separator {
+		margin: 0 5%;
+	}
+
+	button[role=tab] {
+		font-size: 6vh;
+		border-width: 0.4vh;
+	}
+}
+
+div[role=tabpanel] {
+	padding: 2vh;
+	border-width: 0.4vh;
+	border-radius: MIN(5vh, 10vw);
+}
 
 #viewTransactionsTable {
-	height: calc(88vh - $navHeight);
+	margin-top: 4vh;
 	width: 90%;
 	justify-self: center;
-	border-style: solid;
-	margin-top: 3vh;
-	border-width: 0.75vh;
-	border-radius: 4vh;
-	display: grid;
 	overflow: hidden;
 
+	#tableContainer {
+		height: calc(88vh - $navHeight);
+		display: grid;
+		border-style: solid;
+		border-width: 0.75vh;
+		border-radius: 4vh;
+		display: grid;
+		overflow: hidden;
+	}
+}
+
+#admin {
+	height: calc(96vh - $navHeight);
+	width: 100%;
+	display: grid;
+	align-content: center;
+	margin: 2vh 0;
+	justify-self: center;
+	font-size: 4vh;
+
+
+	#tableContainer {
+		min-height: max-content;
+		max-height: calc(80vh - $navHeight);
+		min-width: 75vw;
+		max-width: max-content;
+		display: grid;
+		overflow: hidden;
+	}
+
+	#tabRoot {
+		display: grid;
+
+		button[role=tab] {
+			font-size: 5vh;
+		}
+
+		div[role=tabpanel][data-state=active] {
+			height: fit-content;
+			width: fit-content;
+			display: grid;
+			margin-top: 0.5vh;
+			justify-self: center;
+			border-style: solid;
+			border-width: 0.75vh;
+			border-radius: 4vh;
+			display: grid;
+		}
+	}
+}
+
+#tableContainer {
 	#table {
 		padding: 1.5vh 2.5vh;
-		// padding-top: 1.5vh;
 		display: grid;
-	}
 
-	button {
-		border: none;
-	}
+		#input {
+			margin: 2vh 0;
 
-	table {
-		border-spacing: 1vh;
+			font-size: 4vh;
+			width: 100%;
+			display: flex;
+			justify-content: space-around;
 
-		thead {
-			top: 0;
+			button {
+				font-size: inherit;
+			}
 
-			th {
-				font-size: 3vh;
-				padding: 2px;
-				border-style: solid;
-				border-width: 0.5vh;
+			label {
+				//TODO: make sticky
+				padding: 0.5vh 1vh;
+				outline: none;
 				border-radius: 5vh;
+				width: fit-content;
+				border-style: solid;
+				border-width: 0.4vh;
+
+				&:focus-within {
+					filter: invert(60%)
+				}
+
+				input {
+					border-style: hidden;
+					font-size: inherit;
+				}
 			}
 		}
 
-		tbody {
-			td {
+		.editButton {
+			border: none;
+		}
+
+		table {
+			border-spacing: 1vh;
+
+			thead {
+				//TODO: make sticky
+
+				tr {
+					th {
+						font-size: 3vh;
+						padding: 0.5vh 1vh;
+						border-style: solid;
+						border-width: 0.5vh;
+						border-radius: 5vh;
+					}
+				}
+			}
+
+			tbody {
+				tr {
+					td {
+						font-size: 2.5vh;
+						padding: 0.5vh;
+
+						button {
+							font-size: 2.5vh;
+						}
+					}
+				}
+			}
+
+			input {
 				font-size: 2.5vh;
-				padding: 2px;
+				text-align: center;
+
+				&:focus {
+					border-style: solid;
+				}
 			}
+
+			select {
+				padding-bottom: 0.25vh;
+				font-size: 2.5vh;
+				text-align: center;
+				border-radius: 5vh;
+				border-width: 0.4vh;
+
+				option {
+					background-color: black;
+					padding-bottom: 0.25vh;
+					font-size: 2.5vh;
+					text-align: center;
+					border-radius: 5vh;
+					border-width: 0.4vh;
+				}
+			}
+
 		}
-	}
 
-	label {
-		margin: 2vh 0;
-		font-size: 4vh;
-		justify-self: center;
 
-		input {
+		.selectTrigger {
+			margin: 0.5vh 0;
 			font-size: inherit;
+			border-radius: 5vh;
+			border-width: 0.4vh;
+		}
+
+		.selectContent {
+			border-radius: 2vh;
+			z-index: 1;
+		}
+
+		.selectItem {
+			padding: 0.2vh 1vh;
+		}
+
+		input[type=number]::-webkit-inner-spin-button,
+		input[type=number]::-webkit-inner-spin-button {
+			visibility: hidden;
+		}
+
+		input[type=number]:focus-within::-webkit-inner-spin-button,
+		input[type=number]:focus-within::-webkit-inner-spin-button {
+			visibility: visible;
 		}
 	}
 }
@@ -176,71 +344,54 @@ $scrollbarSize: 0.5vw;
 		font-weight: bold;
 	}
 
-	table {
-		border-spacing: MAX(1vh, 0vw);
+	#tableContainer {
+		background-color: transparent !important;
 
+		table {
+			border-spacing: MAX(1vh, 0vw);
+			border-radius: 5vh;
+			padding: 2vh;
 
-		thead {
-			top: 0;
-			position: sticky;
+			thead {
+				top: 0;
+				position: sticky;
 
-			th {
-				font-size: MIN(3vh, 10vw);
-				padding: 2px;
-				border-color: rgb(75, 75, 75);
-				border-style: solid;
-				border-width: MIN(0.5vh, 10vw);
-				border-radius: MIN(5vh, 10vw);
-			}
-		}
-
-		tbody {
-			tr {
-				&:nth-child(even) {
-					background-color: rgb(50, 50, 50);
-				}
-
-				&:nth-child(odd) {
-					background-color: rgb(30, 30, 30);
-				}
-
-				&:nth-child(1) {
-					background-color: rgb(255, 215, 0);
-				}
-
-				&:nth-child(2) {
-					background-color: rgb(192, 192, 192);
-				}
-
-				&:nth-child(3) {
-					background-color: rgb(205, 127, 50);
+				th {
+					font-size: MIN(3vh, 10vw);
+					padding: 2px;
+					border-color: rgb(75, 75, 75);
+					border-style: solid;
+					border-width: MIN(0.5vh, 10vw);
+					border-radius: MIN(5vh, 10vw);
 				}
 			}
 
-			td {
-				font-size: MIN(2.5vh, 10vw);
-				padding: 2px;
+			tbody {
+				tr {
+					font-size: MIN(2.5vh, 10vw);
+					padding: 2px;
+				}
 			}
 		}
 	}
 }
 
-
-#login,
-#signup {
-	margin-top: 8vh;
+#login {
+	margin-top: 4vh;
 	display: grid;
 	justify-content: center;
 
 	form {
-		font-size: 8vh;
+		font-size: 6.5vh;
 		display: grid;
 
-		// label {
-		// 	width: max-content;
-		// }
+		.select {
+			font-size: 6.5vh;
+			margin-bottom: 2vh;
+		}
+
 		input {
-			font-size: inherit;
+			font-size: 6.5vh;
 
 			&[type=number],
 			&[type=text],
@@ -248,31 +399,14 @@ $scrollbarSize: 0.5vw;
 				margin-bottom: 2vh;
 			}
 
-			&:-webkit-autofill {
-				// font-size: 20px;
+			&[type=submit] {
+				justify-self: center;
 			}
 
-			// &:-moz-autofill {
-			// 	font-size: 20px;
-			// }
-
-			// &:-ms-autofill {
-			// 	font-size: 20px;
-			// }
-		}
-	}
-
-	#buttons {
-		display: flex;
-		justify-content: space-evenly;
-
-		a {
-			width: fit-content;
-			text-decoration: none;
-			padding: MIN(0.5vh, 10vw) MIN(1vh, 10vw);
-			border-width: 0.4vh;
-			border-radius: MIN(5vh, 10vw);
-			border-style: solid;
+			&::placeholder {
+				font-size: 8vh;
+				line-height: 1.5;
+			}
 		}
 	}
 
@@ -315,11 +449,6 @@ $scrollbarSize: 0.5vw;
 		width: 90%;
 		margin-left: 5%;
 		zoom: 300%;
-
-		// label {
-		// 	margin-left: 50%;
-		// 	transform: translateX(-50%);
-		// }
 
 		input {
 			margin-left: 50%;
@@ -377,6 +506,8 @@ $scrollbarSize: 0.5vw;
 
 
 #nav {
+	padding-bottom: $navBorder;
+
 	@media (orientation:landscape) {
 		height: $navHeight;
 		width: $navWidth;
@@ -399,7 +530,7 @@ $scrollbarSize: 0.5vw;
 		}
 
 		#title {
-			font-size: MIN($titleHeight, $titleWidth/10.5);
+			font-size: MIN($titleHeight, $titleWidth / 10.5);
 		}
 
 		a {
@@ -410,7 +541,7 @@ $scrollbarSize: 0.5vw;
 		.list {
 			width: $listWidth2;
 			justify-content: space-around;
-			font-size: MIN($listHeight, $listWidth2/10.5);
+			font-size: MIN($listHeight / 2, $listWidth2/10.5);
 
 			button {
 				font-size: inherit;
