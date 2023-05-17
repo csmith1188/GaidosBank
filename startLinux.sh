@@ -1,17 +1,62 @@
 #!/bin/bash
 
+gitURL="https://github.com/csmith1188/GaidosBank"
+
+# Check if npm packages need to be updated
+checkNpmUpdate() {
+	if [ -z "$(npm outdated --parseable 2> /dev/null)" ]; then
+		npmUpdate=true
+	else
+		npmUpdate=false
+	fi
+}
+
+# Run the update process
+runUpdate() {
+	if [ "$gitUpdate" == true ]; then
+		git fetch
+		git pull
+
+		# Update the database schema
+		./sqlite3.exe databaseTemplate.db ".schema" > schema.sql
+		./sqlite3.exe updatedDatabase.db < schema.sql
+		./sqlite3.exe updatedDatabase.db "ATTACH DATABASE 'database.db' AS old_db"
+		./sqlite3.exe -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "SELECT name FROM old_db.sqlite_master WHERE type='table'" | while read table_name; do
+			./sqlite3.exe -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "INSERT OR IGNORE INTO ${table_name} SELECT * FROM old_db.${table_name}"
+		done
+		./sqlite3.exe updatedDatabase.db "DETACH DATABASE old_db"
+		./sqlite3.exe updatedDatabase.db ".quit"
+		mv updatedDatabase.db database.db
+		rm schema.sql
+	fi
+
+	while [ "$npmUpdate" == true ]; do
+		npm install
+		checkNpmUpdate
+	done
+
+	npx next build
+}
+
 # Check if the current directory is a Git repository
 if [ -z "$(git rev-parse --verify HEAD 2> /dev/null)" ]; then
 	# Clone the repository into a temporary directory
-	git clone https://github.com/Ryan24313/GaidosBank ./temp
+	git clone $gitURL ./temp
 
 	# Move the contents of the temporary directory to the current directory
 	mv -f temp/{.,}* .
-	mv -f temp/* .
 
 	# Remove the temporary directory
 	rm -rf temp
 fi
+
+# Create a new database if it doesn't exist
+if [ ! -f "database.db" ]; then
+	cp databaseTemplate.db database.db
+fi
+
+# Backup the existing database
+cp database.db databaseBackup.db
 
 # Get the current and latest version of the repository
 currentVersion=$(git rev-parse HEAD)
@@ -24,29 +69,7 @@ else
 	gitUpdate=false
 fi
 
-# Check if npm packages need to be updated
-checkNpmUpdate() {
-	if [ -z "$(npm list --depth=0 --parseable | tail -n +2)" ]; then
-		npmUpdate=true
-	else
-		npmUpdate=false
-	fi
-}
 checkNpmUpdate
-
-# Run the update process
-runUpdate() {
-	if [ "$gitUpdate" == true ]; then
-		git clone https://github.com/Ryan24313/GaidosBank
-	fi
-
-	while [ "$npmUpdate" == true ]; do
-		npm install
-		checkNpmUpdate
-	done
-
-	npx next build
-}
 
 # Prompt the user to update if necessary
 if [ "$gitUpdate" == true ] || [ "$npmUpdate" == true ]; then
@@ -63,26 +86,6 @@ if [ "$gitUpdate" == true ] || [ "$npmUpdate" == true ]; then
 		fi
 	done
 fi
-
-# Create a new database if it doesn't exist
-if [ ! -f "database.db" ]; then
-	cp databaseTemplate.db database.db
-fi
-
-# Backup the existing database
-cp database.db databaseBackup.db
-
-# Update the database schema
-sqlite3 databaseTemplate.db ".schema" > schema.sql
-sqlite3 updatedDatabase.db < schema.sql
-sqlite3 updatedDatabase.db "ATTACH DATABASE 'database.db' AS old_db"
-sqlite3 -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "SELECT name FROM old_db.sqlite_master WHERE type='table'" | while read table_name; do
-    sqlite3 -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "INSERT OR IGNORE INTO ${table_name} SELECT * FROM old_db.${table_name}"
-done
-sqlite3 updatedDatabase.db "DETACH DATABASE old_db"
-sqlite3 updatedDatabase.db ".quit"
-mv updatedDatabase.db database.db
-rm schema.sql
 
 # Get the IP address and start the development server
 # Linux
