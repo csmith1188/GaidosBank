@@ -6,14 +6,14 @@ export default withIronSessionApiRoute(async function handler(request, response)
 	let sender = request.session.username
 	let receiver = request.query.account
 	let amount
-	if (amount && Number.isInteger(Number(amount)) && Number(receiver) > 0) {
+	if (amount && Number.isInteger(Number(amount)) && Number(amount) > 0) {
 		amount = Number(amount)
 	} else {
 		amount = null
 	}
 
 	if (typeof sender !== 'undefined') {
-		if (typeof confirmationData !== 'undefined' && typeof amount !== 'undefined') {
+		if (typeof amount !== 'undefined') {
 			database.serialize(() => {
 				database.get('SELECT * FROM users WHERE username = ? OR id = ?', [sender, sender], (error, senderData) => {
 					if (error) throw error
@@ -47,8 +47,8 @@ export default withIronSessionApiRoute(async function handler(request, response)
 													seconds: date.getSeconds(),
 												}
 												database.run(
-													'INSERT INTO transactions (senderDataId, receiverDataId, amount, timestamp) VALUES (?, ?, ?, ?)',
-													[senderData.id, receiverData.id, amount, JSON.stringify(date)],
+													'INSERT INTO transactions (senderId, receiverId, amount, timestamp) VALUES (?, ?, ?, ?)',
+													[sender.id, receiver.id, amount, JSON.stringify(date)],
 													(error, results) => {
 														if (error) {
 															database.run('ROLLBACK')

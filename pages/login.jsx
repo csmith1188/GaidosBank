@@ -9,6 +9,7 @@ import { Select } from '../components/select'
 import { useIsMounted } from '../hooks/useIsMounted'
 import * as tabs from '../components/styled/tabs'
 import { Separator } from '../components/styled/separator'
+import { io } from 'socket.io-client'
 
 export default function Login() {
 	const mounted = useIsMounted()
@@ -19,6 +20,11 @@ export default function Login() {
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [className, setClassName] = useState('')
 	const [classes, setClasses] = useState([])
+
+	useEffect(() => {
+		const socket = io()
+		socket.emit('hi')
+	}, [])
 
 	useEffect(() => {
 		if (currentUser.isAuthenticated) {
