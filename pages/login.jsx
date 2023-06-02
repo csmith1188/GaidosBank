@@ -19,11 +19,22 @@ export default function Login() {
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [className, setClassName] = useState('')
-	const [classes, setClasses] = useState([])
+	const [classes, setClasses] = useState(['Classes'])
+
+	const socket = io()
 
 	useEffect(() => {
-		const socket = io()
-		socket.emit('hi')
+		socket.emit('getClasses')
+
+		socket.on('getClasses', (classes) => {
+			// if (classes) {
+			console.log(classes)
+			setClasses([
+				'Classes',
+				...classes
+			]).then(console.log(classes))
+			// }
+		})
 	}, [])
 
 	useEffect(() => {
@@ -63,19 +74,19 @@ export default function Login() {
 		}, 2000)
 	}
 
-	useEffect(() => {
-		async function getClasses() {
-			const response = await fetch(`/api/getClasses`)
-			const data = await response.json()
-			setClasses([
-				'Classes',
-				...data
-			])
-		}
-		getClasses()
-		const interval = setInterval(getClasses, 1000)
-		return () => clearInterval(interval)
-	}, [])
+	// useEffect(() => {
+	// 	async function getClasses() {
+	// 		const response = await fetch(`/api/getClasses`)
+	// 		const data = await response.json()
+	// 		setClasses([
+	// 			'Classes',
+	// 			...data
+	// 		])
+	// 	}
+	// 	getClasses()
+	// 	const interval = setInterval(getClasses, 1000)
+	// 	return () => clearInterval(interval)
+	// }, [])
 
 	return (
 		<div id='login'>
@@ -174,6 +185,15 @@ export default function Login() {
 				</form.button>
 				<text.p theme={mounted && currentUser.theme}></text.p>
 			</div>
+			<form.button
+				theme={currentUser.theme}
+				onClick={() => {
+					console.log('emit')
+					socket.emit('getClasses')
+				}}
+			>
+				hi
+			</form.button>
 		</div >
 	)
 }

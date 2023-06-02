@@ -4,19 +4,32 @@ import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
 import * as form from '../components/styled/form'
-import { useIsMounted } from '../hooks/useIsMounted'
 import Head from 'next/head'
 import * as tabs from '../components/styled/tabs'
 import { Separator } from '../components/styled/separator'
+import { io } from 'socket.io-client'
 
 export default function Admin() {
-	const mounted = useIsMounted()
 	const currentUser = useAtomValue(currentUserAtom)
 	const [users, setUsers] = useState([])
 	const [transactions, setTransactions] = useState([])
 	const [classes, setClasses] = useState([])
 	const [newClass, setNewClass] = useState([])
 	const [skipPageReset, setSkipPageReset] = useState(false)
+
+	const socket = io()
+
+	useEffect(() => {
+		socket.emit('getClasses')
+
+		socket.on('getClasses', (classes) => {
+			if (classes) {
+				console.log(classes)
+				setClasses([...classes])
+			}
+		})
+	}, [])
+
 
 	useEffect(() => {
 		if (!currentUser.isAuthenticated) {
@@ -46,11 +59,11 @@ export default function Admin() {
 		}
 	}
 
-	useEffect(() => {
-		getTransactions()
-		const interval = setInterval(getTransactions, 1000)
-		return () => clearInterval(interval)
-	}, [])
+	// useEffect(() => {
+	// 	getTransactions()
+	// 	const interval = setInterval(getTransactions, 1000)
+	// 	return () => clearInterval(interval)
+	// }, [])
 
 	let transactionsColumns = [
 		{
@@ -142,11 +155,11 @@ export default function Admin() {
 		}
 	}
 
-	useEffect(() => {
-		getUsers()
-		const interval = setInterval(getUsers, 1000)
-		return () => clearInterval(interval)
-	}, [])
+	// useEffect(() => {
+	// 	getUsers()
+	// 	const interval = setInterval(getUsers, 1000)
+	// 	return () => clearInterval(interval)
+	// }, [])
 
 	function updateUsers(changedUsers) {
 		setSkipPageReset(true)
@@ -235,11 +248,11 @@ export default function Admin() {
 		}
 	}
 
-	useEffect(() => {
-		getClasses()
-		const interval = setInterval(getClasses, 1000)
-		return () => clearInterval(interval)
-	}, [])
+	// useEffect(() => {
+	// 	getClasses()
+	// 	const interval = setInterval(getClasses, 1000)
+	// 	return () => clearInterval(interval)
+	// }, [])
 
 	let classesColumns = [
 		{
@@ -356,6 +369,7 @@ export default function Admin() {
 									if (newClass) {
 										let confirmation = confirm(`Are you sure you want to add class ${newClass}`)
 										if (confirmation) {
+											socket.emit('makeClass', newClass)
 											let response = await fetch(`/api/makeClass?class=${newClass}`)
 											let data = await response.json()
 											if (data.error) console.log(data.error)
