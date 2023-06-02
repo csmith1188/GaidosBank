@@ -70,11 +70,11 @@ export default function Admin() {
 		}
 	}
 
-	// useEffect(() => {
-	// 	getTransactions()
-	// 	const interval = setInterval(getTransactions, 1000)
-	// 	return () => clearInterval(interval)
-	// }, [])
+	useEffect(() => {
+		getTransactions()
+		const interval = setInterval(getTransactions, 1000)
+		return () => clearInterval(interval)
+	}, [])
 
 	let transactionsColumns = [
 		{

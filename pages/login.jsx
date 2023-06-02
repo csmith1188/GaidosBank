@@ -188,15 +188,6 @@ export default function Login() {
 				</form.button>
 				<text.p theme={mounted && currentUser.theme}></text.p>
 			</div>
-			<form.button
-				theme={currentUser.theme}
-				onClick={() => {
-					console.log('emit')
-					socket.emit('getClasses')
-				}}
-			>
-				hi
-			</form.button>
 		</div >
 	)
 }

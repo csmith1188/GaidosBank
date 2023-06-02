@@ -6,8 +6,8 @@ const bcrypt = require('bcrypt')
 export default withIronSessionApiRoute(
 	async function handler(request, response) {
 		let currentUser = request.session.username
-		let { username, password } = request.query
-
+		let { username, password, theme } = request.query
+		if (!theme) theme = 'light'
 		if (!currentUser) {
 			if (
 				typeof username !== 'undefined' &&

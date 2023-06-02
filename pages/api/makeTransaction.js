@@ -18,52 +18,50 @@ export default withIronSessionApiRoute(async function handler(request, response)
 				database.get('SELECT * FROM users WHERE username = ? OR id = ?', [sender, sender], (error, senderData) => {
 					if (error) throw error
 					if (senderData) {
-						if (senderData.class) {
-							database.get('SELECT * FROM users WHERE username = ? OR id = ?', [receiver, receiver], (error, receiverData) => {
-								if (error) throw error
-								if (receiverData) {
-									if (senderData.username !== receiverData.username) {
-										if (senderData.balance >= amount) {
-											database.run('BEGIN TRANSACTION', () => {
-												database.run('UPDATE users SET balance = ? WHERE id = ?', [senderData.balance - amount, senderData.id], (error, results) => {
-													if (error) {
-														database.run('ROLLBACK')
-														throw error
-													}
-												})
-												database.run('UPDATE users SET balance = ? WHERE id = ?', [receiverData.balance + amount, receiverData.id], (error, results) => {
-													if (error) {
-														database.run('ROLLBACK')
-														throw error
-													}
-												})
-												let date = new Date()
-												date = {
-													year: date.getFullYear(),
-													month: date.getMonth() + 1,
-													day: date.getDate(),
-													hours: date.getHours(),
-													minutes: date.getMinutes(),
-													seconds: date.getSeconds(),
+						database.get('SELECT * FROM users WHERE username = ? OR id = ?', [receiver, receiver], (error, receiverData) => {
+							if (error) throw error
+							if (receiverData) {
+								if (senderData.username !== receiverData.username) {
+									if (senderData.balance >= amount) {
+										database.run('BEGIN TRANSACTION', () => {
+											database.run('UPDATE users SET balance = ? WHERE id = ?', [senderData.balance - amount, senderData.id], (error, results) => {
+												if (error) {
+													database.run('ROLLBACK')
+													throw error
 												}
-												database.run(
-													'INSERT INTO transactions (senderId, receiverId, amount, timestamp) VALUES (?, ?, ?, ?)',
-													[sender.id, receiver.id, amount, JSON.stringify(date)],
-													(error, results) => {
-														if (error) {
-															database.run('ROLLBACK')
-															throw error
-														}
-														database.run('COMMIT')
-														response.json({ error: 'none' })
-													}
-												)
 											})
-										} else response.json({ error: "You don't have enough money" })
-									} else response.json({ error: "You can't send money to yourself." })
-								} else response.json({ error: 'receiverData does not exist.' })
-							})
-						} else response.json({ error: "You are not in a class." })
+											database.run('UPDATE users SET balance = ? WHERE id = ?', [receiverData.balance + amount, receiverData.id], (error, results) => {
+												if (error) {
+													database.run('ROLLBACK')
+													throw error
+												}
+											})
+											let date = new Date()
+											date = {
+												year: date.getFullYear(),
+												month: date.getMonth() + 1,
+												day: date.getDate(),
+												hours: date.getHours(),
+												minutes: date.getMinutes(),
+												seconds: date.getSeconds(),
+											}
+											database.run(
+												'INSERT INTO transactions (senderId, receiverId, amount, timestamp) VALUES (?, ?, ?, ?)',
+												[sender.id, receiver.id, amount, JSON.stringify(date)],
+												(error, results) => {
+													if (error) {
+														database.run('ROLLBACK')
+														throw error
+													}
+													database.run('COMMIT')
+													response.json({ error: 'none' })
+												}
+											)
+										})
+									} else response.json({ error: "You don't have enough money" })
+								} else response.json({ error: "You can't send money to yourself." })
+							} else response.json({ error: 'receiverData does not exist.' })
+						})
 					} else response.json({ error: "Account logged into doesn't exist somehow." })
 				})
 			})

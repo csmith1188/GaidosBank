@@ -55,7 +55,7 @@ export default function MakeTransaction() {
 				<form.label htmlFor='account' theme={currentUser.theme}>Account</form.label>
 				<form.input
 					type='text'
-					placeholder='Username / ID'
+					placeholder='Account'
 					id='account'
 					theme={currentUser.theme}
 					value={account}
