@@ -26,13 +26,16 @@ export default function Login() {
 	useEffect(() => {
 		socket.emit('getClasses')
 
-		socket.on('getClasses', (classes) => {
+		socket.on('sendClasses', (classes) => {
 			// if (classes) {
 			console.log(classes)
 			setClasses([
 				'Classes',
 				...classes
-			]).then(console.log(classes))
+			])
+			setTimeout(() => {
+				console.log(classes)
+			}, 1000)
 			// }
 		})
 	}, [])

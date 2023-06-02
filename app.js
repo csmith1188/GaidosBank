@@ -13,6 +13,7 @@ const PORT = 3000
 
 let classes = []
 let users = {}
+let leaderBoard = {}
 let transactions = []
 
 class User {
@@ -62,6 +63,7 @@ async function getUsers() {
 			user.theme
 		)
 	})
+	getLeaderBoard()
 }
 
 async function getTransactions() {
@@ -79,6 +81,23 @@ async function getTransactions() {
 			transaction.timestamp,
 		)
 	})
+}
+
+function getLeaderBoard() {
+	for (let user in users) {
+		if (users[user].permissions !== 'admin') {
+			leaderBoard[user] = users[user]
+		}
+	}
+
+	leaderBoard = Object.fromEntries(
+		Object.entries(leaderBoard).sort(([, a], [, b]) => b.balance - a.balance)
+	)
+
+	let rank = 1
+	for (let user in leaderBoard) {
+		leaderBoard[user].rank = rank++
+	}
 }
 getClasses()
 getUsers()
@@ -110,41 +129,55 @@ app.prepare().then(() => {
 
 	io.on('connection', (socket) => {
 		socket.on('makeClass', (newClass) => {
-			console.log(newClass)
-			// let currentUser = socket.request.session.username
-			// currentUser = 'ryan'
-			// database.get(
-			// 	`SELECT * FROM users WHERE username = ?`,
-			// 	[currentUser],
-			// 	(error, results) => {
-			// 		if (error) throw error
-			// 		if (results) currentUser = results
-			// 		if (currentUser.permissions == 'admin') {
-			console.log('makeClass')
-			database.all(
-				'SELECT * FROM classes',
+			console.log('newClass', newClass)
+			let currentUser = socket.request.session.username
+			database.get(
+				`SELECT * FROM users WHERE username = ?`,
+				[currentUser],
 				(error, results) => {
 					if (error) throw error
-					let classes = results.map(result => result.class)
-					if (!classes.includes(newClass)) {
-						database.run('INSERT INTO classes (class) VALUES (?)',
-							[newClass],
+					if (results) currentUser = results
+					if (currentUser.permissions == 'admin') {
+						console.log('makeClass')
+						database.all(
+							'SELECT * FROM classes',
 							(error, results) => {
 								if (error) throw error
-								getClasses()
-								socket.emit('getClasses', classes)
+								let classes = results.map(result => result.class)
+								if (!classes.includes(newClass)) {
+									database.run('INSERT INTO classes (class) VALUES (?)',
+										[newClass],
+										(error, results) => {
+											if (error) throw error
+											getClasses()
+											socket.emit('getClasses', classes)
+										}
+									)
+								}
 							}
 						)
 					}
-				}
-			)
-			// 	}
-			// })
+				})
 		})
 
-		socket.on('getClasses', async () => {
-			console.log(classes)
-			socket.emit('getClasses', classes)
+		socket.on('getClasses', () => {
+			console.log('classes', classes)
+			socket.emit('sendClasses', classes)
+		})
+		socket.on('updateUsers', () => {
+			getUsers()
+		})
+
+		socket.on('getUsers', async () => {
+			socket.emit('sendUsers', users)
+		})
+
+		socket.on('updateLeaderBoard', () => {
+			getLeaderBoard()
+		})
+
+		socket.on('getLeaderBoard', async () => {
+			socket.emit('sendLeaderBoard', leaderBoard)
 		})
 	})
 

@@ -21,12 +21,23 @@ export default function Admin() {
 
 	useEffect(() => {
 		socket.emit('getClasses')
+		socket.emit('getUsers')
 
-		socket.on('getClasses', (classes) => {
-			if (classes) {
-				console.log(classes)
-				setClasses([...classes])
+		socket.on('sendClasses', (classes) => {
+			classes = classes.map(className => {
+				return { class: className }
+			})
+			setClasses([...classes])
+		})
+
+		socket.on('sendUsers', (data) => {
+			data = Object.values(data)
+			for (let user of data) {
+				if (!user.class)
+					user.class = 'Not Assigned'
 			}
+			console.log(data)
+			setUsers([...data])
 		})
 	}, [])
 
@@ -186,12 +197,6 @@ export default function Admin() {
 	}
 
 	let userColumns = [
-		{
-			Header: 'ID',
-			accessor: 'id',
-			sortType: 'basic',
-			sortInverted: true
-		},
 		{
 			Header: 'Username',
 			accessor: 'username',

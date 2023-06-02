@@ -28,10 +28,15 @@ export default withIronSessionApiRoute(
 									if (isMatch) {
 										request.session.username = username
 										await request.session.save()
-										response.json({
-											...results,
-											isAuthenticated: true,
-										})
+										database.get(
+											`SELECT username, balance, permissions, class, theme FROM users WHERE username = ?`,
+											[username],
+											(error, results) => {
+												response.json({
+													...results,
+													isAuthenticated: true,
+												})
+											})
 									} else response.json({ error: 'That is not the users password.' })
 								}
 							)

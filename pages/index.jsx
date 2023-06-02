@@ -13,9 +13,15 @@ export default function Home() {
 	const currentUser = useAtomValue(currentUserAtom)
 	const [leaderBoard, setLeaderBoard] = useState([])
 
+	const socket = io()
+
 	useEffect(() => {
-		const socket = io()
-		socket.emit('hi')
+		console.log(currentUser)
+		socket.emit('getLeaderBoard')
+
+		socket.on('sendLeaderBoard', (tempLeaderBoard) => {
+			setLeaderBoard(Object.values(tempLeaderBoard))
+		})
 	}, [])
 
 	useEffect(() => {
@@ -40,6 +46,7 @@ export default function Home() {
 	// 				...user,
 	// 				rank: index + 1
 	// 			}))
+	// 			console.log(tempLeaderBoard)
 	// 			if (leaderBoard !== tempLeaderBoard)
 	// 				setLeaderBoard(tempLeaderBoard)
 	// 		} catch (error) {
