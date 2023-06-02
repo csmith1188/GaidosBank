@@ -34,8 +34,6 @@ runUpdate() {
 		npm install
 		checkNpmUpdate
 	done
-
-	npx next build
 }
 
 # Check if the current directory is a Git repository
@@ -87,6 +85,5 @@ if [ "$gitUpdate" == true ] || [ "$npmUpdate" == true ]; then
 	done
 fi
 
-# Get the IP address and start the development server
-ip=$(ifconfig eth0 | awk '\$1=="inet"{print \$2}' | cut -d: -f2)
-npx next start -H "$ip"
+# start the server
+node app

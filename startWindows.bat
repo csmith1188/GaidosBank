@@ -34,7 +34,6 @@ exit /b 0
 			call :checkNpmUpdate
 			goto :npmUpdateLoop
 		)
-		npx next build
 exit /b 0
 
 :main
@@ -101,6 +100,5 @@ if "%update%"==true (
 
 :skipUpdate
 
-:: Get the IP address and start the development server
-for /f "tokens=2 delims=:" %%i in ('ipconfig.exe ^| findstr /i "IPv4 Address"') do set "ip=%%i"
-npx next dev -H "%ip%"
+:: start the server
+node app
