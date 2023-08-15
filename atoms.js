@@ -1,21 +1,31 @@
-import { atomWithStorage } from 'jotai/utils'
-import { useAtomsDevtools } from 'jotai/devtools'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { useAtomsDevtools } from 'jotai-devtools'
+import { useEffect } from 'react'
 
-export const currentUserAtom = atomWithStorage('currentUser',
-	{
-		theme: "dark",
-		isAuthenticated: false,
-		transactions: [],
-		balance: 0,
-		class: null
+const storage = createJSONStorage(() => {
+	if (typeof window !== 'undefined') {
+		return window.sessionStorage
 	}
+})
+
+export const currentUserAtom = atomWithStorage(
+	'currentUser',
+	{
+		username: null,
+		balance: null,
+		permissions: null,
+		class: null,
+		theme: 'light',
+		isAuthenticated: false
+	},
+	storage,
 )
-currentUserAtom.debugLabel = 'currentUserAtom'
+currentUserAtom.debugLabel = 'currentUser'
 
 export const leaderBoardAtom = atomWithStorage('leaderBoard', [])
 leaderBoardAtom.debugLabel = 'leaderBoardAtom'
 
-export const DebugAtoms = (({ children }) => {
-	useAtomsDevtools("atoms")
-	return children
-})
+// export const DebugAtoms = (({ children }) => {
+// 	useAtomsDevtools('atoms')
+// 	return children
+// })

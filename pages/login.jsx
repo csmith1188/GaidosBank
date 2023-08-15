@@ -1,71 +1,83 @@
 import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import Router from 'next/router'
-import * as form from '../components/styled/form'
+import * as form from '../components/styled/Form'
 import * as text from '../components/styled/text'
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { Select } from '../components/select'
-import { useIsMounted } from '../hooks/useIsMounted'
 import * as tabs from '../components/styled/tabs'
 import { Separator } from '../components/styled/separator'
 import { io } from 'socket.io-client'
 
+const socket = io()
+
 export default function Login() {
-	const mounted = useIsMounted()
 	const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
-	const [id, setId] = useState('')
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [className, setClassName] = useState('')
 	const [classes, setClasses] = useState(['Classes'])
 
-	const socket = io()
 
 	useEffect(() => {
 		socket.emit('getClasses')
 
 		socket.on('sendClasses', (classes) => {
-			// if (classes) {
-			console.log(classes)
-			setClasses([
-				'Classes',
-				...classes
-			])
-			setTimeout(() => {
-				console.log(classes)
-			}, 1000)
-			// }
+			setClasses(classes)
 		})
+
+		return () => {
+			socket.off('sendClasses')
+		}
 	}, [])
 
 	useEffect(() => {
-		if (currentUser.isAuthenticated) {
-			Router.push('/')
+		socket.on('login', (data) => {
+			if (data.error) {
+				setError(data.error)
+			} else {
+				setCurrentUser(data)
+			}
+		})
+
+		socket.on('signup', (data) => {
+			if (data.error) {
+				setError(data.error)
+			} else {
+				setCurrentUser(data)
+			}
+		})
+
+		return () => {
+			socket.off('login')
+			socket.off('signup')
 		}
-	}, [currentUser.isAuthenticated])
+	}, [])
+
 
 	async function handleSubmitLogin(event) {
 		event.preventDefault()
-		const response = await fetch(`/api/login?username=${username}&password=${password}`)
-		const data = await response.json()
-		if (data.error) {
-			setError(data.error)
-		} else {
-			setCurrentUser(data)
-		}
+		socket.emit('login', username, password)
 	}
 
 	async function handleSubmitSignup(event) {
 		event.preventDefault()
-		const response = await fetch(`/api/signup?id=${id}&username=${username}&password=${password}&confirmPassword=${confirmPassword}&theme=${currentUser.theme}`)
-		const data = await response.json()
-		if (data.error) {
-			setError(data.error)
-		} else {
-			setCurrentUser(data)
-		}
+		console.log(
+			username,
+			password,
+			confirmPassword,
+			currentUser.theme,
+			className
+		)
+		socket.emit(
+			'signup',
+			username,
+			password,
+			confirmPassword,
+			currentUser.theme,
+			className
+		)
 	}
 
 	function setError(error) {
@@ -77,37 +89,23 @@ export default function Login() {
 		}, 2000)
 	}
 
-	// useEffect(() => {
-	// 	async function getClasses() {
-	// 		const response = await fetch(`/api/getClasses`)
-	// 		const data = await response.json()
-	// 		setClasses([
-	// 			'Classes',
-	// 			...data
-	// 		])
-	// 	}
-	// 	getClasses()
-	// 	const interval = setInterval(getClasses, 1000)
-	// 	return () => clearInterval(interval)
-	// }, [])
-
 	return (
 		<div id='login'>
-			<tabs.root defaultValue="login" orientation="vertical" theme={mounted && currentUser.theme}>
-				<tabs.list aria-label="tabs example" theme={mounted && currentUser.theme}>
-					<tabs.trigger value="login" theme={mounted && currentUser.theme}>
+			<tabs.root defaultValue="login" orientation="vertical" theme={currentUser.theme}>
+				<tabs.list aria-label="tabs example" theme={currentUser.theme}>
+					<tabs.trigger value="login" theme={currentUser.theme}>
 						Login
 					</tabs.trigger>
-					<Separator className="separator" decorative orientation="vertical" theme={mounted && currentUser.theme} />
-					<tabs.trigger value="signup" theme={mounted && currentUser.theme}>
+					<Separator className="separator" decorative orientation="vertical" theme={currentUser.theme} />
+					<tabs.trigger value="signup" theme={currentUser.theme}>
 						Signup
 					</tabs.trigger>
 				</tabs.list>
-				<tabs.content value="login" theme={mounted && currentUser.theme}>
+				<tabs.content value="login" theme={currentUser.theme}>
 					<Head>
 						<title>Login</title>
 					</Head>
-					<form.root onSubmit={handleSubmitLogin} theme={mounted && currentUser.theme}>
+					<form.root onSubmit={handleSubmitLogin} theme={currentUser.theme}>
 						<form.input
 							type='text'
 							id='username'
@@ -115,7 +113,7 @@ export default function Login() {
 							placeholder='Username'
 							value={username}
 							onChange={(event) => setUsername(event.target.value)}
-							theme={mounted && currentUser.theme}
+							theme={currentUser.theme}
 						/>
 						<form.input
 							type='password'
@@ -124,11 +122,11 @@ export default function Login() {
 							placeholder='Password'
 							value={password}
 							onChange={(event) => setPassword(event.target.value)}
-							theme={mounted && currentUser.theme} />
-						<form.input type='submit' theme={mounted && currentUser.theme} value="Login" />
+							theme={currentUser.theme} />
+						<form.input type='submit' theme={currentUser.theme} value="Login" />
 					</form.root>
 				</tabs.content>
-				<tabs.content value="signup" theme={mounted && currentUser.theme}>
+				<tabs.content value="signup" theme={currentUser.theme}>
 					<Head>
 						<title>Signup</title>
 					</Head>
@@ -136,16 +134,6 @@ export default function Login() {
 						onSubmit={handleSubmitSignup}
 						theme={currentUser.theme}
 					>
-						<form.input
-							type='number'
-							min='0'
-							id='id'
-							autoComplete='off'
-							placeholder='Id'
-							value={id}
-							onChange={(event) => setId(event.target.value)}
-							theme={currentUser.theme}
-						/>
 						<form.input
 							type='text'
 							id='username'
@@ -156,10 +144,9 @@ export default function Login() {
 							theme={currentUser.theme}
 						/>
 						<Select
-							className='select'
 							items={classes}
-							defaultValue={'Classes'}
-							onChange={(event) => setClassName(event.target.value)}
+							name='select'
+							onValueChange={(value) => setClassName(value)}
 							theme={currentUser.theme}
 						/>
 						<form.input
@@ -183,10 +170,10 @@ export default function Login() {
 				</tabs.content>
 			</tabs.root>
 			<div id='error' style={{ visibility: 'hidden' }}>
-				<form.button theme={mounted && currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
+				<form.Button theme={currentUser.theme} onClick={() => { document.getElementById('error').visibility = 'hidden' }}>
 					X
-				</form.button>
-				<text.p theme={mounted && currentUser.theme}></text.p>
+				</form.Button>
+				<text.p theme={currentUser.theme}></text.p>
 			</div>
 		</div >
 	)

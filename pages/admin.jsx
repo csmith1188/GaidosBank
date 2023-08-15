@@ -1,13 +1,15 @@
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
-import * as form from '../components/styled/form'
+import * as form from '../components/styled/Form'
 import Head from 'next/head'
 import * as tabs from '../components/styled/tabs'
 import { Separator } from '../components/styled/separator'
 import { io } from 'socket.io-client'
+import { sortingFns } from '@tanstack/react-table'
+
+const socket = io()
 
 export default function Admin() {
 	const currentUser = useAtomValue(currentUserAtom)
@@ -15,13 +17,17 @@ export default function Admin() {
 	const [transactions, setTransactions] = useState([])
 	const [classes, setClasses] = useState([])
 	const [newClass, setNewClass] = useState([])
-	const [skipPageReset, setSkipPageReset] = useState(false)
 
-	const socket = io()
+	function camelCaseToCapitalized(text) {
+		if (!text) return null
+		let result = text.replace(/([A-Z])/g, " \$1")
+		return result.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+	}
 
 	useEffect(() => {
 		socket.emit('getClasses')
 		socket.emit('getUsers')
+		socket.emit('getTransactions')
 
 		socket.on('sendClasses', (classes) => {
 			classes = classes.map(className => {
@@ -33,87 +39,56 @@ export default function Admin() {
 		socket.on('sendUsers', (data) => {
 			data = Object.values(data)
 			for (let user of data) {
-				if (!user.class)
-					user.class = 'Not Assigned'
+				camelCaseToCapitalized(user.permissions)
+				camelCaseToCapitalized(user.class)
+				camelCaseToCapitalized(user.Theme)
 			}
-			console.log(data)
 			setUsers([...data])
 		})
-	}, [])
 
+		socket.on('sendTransactions', (data) => {
+			for (let transaction of data) {
+				const monthNames = ["January", "February", "March", "April", "May", "June",
+					"July", "August", "September", "October", "November", "December"
+				]
+				transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
+				if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
+				else transaction.timestamp.hours = transaction.timestamp.hours
+				transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
+			}
+			if (JSON.stringify(data) !== JSON.stringify(transactions)) setTransactions(data)
+		})
 
-	useEffect(() => {
-		if (!currentUser.isAuthenticated) {
-			Router.push('/login')
+		return () => {
+			socket.off('sendClasses')
+			socket.off('sendUsers')
+			socket.off('sendTransactions')
 		}
-	}, [currentUser.isAuthenticated])
-
-	async function getTransactions() {
-		try {
-			const response = await fetch('/api/getTransactions')
-			const data = await response.json()
-			if (!data.error) {
-				for (let transaction of data) {
-					transaction.timestamp = JSON.parse(transaction.timestamp)
-					const monthNames = ["January", "February", "March", "April", "May", "June",
-						"July", "August", "September", "October", "November", "December"
-					]
-					transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
-					if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
-					else transaction.timestamp.hours = transaction.timestamp.hours
-					transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
-				}
-				if (JSON.stringify(data) !== JSON.stringify(transactions)) setTransactions(data)
-			} else console.log(data.error)
-		} catch (error) {
-			throw error
-		}
-	}
-
-	useEffect(() => {
-		getTransactions()
-		const interval = setInterval(getTransactions, 1000)
-		return () => clearInterval(interval)
 	}, [])
 
 	let transactionsColumns = [
 		{
-			Header: 'Sender ID',
-			accessor: 'senderId',
-			sortType: 'basic',
-			sortInverted: true
+			header: 'Sender Username',
+			accessorKey: 'sender',
+			sortingFn: 'alphanumeric',
 		},
 		{
-			Header: 'Sender Username',
-			accessor: 'senderUsername',
-			sortType: 'alphanumeric',
-			sortInverted: true
+			header: 'Receiver Username',
+			accessorKey: 'receiver',
+			sortingFn: 'alphanumeric',
 		},
 		{
-			Header: 'Receiver ID',
-			accessor: 'receiverId',
-			sortType: 'basic',
-			sortInverted: true
+			header: 'Amount',
+			accessorKey: 'amount',
+			sortingFn: 'basic',
 		},
 		{
-			Header: 'Receiver Username',
-			accessor: 'receiverUsername',
-			sortType: 'alphanumeric',
-			sortInverted: true
-		},
-		{
-			Header: 'Amount',
-			accessor: 'amount',
-			sortType: 'basic',
-			sortInverted: true
-		},
-		{
-			Header: 'Timestamp',
-			accessor: 'readableTimestamp',
-			sortInverted: true,
-			sortType: (rowA, rowB, id) => {
+			header: 'Timestamp',
+			accessorKey: 'readableTimestamp',
+			sortingFn: (rowA, rowB, id) => {
 				let timestampA = transactions.find((transaction) => transaction.readableTimestamp == rowA.original[id]).timestamp
 				let timestampB = transactions.find((transaction) => transaction.readableTimestamp == rowB.original[id]).timestamp
+
 				const timestamps = [
 					['year', timestampA.year, timestampB.year],
 					['month', timestampA.month, timestampB.month],
@@ -150,82 +125,66 @@ export default function Admin() {
 		// }
 	]
 
-	async function getUsers() {
-		try {
-			const response = await fetch('/api/getUsers')
-			const data = await response.json()
-			if (!data.error) {
-				for (let user of data) {
-					if (!user.class)
-						user.class = 'Not Assigned'
-				}
-				if (JSON.stringify(data) !== JSON.stringify(users)) setUsers(data)
-			} else console.log(data.error)
-		} catch (error) {
-			throw error
-		}
-	}
-
-	// useEffect(() => {
-	// 	getUsers()
-	// 	const interval = setInterval(getUsers, 1000)
-	// 	return () => clearInterval(interval)
-	// }, [])
-
 	function updateUsers(changedUsers) {
-		setSkipPageReset(true)
 		console.log(changedUsers)
-		// if (rowIndex && columnId && value) {
-		// 	console.log('updateUsers: ', rowIndex, columnId, value)
-		// 	setUsers(old =>
-		// 		old.map(async (row, index) => {
-		// 			if (index === rowIndex) {
-		// 				return {
-		// 					...old[rowIndex],
-		// 					[columnId]: value,
-		// 				}
-		// 			}
-		// 			if (window !== 'undefined') {
-		// 				console.log(rowIndex, columnId, value)
-		// 				const response = await fetch(`/api/UpdateUser?index=${rowIndex}&property=${columnId}&value=${value}`)
-		// 				const data = await response.json()
-		// 				return row
-		// 			}
-		// 		})
-		// 	)
-		// }
 	}
 
 	let userColumns = [
 		{
-			Header: 'Username',
-			accessor: 'username',
-			sortType: 'alphanumeric',
-			sortInverted: true
+			header: 'Username',
+			accessorKey: 'username',
+			sortingFn: 'alphanumeric',
 		},
 		{
-			Header: 'Balance',
-			accessor: 'balance',
-			sortType: 'basic',
-			sortInverted: true
+			header: 'Balance',
+			accessorKey: 'balance',
+			sortingFn: 'basic',
+			sortDescFirst: true
 		},
 		{
-			Header: 'Permissions',
-			accessor: 'permissions',
-			sortType: 'alphanumeric',
-			sortInverted: true
+			header: 'Permissions',
+			accessorKey: 'permissions',
+			accessorFn: (row) => {
+				if (row.permissions)
+					return camelCaseToCapitalized(row.permissions)
+				else return 'Not Assigned'
+			},
+			sortingFn: (rowA, rowB, columnId) => {
+				let valueA = rowA.original[columnId]
+				let valueB = rowB.original[columnId]
+
+				if (valueA === 'admin') return 1
+				else if (valueB === 'admin') return -1
+				else if (valueA === 'user') return 1
+				else if (valueB === 'user') return -1
+				else if (!valueA) return 1
+				else if (!valueB) return -1
+				else return 0
+			},
+			sortDescFirst: true
 		},
 		{
-			Header: 'Class',
-			accessor: 'class'
-			// sortType: 'alphanumeric',
-			// sortInverted: true
+			header: 'Class',
+			accessorFn: (row) => {
+				if (row.class)
+					return row.class
+				else return 'Not Assigned'
+			},
+			sortingFn: (rowA, rowB, columnId) => {
+				let valueA = rowA.original[columnId]
+				let valueB = rowB.original[columnId]
+
+				if (!valueA) return 1
+				return sortingFns.alphanumeric(rowA, rowB, columnId)
+			}
 		},
 		{
-			Header: 'Theme',
-			accessor: 'theme',
-			sortType: 'alphanumeric',
-			sortInverted: true
+			header: 'Theme',
+			accessorKey: 'theme',
+			accessorFn: (row) => {
+				return camelCaseToCapitalized(row.theme)
+			},
+			sortType: 'alphanumeric'
 		},
 		// {
 		// 	Header: 'Delete User',
@@ -241,35 +200,17 @@ export default function Admin() {
 		// }
 	]
 
-	async function getClasses() {
-		try {
-			const response = await fetch('/api/getClasses')
-			let data = await response.json()
-			data = data.map(className => { return { 'class': className } })
-			if (data.error) console.log(data.error)
-			else if (JSON.stringify(data) !== JSON.stringify(classes)) setClasses(data)
-		} catch (error) {
-			throw error
-		}
-	}
-
-	// useEffect(() => {
-	// 	getClasses()
-	// 	const interval = setInterval(getClasses, 1000)
-	// 	return () => clearInterval(interval)
-	// }, [])
-
 	let classesColumns = [
 		{
-			Header: 'Class',
-			accessor: 'class',
-			sortType: 'alphanumeric',
-			sortInverted: true
+			header: 'Class',
+			accessorKey: 'class',
+			// sortType: 'alphanumeric',
+			// sortInverted: true
 		},
 		{
-			Header: 'Delete Class',
-			Cell: ({ row }) => (
-				<form.button
+			header: 'Delete Class',
+			cell: ({ row }) => (
+				<form.Button
 					theme={currentUser.theme}
 					id={row.index}
 					onClick={async () => {
@@ -282,14 +223,10 @@ export default function Admin() {
 					}}
 				>
 					Delete Class
-				</form.button>
+				</form.Button>
 			),
 		}
 	]
-
-	useEffect(() => {
-		setSkipPageReset(false)
-	}, [])
 
 	return (
 		<div id='admin'>
@@ -319,25 +256,42 @@ export default function Admin() {
 						<Table
 							columns={userColumns}
 							data={users}
-							sortable={true}
-							sortBy={[{ id: 'balance', desc: false }]}
-							canFilter={true}
-							// updateData={updateUsers}
-							skipPageReset={skipPageReset}
-						// editableColumns={[
-						// 	{
-						// 		column: 'balance',
-						// 		type: 'int'
-						// 	},
-						// 	{
-						// 		column: 'permissions',
-						// 		type: ['user', 'admin']
-						// 	},
-						// 	{
-						// 		column: 'theme',
-						// 		type: ['dark', 'light']
-						// 	}
-						// ]}
+							enableFilters={true}
+							enableSorting={true}
+							updateData={(changedData) => {
+								console.log('data:', changedData)
+								socket.emit('changeUsers', changedData)
+							}}
+							editableColumns={{
+								balance: {
+									type: 'number',
+									min: 0
+								},
+								permissions: {
+									type: [
+										{
+											value: 'user',
+											displayValue: 'User'
+										},
+										{
+											value: 'admin',
+											displayValue: 'Admin'
+										}
+									]
+								},
+								// theme: {
+								// 	type: [
+								// 		{
+								// 			value: 'dark',
+								// 			displayValue: 'Dark'
+								// 		},
+								// 		{
+								// 			value: 'light',
+								// 			displayValue: 'Light'
+								// 		}
+								// 	]
+								// }
+							}}
 						/>
 					</tabs.content>
 					<tabs.content
@@ -348,9 +302,10 @@ export default function Admin() {
 						<Table
 							columns={transactionsColumns}
 							data={transactions}
-							sortable={true}
-							sortBy={[{ id: 'readableTimestamp', desc: false }]}
-							canFilter={true}
+							enableFilters={true}
+							enableSorting={true}
+						// sortBy={[{ id: 'readableTimestamp', desc: false }]}
+						// canFilter={true}
 						/>
 					</tabs.content>
 					<tabs.content
@@ -366,12 +321,12 @@ export default function Admin() {
 							canFilter={true}
 						/>
 						<div>
-
-							<form.button
+							<form.Button
 								theme={currentUser.theme}
 								id={'newClass'}
 								onClick={async () => {
 									if (newClass) {
+										console.log(newClass)
 										let confirmation = confirm(`Are you sure you want to add class ${newClass}`)
 										if (confirmation) {
 											socket.emit('makeClass', newClass)
@@ -384,13 +339,12 @@ export default function Admin() {
 								}
 							>
 								Add Class
-							</form.button>
+							</form.Button>
 							<form.input
 								type='text'
 								id='newClass'
 								autoComplete='off'
 								placeholder='New Class'
-								value={newClass}
 								onChange={(event) => setNewClass(event.target.value)}
 								theme={currentUser.theme}
 							/>

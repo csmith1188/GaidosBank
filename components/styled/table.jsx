@@ -25,7 +25,7 @@ export const root = styled('table', {
 	},
 	defaultVariants: {
 		theme: 'light',
-		border: 'true'
+		border: 'false'
 	},
 	textAlign: 'center',
 	overflow: 'hidden',
@@ -181,7 +181,7 @@ export const th = styled('th', {
 	},
 	defaultVariants: {
 		theme: 'light'
-	},
+	}
 })
 
 export const td = styled('td', {

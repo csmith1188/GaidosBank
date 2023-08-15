@@ -1,45 +1,62 @@
-import React from 'react'
-import * as form from './styled/form'
+import { useState, useRef, useEffect } from 'react'
+import * as styledSelect from './styled/Select'
+import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'
 
-export const Select = ({
-	id,
-	className,
-	name,
-	items,
-	defaultValue,
-	pop,
-	onChange,
-	theme
-}) => {
-	return <form.select
-		id={id}
-		className={className}
-		onChange={onChange}
-		pop={pop}
-		theme={theme}
-		value={defaultValue}
-	>
-		{!defaultValue ?
-			<form.option
-				value=""
-				pop={pop}
+export function Select({ items, name, theme, pop, defaultValue, onValueChange }) {
+	let [open, setOpen] = useState(false)
+	let [value, setValue] = useState(defaultValue || undefined)
+
+	const propOnValueChange = onValueChange
+	const propDefaultValue = defaultValue
+
+	return (
+		<styledSelect.Root
+			onValueChange={onValueChange ? (value) => {
+				propOnValueChange(value)
+			} : null}
+			defaultValue={propDefaultValue}
+			theme={theme}
+			pop={pop}
+		>
+			<styledSelect.Trigger
 				theme={theme}
+				pop={pop}
 			>
-				{name}
-			</form.option> : ''}
-		{items ?
-			items.map((item) => {
-				return (
-					<form.option
-						pop={pop}
-						theme={theme}
-						key={item}
-						value={item}
-					>
-						{item}
-					</form.option>
-				)
-			}) : ''
-		}
-	</form.select>
+				<styledSelect.Value placeholder={name}
+					theme={theme}
+					pop={pop}
+				/>
+				<styledSelect.Icon>
+					{open ?
+						<ChevronUpIcon />
+						: <ChevronDownIcon />
+					}
+				</styledSelect.Icon>
+			</styledSelect.Trigger>
+			<styledSelect.Portal>
+				<styledSelect.Content
+					position='popper'
+					theme={theme}
+					pop={pop}
+				>
+					<styledSelect.Viewport>
+						{typeof items !== 'undefined' ?
+							items.map((item) => {
+								return (
+									<styledSelect.Item
+										key={item.value ?? item}
+										value={item.value ?? item}
+									>
+										<styledSelect.ItemText>
+											{item.displayValue ?? item}
+										</styledSelect.ItemText>
+									</styledSelect.Item>
+								)
+							}) : ''
+						}
+					</styledSelect.Viewport>
+				</styledSelect.Content>
+			</styledSelect.Portal>
+		</styledSelect.Root>
+	)
 }

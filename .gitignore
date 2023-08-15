@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-.vscode
 
 # testing
 /coverage
@@ -43,3 +42,7 @@ next-env.d.ts
 database.db
 databaseBackup.db
 *.db-journal
+
+#vscode
+.vscode/**
+!.vscode/boilerplates.code-snippets

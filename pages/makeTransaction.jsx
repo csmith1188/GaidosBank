@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import Router from 'next/router'
-import * as form from '../components/styled/form'
+import * as form from '../components/styled/Form'
 import * as text from '../components/styled/text'
 import Head from 'next/head'
 
@@ -10,12 +9,6 @@ export default function MakeTransaction() {
 	const currentUser = useAtomValue(currentUserAtom)
 	const [account, setAccount] = useState('')
 	const [amount, setAmount] = useState('')
-
-	useEffect(() => {
-		if (!currentUser.isAuthenticated) {
-			Router.push('/login')
-		}
-	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {
 		document.getElementById('error').style.visibility = 'hidden'

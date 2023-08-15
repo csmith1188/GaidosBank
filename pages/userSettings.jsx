@@ -2,18 +2,11 @@ import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
 import * as ToggleGroup from '../components/styled/toggleGroup'
 import { IconSun, IconMoonStars } from '@tabler/icons'
-import Router from 'next/router'
 import { useEffect } from 'react'
 import Head from 'next/head'
 
 export default function UserSettings() {
 	const currentUser = useAtomValue(currentUserAtom)
-
-	useEffect(() => {
-		if (!currentUser.isAuthenticated) {
-			Router.push('/login')
-		}
-	}, [currentUser.isAuthenticated])
 
 	return (
 		<div

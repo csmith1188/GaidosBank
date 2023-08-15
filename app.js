@@ -1,9 +1,12 @@
-const next = require('next')
-const http = require('http')
-const socketIO = require('socket.io')
-const { getIronSession } = require('iron-session')
-const sqlite3 = require('sqlite3').verbose()
-const database = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
+import next from 'next'
+import http from 'http'
+import { Server } from 'socket.io'
+import { getIronSession } from 'iron-session'
+import sqlite3 from 'sqlite3'
+import bcrypt from 'bcrypt'
+
+const verboseSqlite3 = sqlite3.verbose()
+const database = new verboseSqlite3.Database('database.db', sqlite3.OPEN_READWRITE)
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
@@ -15,6 +18,7 @@ let classes = []
 let users = {}
 let leaderBoard = {}
 let transactions = []
+let loggedInUsers = []
 
 class User {
 	constructor(username, balance, permissions, userClass, theme) {
@@ -63,6 +67,7 @@ async function getUsers() {
 			user.theme
 		)
 	})
+
 	getLeaderBoard()
 }
 
@@ -73,8 +78,11 @@ async function getTransactions() {
 			else resolve(results)
 		})
 	})
+	for (let transaction of databaseTransactions) {
+		transaction.timestamp = JSON.parse(transaction.timestamp)
+	}
 	transactions = databaseTransactions.map(transaction => {
-		new Transaction(
+		return new Transaction(
 			transaction.sender,
 			transaction.receiver,
 			transaction.amount,
@@ -121,63 +129,218 @@ app.prepare().then(() => {
 		})
 	})
 
-	const io = socketIO(server)
+	const io = new Server(server)
 
 	io.use((socket, next) => {
 		sessionMiddleware(socket.request, {}, next)
 	})
 
 	io.on('connection', (socket) => {
+		socket.on('login', (username, password) => {
+			let session = socket.request.session
+			if (!session.username) {
+				if (
+					typeof username !== 'undefined' &&
+					typeof password !== 'undefined'
+				) {
+					database.get(
+						`SELECT password FROM users WHERE username = ?`,
+						[username],
+						(error, results) => {
+							if (error) throw error
+							if (results) {
+								let databasePassword = results.password
+								bcrypt.compare(
+									password,
+									databasePassword,
+									(error, isMatch) => {
+										if (error) throw error
+										if (isMatch) {
+											session.username = username
+											session.save()
+											socket.emit('login', {
+												...users[username],
+												isAuthenticated: true,
+											})
+										} else socket.emit('login', { error: 'That is not the users password.' })
+									}
+								)
+							} else socket.emit('login', { error: 'User does not exist.' })
+						}
+					)
+				} else socket.emit('login', { error: 'Missing username or password.' })
+			} else socket.emit('login', { error: 'Already logged in' })
+		})
+
+		socket.on('signup', (
+			username,
+			password,
+			confirmPassword,
+			theme,
+			className
+		) => {
+			let session = socket.request.session
+			let permissions = 'user'
+
+			async function sendResult() {
+				await getUsers()
+				if (users[username]) {
+					session.username = username
+					session.save()
+					socket.emit('signup', {
+						...users[username],
+						isAuthenticated: true,
+					})
+				}
+				io.emit('sendUsers', users)
+				io.emit('sendLeaderBoard', leaderBoard)
+			}
+
+			if (typeof theme === 'undefined') theme = 'light'
+			if (
+				typeof username !== 'undefined' &&
+				typeof password !== 'undefined' &&
+				typeof confirmPassword !== 'undefined' &&
+				typeof theme !== 'undefined'
+			) {
+				if (password == confirmPassword) {
+					bcrypt.hash(
+						password,
+						10,
+						(error, hashedPassword) => {
+							if (error) throw error
+							if (hashedPassword) {
+								if (!users[username]) {
+									if (users.length == 0) {
+										permissions = 'admin'
+									}
+									if (className) {
+										if (classes.includes(className)) {
+											database.run(
+												`INSERT INTO users (username, password, balance, permissions, class, theme) VALUES (?, ?, ?, ?, ?, ?)`,
+												[
+													username,
+													hashedPassword,
+													0,
+													permissions,
+													className,
+													theme
+												],
+												(error, results) => {
+													if (error) throw error
+													sendResult()
+												}
+											)
+										} else socket.emit('signup', { error: 'That Class does not exist.' })
+									} else {
+										database.run(
+											`INSERT INTO users (username, password, balance, permissions, theme) VALUES (?, ?, ?, ?, ?)`,
+											[
+												username,
+												hashedPassword,
+												0,
+												permissions,
+												theme
+											],
+											(error, results) => {
+												if (error) throw error
+												sendResult()
+											}
+										)
+									}
+								} else socket.emit('signup', { error: 'A User already has that Username.' })
+							}
+						}
+					)
+				} else socket.emit('signup', { error: 'Passwords do not match.' })
+			} else socket.emit('signup', { error: 'missing Username, Password, Confirm Password, and/or theme.' })
+		})
+
+		socket.on('logout', () => {
+			socket.request.session.destroy()
+		})
+
 		socket.on('makeClass', (newClass) => {
 			console.log('newClass', newClass)
+			console.log(socket.request.session)
 			let currentUser = socket.request.session.username
 			database.get(
-				`SELECT * FROM users WHERE username = ?`,
+				'SELECT * FROM users WHERE username = ?',
 				[currentUser],
 				(error, results) => {
 					if (error) throw error
 					if (results) currentUser = results
-					if (currentUser.permissions == 'admin') {
-						console.log('makeClass')
-						database.all(
-							'SELECT * FROM classes',
-							(error, results) => {
-								if (error) throw error
-								let classes = results.map(result => result.class)
-								if (!classes.includes(newClass)) {
-									database.run('INSERT INTO classes (class) VALUES (?)',
-										[newClass],
-										(error, results) => {
-											if (error) throw error
-											getClasses()
-											socket.emit('getClasses', classes)
-										}
-									)
-								}
+					if (currentUser) return
+					if (currentUser.permissions !== 'admin') return
+					console.log('makeClass')
+					database.all(
+						'SELECT * FROM classes',
+						(error, results) => {
+							if (error) throw error
+							let classes = results.map(result => result.class)
+							if (!classes.includes(newClass)) {
+								database.run('INSERT INTO classes (class) VALUES (?)',
+									[newClass],
+									(error, results) => {
+										if (error) throw error
+										getClasses()
+										io.emit('sendClasses', classes)
+									}
+								)
 							}
-						)
-					}
+						}
+					)
 				})
 		})
 
 		socket.on('getClasses', () => {
-			console.log('classes', classes)
 			socket.emit('sendClasses', classes)
 		})
-		socket.on('updateUsers', () => {
-			getUsers()
+
+		socket.on('changeUsers', (changedData) => {
+			let changedDataIndex = 0
+			let rowIndex = 0
+			console.log(changedData.length)
+			for (let [rowId, row] of Object.entries(changedData)) {
+				for (let [column, value] of Object.entries(row)) {
+					// database.run(
+					// 	`UPDATE users SET ${column} = ? WHERE _rowid_ = ?`,
+					// 	[
+					// 		Number.isInteger(value) ? Number(value) : value,
+					// 		Number(rowId) + 1
+					// 	],
+					// 	(error, results) => {
+					// 		if (results) console.log(results)
+					// 		if (error) throw error
+					// 		io.emit('sendUsers', users)
+					// 		io.emit('sendLeaderBoard', leaderBoard)
+					// 	}
+					// )
+				}
+			}
 		})
 
-		socket.on('getUsers', async () => {
+		socket.on('updateUsers', () => {
+			getUsers()
+			io.emit('sendUsers', users)
+			io.emit('sendLeaderBoard', leaderBoard)
+		})
+
+		socket.on('getUsers', () => {
 			socket.emit('sendUsers', users)
 		})
 
-		socket.on('updateLeaderBoard', () => {
-			getLeaderBoard()
+		socket.on('getLeaderBoard', () => {
+			socket.emit('sendLeaderBoard', leaderBoard)
 		})
 
-		socket.on('getLeaderBoard', async () => {
-			socket.emit('sendLeaderBoard', leaderBoard)
+		socket.on('getTransactions', (username) => {
+			if (username) {
+				socket.emit('sendTransactions', transactions.filter(transaction =>
+					transaction.sender === username ||
+					transaction.receiver === username
+				))
+			} else socket.emit('sendTransactions', transactions)
 		})
 	})
 

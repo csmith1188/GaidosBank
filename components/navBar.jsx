@@ -1,28 +1,26 @@
-import * as nav from './styled/nav'
-import * as form from './styled/form'
+import * as Nav from './styled/Nav'
+import * as Form from './styled/Form'
 import { useAtom } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import { useIsMounted } from '../hooks/useIsMounted'
 import { IconSun, IconMoonStars } from '@tabler/icons'
+import { io } from 'socket.io-client'
+
+const socket = io()
 
 export default function NavBar() {
-	const mounted = useIsMounted()
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
 	async function logout() {
-		const response = await fetch('/api/logout')
-		const data = await response.json()
-		if (!data.error) throw data.error
-		else {
-			try {
-				setCurrentUser({
-					theme: currentUser.theme,
-					isAuthenticated: false,
-				})
-			} catch (error) {
-				throw error
-			}
-		}
+		setCurrentUser({
+			username: null,
+			balance: null,
+			permissions: null,
+			class: null,
+			theme: currentUser.theme,
+			isAuthenticated: false,
+		})
+
+		socket.emit('logout')
 	}
 
 	function toggleTheme() {
@@ -45,69 +43,80 @@ export default function NavBar() {
 		}
 	}
 
+	function logoutTest() {
+		socket.emit('logout')
+	}
+
 	return (
-		<nav.root theme={mounted && currentUser.theme} id='nav'>
-			<nav.list className='list' id='list1'>
-				<nav.item>
-					<nav.link theme={mounted && currentUser.theme} active='true' href='/makeTransaction'>
+		<Nav.Root
+			theme={currentUser.theme}
+			id='nav'
+		>
+			<Nav.List className='list' id='list1'>
+				<Nav.Item>
+					<Nav.Link theme={currentUser.theme} active='true' href='/makeTransaction'>
 						Make Transaction
-					</nav.link>
-				</nav.item>
-				<nav.item>
-					<nav.link theme={mounted && currentUser.theme} active='true' href='/viewTransactions'>
+					</Nav.Link>
+				</Nav.Item>
+				<Nav.Item>
+					<Nav.Link theme={currentUser.theme} active='true' href='/viewTransactions'>
 						View Transactions
-					</nav.link>
-				</nav.item>
-				{mounted && currentUser.permissions === 'admin' &&
-					<nav.item>
-						<nav.link theme={mounted && currentUser.theme} active='true' href='/admin'>
+					</Nav.Link>
+				</Nav.Item>
+				{currentUser.permissions === 'admin' &&
+					<Nav.Item>
+						<Nav.Link theme={currentUser.theme} active='true' href='/admin'>
 							Admin
-						</nav.link>
-					</nav.item>
+						</Nav.Link>
+					</Nav.Item>
 				}
-			</nav.list>
-			<nav.list id='title'>
-				<nav.item>
-					<nav.link
+			</Nav.List>
+			<Nav.List id='title'>
+				<Nav.Item>
+					<Nav.Link
 						style={{ color: 'rgb(19, 161, 14)', }}
-						theme={mounted && currentUser.theme}
+						theme={currentUser.theme}
 						active='true'
 						href='/'
 					>
 						&#128176;Bank of Gaidos
-					</nav.link>
-				</nav.item>
-			</nav.list>
-			<nav.list className='list' id='list2'>
-				{/* <nav.item>
-					<nav.link theme={mounted&&currentUser.theme} active='true' href='/userSettings'>
+					</Nav.Link>
+				</Nav.Item>
+			</Nav.List>
+			<Nav.List className='list' id='list2'>
+				{/* <Nav.Item>
+					<Nav.Link theme={currentUser.theme} active='true' href='/userSettings'>
 						User Settings
-						</nav.link>
-				</nav.item> */}
-				<nav.item>
-					<form.button
-						theme={mounted && currentUser.theme}
+						</Nav.Link>
+				</Nav.Item> */}
+				<Nav.Item>
+					<Form.Button
+						theme={currentUser.theme}
 						onClick={logout}
 						id='logout'
 					>
 						Logout
-					</form.button>
-				</nav.item>
-			</nav.list>
-			<form.button
-				theme={mounted && currentUser.theme}
+					</Form.Button>
+					<Form.Button
+						theme={currentUser.theme}
+						onClick={logoutTest}
+						id='logout'
+					>
+						Logout Test
+					</Form.Button>
+				</Nav.Item>
+			</Nav.List>
+			<Form.Button
+				theme={currentUser.theme}
 				onClick={toggleTheme}
 				id='theme'
 			>
 				{
-					mounted &&
-					(
-						currentUser.theme === 'dark' ?
-							<IconSun style={{ color: 'rgb(255,200,0)' }} />
-							: <IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
-					)
+					currentUser.theme === 'dark' ?
+						<IconSun style={{ color: 'rgb(255,200,0)' }} />
+						: <IconMoonStars style={{ color: 'rgb(0,0,255)' }} />
 				}
-			</form.button>
-		</nav.root >
+			</Form.Button>
+		</Nav.Root >
 	)
 }

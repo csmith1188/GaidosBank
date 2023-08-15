@@ -1,65 +1,46 @@
 import { useAtomValue } from 'jotai'
 import { currentUserAtom } from '../atoms'
-import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { Table } from '../components/table'
-import { useIsMounted } from '../hooks/useIsMounted'
 import Head from 'next/head'
+import { io } from 'socket.io-client'
+
+const socket = io()
 
 export default function ViewTransactions() {
-	const mounted = useIsMounted()
 	var currentUser = useAtomValue(currentUserAtom)
 	var [transactions, setTransactions] = useState([])
 
-	useEffect(() => {
-		if (!currentUser.isAuthenticated) {
-			Router.push('/login')
-		}
-	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {
-		async function getTransactions() {
-			const response = await fetch('/api/getTransactions?user=' + currentUser.username)
-			const data = await response.json()
+		socket.emit('getTransactions', currentUser.username)
+
+		socket.on('sendTransactions', (data) => {
 			for (let transaction of data) {
-				transaction.timestamp = JSON.parse(transaction.timestamp)
 				const monthNames = ["January", "February", "March", "April", "May", "June",
 					"July", "August", "September", "October", "November", "December"
 				]
 				transaction.timestamp.month = monthNames[transaction.timestamp.month - 1]
-				if (transaction.timestamp.hours > 12)
-					transaction.timestamp.hours = transaction.timestamp.hours - 12
+				if (transaction.timestamp.hours > 12) transaction.timestamp.hours = transaction.timestamp.hours - 12
 				else transaction.timestamp.hours = transaction.timestamp.hours
 				transaction.readableTimestamp = transaction.timestamp.month + ' / ' + transaction.timestamp.day + ' / ' + transaction.timestamp.year + ' at ' + transaction.timestamp.hours + ' : ' + transaction.timestamp.minutes + ' : ' + transaction.timestamp.seconds + (transaction.timestamp.hours > 12 ? ' PM' : ' AM')
 			}
-			setTransactions(data)
-		}
-		const interval = setInterval(getTransactions, 1000)
-		return () => clearInterval(interval)
+			if (JSON.stringify(data) !== JSON.stringify(transactions)) setTransactions(data)
+		})
+
+		socket.off('sendTransactions')
 	}, [])
 
 	let columns = [
 		{
-			Header: 'Sender ID',
-			accessor: 'senderId',
-			sortType: 'basic',
-			sortInverted: true
-		},
-		{
 			Header: 'Sender Username',
-			accessor: 'senderUsername',
+			accessor: 'sender',
 			sortType: 'alphanumeric',
 			sortInverted: true
 		},
 		{
-			Header: 'Receiver ID',
-			accessor: 'receiverId',
-			sortType: 'basic',
-			sortInverted: true
-		},
-		{
 			Header: 'Receiver Username',
-			accessor: 'receiverUsername',
+			accessor: 'receiver',
 			sortType: 'alphanumeric',
 			sortInverted: true
 		},
@@ -98,7 +79,6 @@ export default function ViewTransactions() {
 			}
 		}
 	]
-
 
 	return (
 		<div id='viewTransactionsTable'>
