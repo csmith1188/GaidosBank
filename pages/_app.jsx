@@ -16,22 +16,23 @@ export default function App({ Component, pageProps }) {
   const router = useRouter()
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Successfully connected!')
-      const storedUser = JSON.parse(sessionStorage.getItem('currentUser'))
-      setCurrentUser({
-        username: null,
-        balance: null,
-        permissions: null,
-        class: null,
-        theme: storedUser ? storedUser.theme : currentUser.theme,
-        isAuthenticated: false,
-      })
-      router.push('/login')
+    socket.on('load', (session) => {
+      if (!session.username) {
+        const storedUser = JSON.parse(sessionStorage.getItem('currentUser'))
+        setCurrentUser({
+          username: null,
+          balance: null,
+          permissions: null,
+          class: null,
+          theme: storedUser ? storedUser.theme : currentUser.theme,
+          isAuthenticated: false,
+        })
+        router.push('/login')
+      }
     })
 
     return () => {
-      socket.off('connect')
+      socket.off('load')
     }
   }, [])
 
@@ -55,7 +56,7 @@ export default function App({ Component, pageProps }) {
       )
         router.push('/login')
     }
-  }, [currentUser.isAuthenticated])
+  }, [currentUser, currentUser.isAuthenticated])
 
   useEffect(() => {
     if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'

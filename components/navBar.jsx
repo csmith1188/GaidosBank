@@ -43,10 +43,6 @@ export default function NavBar() {
 		}
 	}
 
-	function logoutTest() {
-		socket.emit('logout')
-	}
-
 	return (
 		<Nav.Root
 			theme={currentUser.theme}
@@ -96,13 +92,6 @@ export default function NavBar() {
 						id='logout'
 					>
 						Logout
-					</Form.Button>
-					<Form.Button
-						theme={currentUser.theme}
-						onClick={logoutTest}
-						id='logout'
-					>
-						Logout Test
 					</Form.Button>
 				</Nav.Item>
 			</Nav.List>

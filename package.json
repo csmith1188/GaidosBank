@@ -27,6 +27,7 @@
     "bcrypt": "^5.1.0",
     "eslint": "^8.46.0",
     "eslint-config-next": "13.0.6",
+    "express-session": "^1.17.3",
     "iron-session": "^6.3.1",
     "jotai": "^2.2.2",
     "jotai-devtools": "^0.6.0",

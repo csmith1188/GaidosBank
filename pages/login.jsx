@@ -33,20 +33,14 @@ export default function Login() {
 	}, [])
 
 	useEffect(() => {
-		socket.on('login', (data) => {
-			if (data.error) {
-				setError(data.error)
-			} else {
-				setCurrentUser(data)
-			}
+		socket.on('login', ({ data, error }) => {
+			if (data) setCurrentUser(data)
+			if (error) setError(error)
 		})
 
-		socket.on('signup', (data) => {
-			if (data.error) {
-				setError(data.error)
-			} else {
-				setCurrentUser(data)
-			}
+		socket.on('signup', ({ data, error }) => {
+			if (data) setCurrentUser(data)
+			if (error) setError(data.error)
 		})
 
 		return () => {

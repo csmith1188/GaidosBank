@@ -1,6 +1,7 @@
 import next from 'next'
 import http from 'http'
 import { Server } from 'socket.io'
+import session from 'express-session'
 import { getIronSession } from 'iron-session'
 import sqlite3 from 'sqlite3'
 import bcrypt from 'bcrypt'
@@ -18,7 +19,6 @@ let classes = []
 let users = {}
 let leaderBoard = {}
 let transactions = []
-let loggedInUsers = []
 
 class User {
 	constructor(username, balance, permissions, userClass, theme) {
@@ -111,16 +111,16 @@ getClasses()
 getUsers()
 getTransactions()
 
-const sessionMiddleware = async (request, response, next) => {
-	request.session = await getIronSession(request, response, {
-		cookieName: 'my-session',
-		password: 'complex_password_at_least_32_characters_long',
-		cookieOptions: {
-			secure: process.env.NODE_ENV === 'production',
-		},
-	})
-	next()
-}
+// const sessionMiddleware = async (request, response, next) => {
+// 	request.session = await getIronSession(request, response, {
+// 		cookieName: 'my-session',
+// 		password: 'complex_password_at_least_32_characters_long',
+// 		cookieOptions: {
+// 			secure: process.env.NODE_ENV === 'production',
+// 		},
+// 	})
+// 	next()
+// }
 
 app.prepare().then(() => {
 	const server = http.createServer((request, response) => {
@@ -131,14 +131,21 @@ app.prepare().then(() => {
 
 	const io = new Server(server)
 
+	const sessionMiddleware = session({
+		secret: 'your-secret-key',
+		resave: false,
+		saveUninitialized: true
+	})
+
 	io.use((socket, next) => {
 		sessionMiddleware(socket.request, {}, next)
 	})
 
 	io.on('connection', (socket) => {
+		socket.emit('load', socket.request.session)
+
 		socket.on('login', (username, password) => {
-			let session = socket.request.session
-			if (!session.username) {
+			if (!socket.request.session.username) {
 				if (
 					typeof username !== 'undefined' &&
 					typeof password !== 'undefined'
@@ -156,11 +163,14 @@ app.prepare().then(() => {
 									(error, isMatch) => {
 										if (error) throw error
 										if (isMatch) {
-											session.username = username
-											session.save()
+											socket.request.session.username = username
+											socket.request.session.save(() => {
+											})
 											socket.emit('login', {
-												...users[username],
-												isAuthenticated: true,
+												data: {
+													...users[username],
+													isAuthenticated: true,
+												}
 											})
 										} else socket.emit('login', { error: 'That is not the users password.' })
 									}
@@ -169,7 +179,13 @@ app.prepare().then(() => {
 						}
 					)
 				} else socket.emit('login', { error: 'Missing username or password.' })
-			} else socket.emit('login', { error: 'Already logged in' })
+			} else socket.emit('login', {
+				data: {
+					...users[username],
+					isAuthenticated: true,
+				},
+				error: 'Already logged in'
+			})
 		})
 
 		socket.on('signup', (
@@ -179,17 +195,18 @@ app.prepare().then(() => {
 			theme,
 			className
 		) => {
-			let session = socket.request.session
 			let permissions = 'user'
 
 			async function sendResult() {
 				await getUsers()
 				if (users[username]) {
-					session.username = username
-					session.save()
+					socket.request.session.username = username
+					socket.request.session.save()
 					socket.emit('signup', {
-						...users[username],
-						isAuthenticated: true,
+						data: {
+							...users[username],
+							isAuthenticated: true,
+						}
 					})
 				}
 				io.emit('sendUsers', users)
@@ -257,12 +274,22 @@ app.prepare().then(() => {
 		})
 
 		socket.on('logout', () => {
-			socket.request.session.destroy()
+			// Check if session is available
+			if (socket.request.session) {
+				// Destroy the session
+				socket.request.session.username = ''
+				socket.request.session.destroy((error) => {
+					if (error) {
+						console.error('Error destroying session:', error)
+					}
+				})
+			} else {
+				console.warn('No session available.')
+			}
 		})
 
 		socket.on('makeClass', (newClass) => {
 			console.log('newClass', newClass)
-			console.log(socket.request.session)
 			let currentUser = socket.request.session.username
 			database.get(
 				'SELECT * FROM users WHERE username = ?',

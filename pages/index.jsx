@@ -12,8 +12,8 @@ export default function Home() {
 	const currentUser = useAtomValue(currentUserAtom)
 	const [leaderBoard, setLeaderBoard] = useState([])
 
-
 	useEffect(() => {
+		socket.emit('getSession')
 		socket.emit('getLeaderBoard')
 
 		socket.on('sendLeaderBoard', (leaderBoardData) => {
