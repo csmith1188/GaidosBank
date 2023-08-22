@@ -16,24 +16,28 @@ exit /b 0
   	git.exe pull
 
   	:: Update the database schema
-		sqlite3.exe databaseTemplate.db ".schema" > schema.sql
-  	sqlite3.exe updatedDatabase.db < schema.sql
-  	for /f "delims=" %%i in ('sqlite3.exe -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "SELECT name FROM old_db.sqlite_master WHERE type='table'"') do (
-  		sqlite3.exe -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "INSERT OR IGNORE INTO %%i SELECT * FROM old_db.%%i"
+		sqlite3.exe databases/databaseTemplate.db ".schema" > databases/schema.sql
+  	sqlite3.exe databases/updatedDatabase.db < databases/schema.sql
+  	for /f "delims=" %%i in ('sqlite3.exe -cmd "ATTACH DATABASE 'databases/database.db' AS old_db" databases/updatedDatabase.db "SELECT name FROM old_db.sqlite_master WHERE type='table'"') do (
+  		sqlite3.exe -cmd "ATTACH DATABASE 'databases/database.db' AS old_db" databases/updatedDatabase.db "INSERT OR IGNORE INTO %%i SELECT * FROM old_db.%%i"
 		)
-  	sqlite3.exe updatedDatabase.db "DETACH DATABASE old_db"
-  	sqlite3.exe updatedDatabase.db ".quit"
-  	move /y "updatedDatabase.db" "database.db"
+  	sqlite3.exe databases/updatedDatabase.db "DETACH DATABASE old_db"
+  	sqlite3.exe databases/updatedDatabase.db ".quit"
+  	move /y "databases/updatedDatabase.db" "databases/database.db"
   	del schema.sql
 	)
 
-		:npmUpdateLoop
+	:npmUpdateLoop
 		if "%npmUpdate%"==true (
 			npm install
 			npm audit fix
 			call :checkNpmUpdate
 			goto :npmUpdateLoop
 		)
+
+	if "%gitUpdate%" equ true (
+		npx next build
+	)
 exit /b 0
 
 :main
@@ -53,10 +57,10 @@ if %isGit% neq true (
 )
 
 :: Create a new database if it doesn't exist
-if not exist "database.db" copy "databaseTemplate.db" "database.db"
+if not exist "databases/database.db" copy "databases/databaseTemplate.db" "databases/database.db"
 
 :: Backup the existing database
-copy "database.db" "databaseBackup.db"
+copy "databases/database.db" "databases/databaseBackup.db"
 
 :: Get the current and latest version of the repository
 for /f "delims=" %%i in ('git.exe rev-parse HEAD') do set "currentVersion=%%i"
@@ -101,4 +105,6 @@ if "%update%"==true (
 :skipUpdate
 
 :: start the server
-node app
+if not exist ".next/BUILD_ID" npx next build
+set NODE_ENV=production
+node src/app

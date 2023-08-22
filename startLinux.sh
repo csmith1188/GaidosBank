@@ -18,15 +18,15 @@ runUpdate() {
 		git pull
 
 		# Update the database schema
-		./sqlite3.exe databaseTemplate.db ".schema" > schema.sql
-		./sqlite3.exe updatedDatabase.db < schema.sql
-		./sqlite3.exe updatedDatabase.db "ATTACH DATABASE 'database.db' AS old_db"
-		./sqlite3.exe -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "SELECT name FROM old_db.sqlite_master WHERE type='table'" | while read table_name; do
-			./sqlite3.exe -cmd "ATTACH DATABASE 'database.db' AS old_db" updatedDatabase.db "INSERT OR IGNORE INTO ${table_name} SELECT * FROM old_db.${table_name}"
+		./sqlite3.exe databases/databaseTemplate.db ".schema" > databases/schema.sql
+		./sqlite3.exe databases/updatedDatabase.db < databases/schema.sql
+		./sqlite3.exe databases/updatedDatabase.db "ATTACH DATABASE 'databases/database.db' AS old_db"
+		./sqlite3.exe -cmd "ATTACH DATABASE 'databases/database.db' AS old_db" databases/updatedDatabase.db "SELECT name FROM old_db.sqlite_master WHERE type='table'" | while read table_name; do
+			./sqlite3.exe -cmd "ATTACH DATABASE 'databases/database.db' AS old_db" databases/updatedDatabase.db "INSERT OR IGNORE INTO ${table_name} SELECT * FROM old_db.${table_name}"
 		done
-		./sqlite3.exe updatedDatabase.db "DETACH DATABASE old_db"
-		./sqlite3.exe updatedDatabase.db ".quit"
-		mv updatedDatabase.db database.db
+		./sqlite3.exe databases/updatedDatabase.db "DETACH DATABASE old_db"
+		./sqlite3.exe databases/updatedDatabase.db ".quit"
+		mv databases/updatedDatabase.db databases/database.db
 		rm schema.sql
 	fi
 
@@ -34,6 +34,10 @@ runUpdate() {
 		npm install
 		checkNpmUpdate
 	done
+
+	if [ "$gitUpdate" == true ]; then
+		npx next build
+	fi
 }
 
 # Check if the current directory is a Git repository
@@ -49,12 +53,12 @@ if [ -z "$(git rev-parse --verify HEAD 2> /dev/null)" ]; then
 fi
 
 # Create a new database if it doesn't exist
-if [ ! -f "database.db" ]; then
-	cp databaseTemplate.db database.db
+if [ ! -f "databases/database.db" ]; then
+	cp databases/databaseTemplate.db databases/database.db
 fi
 
 # Backup the existing database
-cp database.db databaseBackup.db
+cp databases/database.db databases/databaseBackup.db
 
 # Get the current and latest version of the repository
 currentVersion=$(git rev-parse HEAD)
@@ -86,4 +90,8 @@ if [ "$gitUpdate" == true ] || [ "$npmUpdate" == true ]; then
 fi
 
 # start the server
-node app
+if [ ! -f ".next/BUILD_ID" ]; then
+	npx next build
+fi
+export NODE_ENV=production
+node src/app

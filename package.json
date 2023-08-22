@@ -6,12 +6,15 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon app",
-    "start": "node app"
+    "dev": "nodemon src/app",
+    "start": "node src/app",
+    "build": "next build",
+    "testDeps": "depcruise src"
   },
   "dependencies": {
     "@radix-ui/colors": "^1.0.1",
     "@radix-ui/react-alert-dialog": "^1.0.4",
+    "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-icons": "^1.2.0",
     "@radix-ui/react-navigation-menu": "^1.1.1",
     "@radix-ui/react-scroll-area": "^1.0.2",
@@ -31,15 +34,17 @@
     "iron-session": "^6.3.1",
     "jotai": "^2.2.2",
     "jotai-devtools": "^0.6.0",
-    "next": "^13.4.12",
+    "memorystore": "^1.6.7",
+    "next": "^13.4.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sass": "^1.56.1",
+    "sass": "^1.66.0",
     "socket.io": "^4.6.2",
     "socket.io-client": "^4.6.2",
     "sqlite3": "^5.1.4"
   },
   "devDependencies": {
+    "dependency-cruiser": "^13.1.3",
     "nodemon": "^3.0.1"
   }
 }
