@@ -15,17 +15,12 @@ export const currentUserAtom = atomWithStorage(
 		balance: null,
 		permissions: null,
 		class: null,
-		theme: 'light',
+		theme: 'dark',
 		isAuthenticated: null
 	},
-	// storage,
+	storage,
 )
 currentUserAtom.debugLabel = 'currentUser'
 
 export const leaderBoardAtom = atomWithStorage('leaderBoard', [])
 leaderBoardAtom.debugLabel = 'leaderBoardAtom'
-
-// export const DebugAtoms = (({ children }) => {
-// 	useAtomsDevtools('atoms')
-// 	return children
-// })

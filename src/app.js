@@ -14,7 +14,6 @@ const database = new verboseSqlite3.Database(
 )
 
 const dev = process.env.NODE_ENV !== 'production'
-console.log(process.env.NODE_ENV)
 if (dev) console.log('Running in Developer mode')
 const app = next({ dev })
 const handle = app.getRequestHandler()
@@ -144,11 +143,9 @@ app.prepare().then(() => {
 	})
 
 	io.on('connection', (socket) => {
-		socket.emit('load', socket.request.session)
-
-		socket.on('load', () => {
-			socket.emit('load', socket.request.session)
-		})
+		// socket.on('getSession', () => {
+		// 	socket.emit('getSession', socket.request.session)
+		// })
 
 		socket.on('login', (username, password) => {
 			if (!socket.request.session.username) {

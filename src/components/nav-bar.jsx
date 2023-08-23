@@ -11,13 +11,15 @@ export default function NavBar() {
 	var [currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
 	async function logout() {
-		setCurrentUser({
-			username: null,
-			balance: null,
-			permissions: null,
-			class: null,
-			theme: currentUser.theme,
-			isAuthenticated: false,
+		setCurrentUser(previousCurrentUser => {
+			return {
+				username: null,
+				balance: null,
+				permissions: null,
+				class: null,
+				theme: previousCurrentUser.theme,
+				isAuthenticated: false,
+			}
 		})
 
 		socket.emit('logout')
@@ -25,15 +27,10 @@ export default function NavBar() {
 
 	function toggleTheme() {
 		try {
-			setCurrentUser(previousCurrentUser => {
-				let newTheme
-				if (previousCurrentUser.theme === 'dark') newTheme = 'light'
-				else newTheme = 'dark'
-				return {
-					...previousCurrentUser,
-					theme: newTheme
-				}
-			})
+			setCurrentUser(previousCurrentUser => ({
+				...previousCurrentUser,
+				theme: previousCurrentUser.theme === 'dark' ? 'light' : 'dark'
+			}))
 			// if (typeof window !== 'undefined') {
 			// 	if (currentUser.theme === 'dark') document.body.style.backgroundColor = 'rgb(20, 20, 20)'
 			// 	else document.body.style.backgroundColor = 'rgb(255, 255, 255)'

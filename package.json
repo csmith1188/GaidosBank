@@ -1,13 +1,13 @@
 {
   "name": "app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "",
   "main": "app.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/app",
-    "start": "node src/app",
+    "start": "next build&& set NODE_ENV=production&& node src/app",
     "build": "next build",
     "testDeps": "depcruise src"
   },

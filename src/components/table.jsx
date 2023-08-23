@@ -232,7 +232,7 @@ function Filter({ theme, column, table }) {
 				theme={theme}
 				value={columnFilterValue?.[0] ?? ""}
 				onChange={(value) => {
-					column.setFilterValue((old) => [value, old?.[1]])
+					column.setFilterValue(previousFilter => [value, previousFilter?.[1]])
 				}}
 				placeholder='Min'
 			/>
@@ -241,7 +241,7 @@ function Filter({ theme, column, table }) {
 				theme={theme}
 				value={columnFilterValue?.[1] ?? ""}
 				onChange={(value) => {
-					column.setFilterValue((old) => [old?.[0], value])
+					column.setFilterValue(previousFilter => [previousFilter?.[0], value])
 				}}
 				placeholder='Max'
 			/>
