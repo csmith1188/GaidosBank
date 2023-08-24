@@ -36,7 +36,7 @@ export default function NavBar() {
 			// 	else document.body.style.backgroundColor = 'rgb(255, 255, 255)'
 			// }
 		} catch (error) {
-			throw error
+			console.error(error)
 		}
 	}
 

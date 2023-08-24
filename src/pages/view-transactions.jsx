@@ -13,6 +13,8 @@ export default function ViewTransactions() {
 	var [transactions, setTransactions] = useState([])
 
 	useEffect(() => {
+		socket.emit('getTransactions')
+
 		socket.on('sendTransactions', (data) => {
 			if (currentUser) {
 				console.log(data)

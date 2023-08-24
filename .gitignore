@@ -39,8 +39,8 @@ next-env.d.ts
 *.log
 
 #database
-database.db
-databaseBackup.db
+databases/database.db
+databases/databaseBackup.db
 *.db-journal
 
 #vscode

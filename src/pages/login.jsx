@@ -43,7 +43,7 @@ export default function Login() {
 
 		socket.on('signup', ({ data, error }) => {
 			if (data) setCurrentUser(data)
-			if (error) setError(data.error)
+			if (error) setError(error)
 		})
 
 		return () => {

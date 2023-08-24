@@ -157,14 +157,14 @@ app.prepare().then(() => {
 						`SELECT password FROM users WHERE username = ?`,
 						[username],
 						(error, results) => {
-							if (error) throw error
+							if (error) console.error(error)
 							if (results) {
 								let databasePassword = results.password
 								bcrypt.compare(
 									password,
 									databasePassword,
 									async (error, isMatch) => {
-										if (error) throw error
+										if (error) console.error(error)
 										if (isMatch) {
 											socket.request.session.username = username
 											socket.request.session.save()
@@ -227,10 +227,10 @@ app.prepare().then(() => {
 						password,
 						10,
 						(error, hashedPassword) => {
-							if (error) throw error
+							if (error) console.error(error)
 							if (hashedPassword) {
 								if (!users[username]) {
-									if (users.length == 0) {
+									if (Object.keys(users).length == 0) {
 										permissions = 'admin'
 									}
 									if (className) {
@@ -246,12 +246,13 @@ app.prepare().then(() => {
 													theme
 												],
 												(error, results) => {
-													if (error) throw error
+													if (error) console.error(error)
 													sendResult()
 												}
 											)
 										} else socket.emit('signup', { error: 'That Class does not exist.' })
 									} else {
+										console.log('hi')
 										database.run(
 											`INSERT INTO users (username, password, balance, permissions, theme) VALUES (?, ?, ?, ?, ?)`,
 											[
@@ -262,7 +263,7 @@ app.prepare().then(() => {
 												theme
 											],
 											(error, results) => {
-												if (error) throw error
+												if (error) console.error(error)
 												sendResult()
 											}
 										)
@@ -316,7 +317,7 @@ app.prepare().then(() => {
 				'INSERT INTO classes (class) VALUES (?)',
 				[className],
 				async (error, results) => {
-					if (error) throw error
+					if (error) console.error(error)
 					socket.emit('makeClass', { className })
 					await getClasses()
 					io.emit('sendClasses', classes)
@@ -436,7 +437,7 @@ app.prepare().then(() => {
 		// 			// 	],
 		// 			// 	(error, results) => {
 		// 			// 		if (results) console.log(results)
-		// 			// 		if (error) throw error
+		// 			// 		if (error) console.error(error)
 		// 			// 		io.emit('sendUsers', users)
 		// 			// 		io.emit('sendLeaderBoard', leaderBoard)
 		// 			// 	}
@@ -475,7 +476,7 @@ app.prepare().then(() => {
 			}
 
 			if (senderName === null) {
-				socket.emit('makeTransaction', { error: 'Not logged in.' })
+				await socket.emit('makeTransaction', { error: 'Not logged in.' })
 				return
 			}
 
@@ -583,7 +584,7 @@ app.prepare().then(() => {
 				[WAGE, users],
 				(error, results) => {
 					if (results) console.log(results)
-					if (error) throw error
+					if (error) console.error(error)
 
 					console.log('start class')
 					getUsers()
