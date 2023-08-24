@@ -9,20 +9,24 @@ import * as Text from '../components/styled/text'
 const socket = io()
 
 export default function ViewTransactions() {
-	var currentUser = useAtomValue(currentUserAtom)
-	var [transactions, setTransactions] = useState([])
+	const currentUser = useAtomValue(currentUserAtom)
+	const [transactions, setTransactions] = useState([])
 
 	useEffect(() => {
 		socket.emit('getTransactions')
 
 		socket.on('sendTransactions', (data) => {
-			if (currentUser) {
-				console.log(data)
+			let username = currentUser.username
+			if (
+				!username
+			) {
+				username = JSON.parse(sessionStorage.getItem('currentUser')).username
+			}
+			if (username) {
 				data = data.filter(transaction =>
-					transaction.sender === currentUser.username ||
-					transaction.receiver === currentUser.username
+					transaction.sender === username ||
+					transaction.receiver === username
 				)
-				console.log(data)
 
 				for (let transaction of data) {
 					const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -42,9 +46,9 @@ export default function ViewTransactions() {
 		}
 	}, [])
 
-	useEffect(() => {
-		if (currentUser) socket.emit('getTransactions')
-	}, [currentUser])
+	// useEffect(() => {
+	// 	if (currentUser) socket.emit('getTransactions')
+	// }, [currentUser])
 
 
 	let columns = [
