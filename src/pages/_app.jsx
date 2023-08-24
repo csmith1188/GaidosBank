@@ -14,30 +14,30 @@ export default function App({ Component, pageProps }) {
 
 	const router = useRouter()
 
-	// useEffect(() => {
-	// 	socket.on('getSession', (session) => {
-	// 		if (!session.username) {
-	// 			setCurrentUser(previousCurrentUser => {
-	// 				return {
-	// 					username: null,
-	// 					permissions: null,
-	// 					balance: null,
-	// 					class: null,
-	// 					theme: previousCurrentUser.theme,
-	// 					isAuthenticated: false
-	// 				}
-	// 			})
-	// 			router.push('/login')
-	// 		}
-	// 	})
-
-	// 	return () => {
-	// 		socket.off('getSession')
-	// 	}
-	// }, [])
-
-
 	useEffect(() => {
+		socket.on('getSession', (session) => {
+			if (!session.username) {
+				setCurrentUser(previousCurrentUser => {
+					return {
+						username: null,
+						permissions: null,
+						balance: null,
+						class: null,
+						theme: previousCurrentUser.theme,
+						isAuthenticated: false
+					}
+				})
+				router.push('/login')
+			}
+		})
+
+		return () => {
+			socket.off('getSession')
+		}
+	}, [])
+
+
+	function route() {
 		if (currentUser.isAuthenticated === null) {
 			socket.emit('getSession')
 			return
@@ -59,6 +59,15 @@ export default function App({ Component, pageProps }) {
 			router.pathname.startsWith('/admin') &&
 			currentUser.permissions !== 'admin'
 		) router.push('/')
+	}
+
+	useEffect(() => {
+		route()
+	}, [])
+
+
+	useEffect(() => {
+		route()
 	}, [currentUser.isAuthenticated])
 
 	useEffect(() => {

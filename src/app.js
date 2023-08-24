@@ -143,9 +143,9 @@ app.prepare().then(() => {
 	})
 
 	io.on('connection', (socket) => {
-		// socket.on('getSession', () => {
-		// 	socket.emit('getSession', socket.request.session)
-		// })
+		socket.on('getSession', () => {
+			socket.emit('getSession', socket.request.session)
+		})
 
 		socket.on('login', (username, password) => {
 			if (!socket.request.session.username) {
