@@ -88,8 +88,8 @@ export default function Admin() {
 	}, [])
 
 	useEffect(() => {
-		socket.on('makeClass', ({error = null, className}) => setError(error, `Made class ${className}`))
-		socket.on('deleteClass', ({error = null, className}) => setError(error, `Deleted class ${className}`))
+		socket.on('makeClass', ({ error = null, className }) => setError(error, `Made class ${className}`))
+		socket.on('deleteClass', ({ error = null, className }) => setError(error, `Deleted class ${className}`))
 
 		return () => {
 			socket.off('makeClass')
@@ -294,6 +294,10 @@ export default function Admin() {
 						<Tabs.Trigger value="classes" theme={currentUser.theme}>
 							Classes
 						</Tabs.Trigger>
+						<Separator className='separator' decorative orientation="vertical" theme={currentUser.theme} />
+						<Tabs.Trigger value="settings" theme={currentUser.theme}>
+							Settings
+						</Tabs.Trigger>
 					</Tabs.List>
 					<Tabs.Content
 						id='users'
@@ -386,6 +390,28 @@ export default function Admin() {
 							</Form.Button>
 							<Text.P theme={currentUser.theme}></Text.P>
 						</div>
+					</Tabs.Content>
+					<Tabs.Content
+						id='settings'
+						value="settings"
+						theme={currentUser.theme}
+					>
+						<Form.Button
+							theme={currentUser.theme}
+							id='clear'
+							onClick={() => {
+								let confirmation1 = confirm(`Are you sure you want to clear all data?`)
+								let confirmation2
+								if (confirmation1) {
+									confirmation2 = confirm(`Are you still sure you want to clear all data?`)
+									if (confirmation2) {
+										socket.emit('clear')
+									}
+								}
+							}}
+						>
+							Clear Data
+						</Form.Button>
 					</Tabs.Content>
 				</Tabs.Root >
 				: ''}

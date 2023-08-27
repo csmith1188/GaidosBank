@@ -87,7 +87,7 @@ export default function Login() {
 	}
 
 	return (
-		<div id='login'>
+		<div id='loginPage'>
 			<Tabs.Root defaultValue="login" orientation="vertical" theme={currentUser.theme}>
 				<Tabs.List aria-label="Tabs example" theme={currentUser.theme}>
 					<Tabs.Trigger value="login" theme={currentUser.theme}>
@@ -98,7 +98,11 @@ export default function Login() {
 						Signup
 					</Tabs.Trigger>
 				</Tabs.List>
-				<Tabs.Content value="login" theme={currentUser.theme}>
+				<Tabs.Content
+					id="login"
+					value="login"
+					theme={currentUser.theme}
+				>
 					<Head>
 						<title>Login</title>
 					</Head>
@@ -123,7 +127,11 @@ export default function Login() {
 						<Form.Input type='submit' theme={currentUser.theme} value="Login" />
 					</Form.Root>
 				</Tabs.Content>
-				<Tabs.Content value="signup" theme={currentUser.theme}>
+				<Tabs.Content
+					id='signup'
+					value="signup"
+					theme={currentUser.theme}
+				>
 					<Head>
 						<title>Signup</title>
 					</Head>
@@ -138,12 +146,6 @@ export default function Login() {
 							placeholder='Username'
 							value={username}
 							onChange={(event) => setUsername(event.target.value)}
-							theme={currentUser.theme}
-						/>
-						<Select
-							items={classes}
-							name='select'
-							onValueChange={(value) => setClassName(value)}
 							theme={currentUser.theme}
 						/>
 						<Form.Input
@@ -162,6 +164,12 @@ export default function Login() {
 							placeholder='Confirm Password'
 							value={confirmPassword}
 							onChange={(event) => setConfirmPassword(event.target.value)}
+							theme={currentUser.theme}
+						/>
+						<Select
+							items={classes}
+							name='Select Class'
+							onValueChange={(value) => setClassName(value)}
 							theme={currentUser.theme}
 						/>
 						<Form.Input type='submit' theme={currentUser.theme} value="Signup" />

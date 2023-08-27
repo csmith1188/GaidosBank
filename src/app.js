@@ -591,6 +591,58 @@ app.prepare().then(() => {
 				}
 			)
 		})
+
+		socket.on('clear', async () => {
+			console.log('clear')
+			database.run('BEGIN TRANSACTION')
+
+			function clearTable(table) {
+				return new Promise((resolve, reject) => {
+					console.log(table)
+					database.run(
+						`DELETE FROM ${table}`,
+						// [table],
+						(error, results) => {
+							if (error) reject(error)
+							else resolve(results)
+						}
+					)
+				})
+			}
+
+			try {
+				let tables = await new Promise((resolve, reject) => {
+					database.all(
+						'SELECT name FROM sqlite_master WHERE type="table" AND name NOT LIKE "sqlite_%"',
+						(error, results) => {
+							if (error) reject(error)
+							else resolve(results)
+						}
+					)
+				})
+				tables = tables.map(table => table.name)
+
+				console.log(tables)
+
+				for (let table of tables) {
+					await clearTable(table)
+				}
+
+				await getUsers()
+				await getClasses()
+				await getTransactions()
+				socket.emit('clear')
+				io.emit('sendUsers', users)
+				io.emit('sendLeaderBoard', leaderBoard)
+				io.emit('sendClasses', classes)
+				io.emit('sendTransactions', transactions)
+				database.run('COMMIT')
+			} catch (error) {
+				console.error(error)
+				database.run('ROLLBACK')
+				socket.emit('clear', { error: 'An error occurred while removing data.' })
+			}
+		})
 	})
 
 	server.listen(PORT, () => {
