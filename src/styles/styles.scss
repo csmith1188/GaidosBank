@@ -205,6 +205,8 @@ h1 {
 		div[role=tabpanel][data-state=active] {
 			height: fit-content;
 			width: fit-content;
+			min-width: 60%;
+			min-height: 50vh;
 			max-width: 90%;
 			display: grid;
 			margin-top: 0.5vh;
@@ -212,7 +214,29 @@ h1 {
 			border-style: solid;
 			border-width: 0.75vh;
 			border-radius: 4vh;
+		}
+
+		div[role=tabpanel][data-state=inactive] {
+			visibility: hidden;
+		}
+
+		#settings {
 			display: grid;
+			justify-content: center;
+
+			* {
+				height: fit-content;
+				width: fit-content;
+			}
+
+			#clear {
+				font-size: 2rem;
+				color: hsl(0, 100%, 50%);
+
+				&:hover {
+					color: hsl(0, 100%, 25%)
+				}
+			}
 		}
 	}
 }
@@ -408,7 +432,7 @@ h1 {
 	}
 }
 
-#login {
+#loginPage {
 	margin-top: 4vh;
 	display: grid;
 	justify-content: center;
@@ -416,6 +440,10 @@ h1 {
 	form {
 		font-size: 6.5vh;
 		display: grid;
+
+		[role=combobox] {
+			justify-self: center;
+		}
 
 		.select {
 			font-size: 6.5vh;
