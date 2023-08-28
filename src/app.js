@@ -252,7 +252,6 @@ app.prepare().then(() => {
 											)
 										} else socket.emit('signup', { error: 'That Class does not exist.' })
 									} else {
-										console.log('hi')
 										database.run(
 											`INSERT INTO users (username, password, balance, permissions, theme) VALUES (?, ?, ?, ?, ?)`,
 											[
@@ -593,12 +592,10 @@ app.prepare().then(() => {
 		})
 
 		socket.on('clear', async () => {
-			console.log('clear')
 			database.run('BEGIN TRANSACTION')
 
 			function clearTable(table) {
 				return new Promise((resolve, reject) => {
-					console.log(table)
 					database.run(
 						`DELETE FROM ${table}`,
 						// [table],
@@ -622,8 +619,6 @@ app.prepare().then(() => {
 				})
 				tables = tables.map(table => table.name)
 
-				console.log(tables)
-
 				for (let table of tables) {
 					await clearTable(table)
 				}
@@ -631,7 +626,7 @@ app.prepare().then(() => {
 				await getUsers()
 				await getClasses()
 				await getTransactions()
-				socket.emit('clear')
+				io.emit('clear')
 				io.emit('sendUsers', users)
 				io.emit('sendLeaderBoard', leaderBoard)
 				io.emit('sendClasses', classes)

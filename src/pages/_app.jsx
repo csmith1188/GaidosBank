@@ -14,25 +14,34 @@ export default function App({ Component, pageProps }) {
 
 	const router = useRouter()
 
+	function logout() {
+		setCurrentUser(previousCurrentUser => {
+			return {
+				username: null,
+				permissions: null,
+				balance: null,
+				class: null,
+				theme: previousCurrentUser.theme,
+				isAuthenticated: false
+			}
+		})
+		router.push('/login')
+	}
+
 	useEffect(() => {
 		socket.on('getSession', (session) => {
 			if (!session.username) {
-				setCurrentUser(previousCurrentUser => {
-					return {
-						username: null,
-						permissions: null,
-						balance: null,
-						class: null,
-						theme: previousCurrentUser.theme,
-						isAuthenticated: false
-					}
-				})
-				router.push('/login')
+				logout()
 			}
+		})
+
+		socket.on('clear', () => {
+			logout()
 		})
 
 		return () => {
 			socket.off('getSession')
+			socket.off('clear')
 		}
 	}, [])
 
