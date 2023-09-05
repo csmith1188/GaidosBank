@@ -2,38 +2,14 @@
 
 gitURL="https://github.com/csmith1188/GaidosBank"
 
-# Check if npm packages need to be updated
-checkNpmUpdate() {
-	if [ -z "$(npm outdated --parseable 2> /dev/null)" ]; then
-		npmUpdate=true
-	else
-		npmUpdate=false
-	fi
-}
-
 # Run the update process
 runUpdate() {
 	if [ "$gitUpdate" == true ]; then
 		git fetch
 		git pull
-
-		# Update the database schema
-		./sqlite3.exe databases/databaseTemplate.db ".schema" > databases/schema.sql
-		./sqlite3.exe databases/updatedDatabase.db < databases/schema.sql
-		./sqlite3.exe databases/updatedDatabase.db "ATTACH DATABASE 'databases/database.db' AS old_db"
-		./sqlite3.exe -cmd "ATTACH DATABASE 'databases/database.db' AS old_db" databases/updatedDatabase.db "SELECT name FROM old_db.sqlite_master WHERE type='table'" | while read table_name; do
-			./sqlite3.exe -cmd "ATTACH DATABASE 'databases/database.db' AS old_db" databases/updatedDatabase.db "INSERT OR IGNORE INTO ${table_name} SELECT * FROM old_db.${table_name}"
-		done
-		./sqlite3.exe databases/updatedDatabase.db "DETACH DATABASE old_db"
-		./sqlite3.exe databases/updatedDatabase.db ".quit"
-		mv databases/updatedDatabase.db databases/database.db
-		rm schema.sql
 	fi
 
-	while [ "$npmUpdate" == true ]; do
-		npm install
-		checkNpmUpdate
-	done
+	npm install
 
 	if [ "$gitUpdate" == true ]; then
 		npx next build
@@ -41,7 +17,9 @@ runUpdate() {
 }
 
 # Check if the current directory is a Git repository
+isGit=false
 if [ -z "$(git rev-parse --verify HEAD 2> /dev/null)" ]; then
+	isGit=true
 	# Clone the repository into a temporary directory
 	git clone $gitURL ./temp
 
@@ -60,6 +38,10 @@ fi
 # Backup the existing database
 cp databases/database.db databases/databaseBackup.db
 
+if [ "$isGit" == true ]; then
+	npm install
+fi
+
 # Get the current and latest version of the repository
 currentVersion=$(git rev-parse HEAD)
 latestVersion=$(git rev-parse origin/main)
@@ -71,10 +53,8 @@ else
 	gitUpdate=false
 fi
 
-checkNpmUpdate
-
 # Prompt the user to update if necessary
-if [ "$gitUpdate" == true ] || [ "$npmUpdate" == true ]; then
+if [ "$gitUpdate" == true ]; then
 	read -p "There is a newer version available, do you want to update? (yes/no) " updateRequested
 
 	while true; do
