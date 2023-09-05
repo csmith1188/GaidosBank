@@ -17,7 +17,9 @@ runUpdate() {
 }
 
 # Check if the current directory is a Git repository
+isGit=false
 if [ -z "$(git rev-parse --verify HEAD 2> /dev/null)" ]; then
+	isGit=true
 	# Clone the repository into a temporary directory
 	git clone $gitURL ./temp
 
@@ -36,7 +38,7 @@ fi
 # Backup the existing database
 cp databases/database.db databases/databaseBackup.db
 
-if [ -z "$(git rev-parse --verify HEAD 2> /dev/null)" ]; then
+if [ "$isGit" == true ]; then
 	npm install
 fi
 
